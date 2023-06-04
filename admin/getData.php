@@ -145,12 +145,27 @@ if( isset($_POST["Code_Content"]) && isset($_POST["Content_Content"]) && isset($
 // get liste article
 function listeArticle($data)
 {
-  // print_r($data->pager);
-  // echo($data->pager->page);
-  // echo($data->pager->limit);
+  $sql = "SELECT * FROM article ";  
+  $filter = $data->filter ;
+  $whereClause = " where true ";
 
-  $sql = "SELECT * FROM article LIMIT " . $data->pager->page . " , " . $data->pager->limit;  
+  foreach ($filter as $key => $value) 
+  {
+    if(gettype($value) == "string" && !empty($value))
+      $whereClause .= " AND " . ($key . " like '%" . $value . "%' ");
+    else
+    {
+      if(isset($value->start) && !empty($value->start) && isset($value->end) && !empty($value->end))
+      {
+        $property = str_replace("Filter", "", $key);
+        $whereClause .= " AND $property >=  '$value->start' AND $property <= '$value->end' ";
+      }
+    }
+  }
+
+  $sql .= $whereClause . " LIMIT " . $data->pager->page . " , " . $data->pager->limit; 
   $listeArt = getData($sql,false);
+  // echo($sql);
   if (count($listeArt) > 0) 
   {   
     $response = array(  'listeArticle' => $listeArt );
@@ -159,7 +174,8 @@ function listeArticle($data)
   {
     $response = array('listeArticle' => array());
   }
-  $sql = "SELECT COUNT(*) AS count FROM article";
+  $sql = "SELECT COUNT(*) AS count FROM article " . $whereClause;
+  // print_r(getData($sql,false));
   $count = getData($sql,false)[0]["count"];
   $totalPages = ceil($count / ($data->pager->limit+1));
   $response['totalPages'] = $totalPages;
