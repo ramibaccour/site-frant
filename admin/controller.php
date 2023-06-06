@@ -2,14 +2,49 @@
 session_start();
 include "getData.php";
 header ("Access-Control-Allow-Origin: *");
-// header ("Access-Control-Expose-Headers: Content-Length, X-JSON");
 header ("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
 header ("Access-Control-Allow-Headers: *");
+header('Content-Type: application/json');
+
+$path = $_SERVER['REQUEST_URI'];
+$path = strstr($path, "controller.php");
+if ($path !== false) 
+{
+    $path = substr($path, strlen("controller.php"));
+}
+if ($_SERVER['REQUEST_METHOD'] === 'GET') 
+{
+ 
+} 
+elseif ($_SERVER['REQUEST_METHOD'] === 'POST') 
+{  
+  $data = json_decode(file_get_contents('php://input'));
+  if($path === '/liste-article')
+  {
+    getListeArticle($data);
+  }
+  if($path === '/signin')
+  {
+    getSignin($data);
+  }
+} 
+elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")  
+{
+  if (preg_match('/\/delete-article\/(\d+)/', $_SERVER['REQUEST_URI'], $matches)) 
+  {
+    $productId = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
+    deleteArticle($productId);
+  }
+  
+}
+elseif ($_SERVER['REQUEST_METHOD'] === "PUT")  
+{
+}
+
 
 
 //----------- signin by login et mot de passe
-$data = json_decode(file_get_contents('php://input'));
-if(isset($data->signin) && isset($data->username)  && isset($data->password))
+function getSignin($data)
 {
   $rows = signin($data->username,$data->password);
   if (count($rows) > 0) 
@@ -23,16 +58,16 @@ if(isset($data->signin) && isset($data->username)  && isset($data->password))
 
 
 // ----------- liste artcle -----------
-if(isset($data->listeArticle))
+function getListeArticle($data)
 {
-  // print_r($data->pager);
-  // $page = isset($data->pager->page) ? ($data->pager->page) : 1;
-  // $limit = isset($data->pager->limit) ? ($data->pager->limit) : 10;
-  // $offset = ($page - 1) * $limit;
   $rows = listeArticle($data);  
   echo json_encode($rows);
 
 }
 // ----------- fin liste artcle -----------
-
+function deleteArticle($productId)
+{
+  $rows = deleteArticleById($productId);  
+  echo json_encode($rows);
+}
 ?>
