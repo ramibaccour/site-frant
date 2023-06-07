@@ -151,8 +151,8 @@ function listeArticle($data)
 
   foreach ($filter as $key => $value) 
   {
-    if(gettype($value) == "string" && !empty($value))
-      $whereClause .= " AND " . ($key . " like '%" . $value . "%' ");
+    if((gettype($value) == "string" || gettype($value) == "integer" || gettype($value) == "double" || gettype($value) == "boolean") && !empty($value))
+      $whereClause .= " AND CONVERT(". "$key,char)" . " like '%" . ((string) $value) . "%' ";
     else
     {
       if(isset($value->start) && !empty($value->start) && isset($value->end) && !empty($value->end))
@@ -162,10 +162,9 @@ function listeArticle($data)
       }
     }
   }
-
   $sql .= $whereClause . " LIMIT " . $data->pager->page . " , " . $data->pager->limit; 
+  write($sql);
   $listeArt = getData($sql,false);
-  // echo($sql);
   if (count($listeArt) > 0) 
   {   
     $response = array(  'listeArticle' => $listeArt );
@@ -175,7 +174,7 @@ function listeArticle($data)
     $response = array('listeArticle' => array());
   }
   $sql = "SELECT COUNT(*) AS count FROM article " . $whereClause;
-  // print_r(getData($sql,false));
+  write($sql);
   $count = getData($sql,false)[0]["count"];
   $totalPages = ceil($count / ($data->pager->limit+1));
   $response['totalPages'] = $totalPages;
@@ -203,4 +202,12 @@ function verificationAdminConnecter()
         return false;
 }
 // fin verification admin connecter
+
+
+function write($txt)
+{
+  $myfile = fopen("newfile.txt", "a") or die("Unable to open file!");
+  fwrite($myfile, $txt."\n");
+  fclose($myfile);
+}
 ?>
