@@ -1,0 +1,25 @@
+SELECT * FROM article  where true  AND debut_promo >=  '2023-05-05T13:27:58.485Z' AND debut_promo <= '2023-06-05T13:27:58.485Z'  LIMIT 0 , 5
+SELECT COUNT(*) AS count FROM article  where true  AND debut_promo >=  '2023-05-05T13:27:58.485Z' AND debut_promo <= '2023-06-05T13:27:58.485Z' 
+SELECT * FROM article  where true  AND debut_promo >=  '2023-05-05T13:29:54.271Z' AND debut_promo <= '2023-06-05T13:29:54.271Z'  LIMIT 0 , 5
+SELECT COUNT(*) AS count FROM article  where true  AND debut_promo >=  '2023-05-05T13:29:54.271Z' AND debut_promo <= '2023-06-05T13:29:54.271Z' 
+SELECT * FROM article  where true  LIMIT  , 
+SELECT * FROM article  where true  LIMIT  , 
+SELECT * FROM article  where true  LIMIT  , 
+SELECT * FROM article  where true  AND debut_promo >=  '2023-05-05T13:41:51.250Z' AND debut_promo <= '2023-06-05T13:41:51.250Z'  LIMIT 0 , 5
+SELECT COUNT(*) AS count FROM article  where true  AND debut_promo >=  '2023-05-05T13:41:51.250Z' AND debut_promo <= '2023-06-05T13:41:51.250Z' 
+SELECT * FROM article  where true  LIMIT 0 , 5
+SELECT COUNT(*) AS count FROM article  where true 
+SELECT * FROM article  where true  LIMIT 5 , 5
+SELECT COUNT(*) AS count FROM article  where true 
+SELECT * FROM article  where true  LIMIT 10 , 5
+SELECT COUNT(*) AS count FROM article  where true 
+SELECT * FROM article  where true  LIMIT 0 , 5
+SELECT COUNT(*) AS count FROM article  where true 
+SELECT * FROM article  where true  AND CONVERT(name,char) like '%2%'  LIMIT 0 , 5
+SELECT COUNT(*) AS count FROM article  where true  AND CONVERT(name,char) like '%2%' 
+SELECT * FROM article  where true  LIMIT 0 , 5
+SELECT COUNT(*) AS count FROM article  where true 
+SELECT * FROM article  where true  AND debut_promo >=  '2023-05-05T13:58:42.665Z' AND debut_promo <= '2023-06-05T13:58:42.665Z'  LIMIT 0 , 5
+SELECT COUNT(*) AS count FROM article  where true  AND debut_promo >=  '2023-05-05T13:58:42.665Z' AND debut_promo <= '2023-06-05T13:58:42.665Z' 
+SELECT * FROM article  where true  LIMIT 0 , 5
+SELECT COUNT(*) AS count FROM article  where true 
