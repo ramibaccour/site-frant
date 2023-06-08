@@ -59,6 +59,7 @@ function getListeArticle($data)
   $filter = $data->filter ;
   $whereClause = getWhere($filter);
   $sql .= $whereClause . " LIMIT " . $data->pager->page . " , " . $data->pager->limit; 
+  write($sql);
   $listeArt = getData($sql,false);
   if (count($listeArt) > 0) 
   {   
