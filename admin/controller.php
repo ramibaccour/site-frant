@@ -19,10 +19,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
     $id = intval($matches[1]);
     getArticle( $id);
   }
+  if($path === '/head-article')
+  {
+    getHeadArticle();
+  }
   if (preg_match('/\/find-parametre\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
     getParametre( $id);
+  }
+  if (preg_match('/\/find-categorie\/(\d+)/', $path, $matches)) 
+  {
+    $id = intval($matches[1]);
+    getCategorie( $id);
   }
 } 
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST') 
@@ -36,6 +45,14 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
   {
     getListeParametre($data);
   }
+  if($path === '/liste-categorie')
+  {
+    getListeCategorie($data);
+  }
+  if($path === '/delete-categorie')
+  {
+    deleteCategorie($data);
+  }
   if($path === '/signin')
   {
     getSignin($data);
@@ -47,7 +64,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
     deleteArticle($id);
-  }
+  }  
 }
 elseif ($_SERVER['REQUEST_METHOD'] === "PUT")  
 {
@@ -55,6 +72,14 @@ elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
   if($path === '/save-parametre')
   {
     saveParametre($data);
+  }
+  if($path === '/save-article')
+  {
+    saveArticle($data);
+  }
+  if($path === '/save-categorie')
+  {
+    saveCategorie($data);
   }
 }
 ?>

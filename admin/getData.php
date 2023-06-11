@@ -43,12 +43,12 @@ function getArticle($id)
   echo json_encode($data);
 }
 // delete article
-function deleteArticle($productId)
+function deleteArticle($id)
 {
-  $sql = "SELECT * FROM article where id = $productId"; 
+  $sql = "SELECT * FROM article where id = $id"; 
   $value = getData($sql,false)[0]["is_deleted"];
   $value = ($value == 1? 0 : 1);
-  $sql = "UPDATE article SET is_deleted = $value where id = $productId"; 
+  $sql = "UPDATE article SET is_deleted = $value where id = $id"; 
   $rows = getData($sql,false);
   echo json_encode($rows);
 }
@@ -58,8 +58,7 @@ function getListeArticle($data)
   $sql = "SELECT * FROM article ";  
   $filter = $data->filter ;
   $whereClause = getWhere($filter);
-  $sql .= $whereClause . " LIMIT " . $data->pager->page . " , " . $data->pager->limit; 
-  write($sql);
+  $sql .= $whereClause . " LIMIT " . $data->pager->page . " , " . $data->pager->limit;
   $listeArt = getData($sql,false);
   if (count($listeArt) > 0) 
   {   
@@ -76,6 +75,27 @@ function getListeArticle($data)
   $response['count'] = $count;
   echo json_encode($response);
 }
+function getHeadArticle()
+{
+  return getParametre(1);
+}
+function saveArticle($data)
+{
+  // mode update
+  if(isset($data["id"]) && $data["id"]>0)
+  {
+    $sql = "update article set " . getUpdateSql($data); 
+    getData($sql,false);
+    return getArticle($data["id"]);
+  }
+  // mode add
+  else
+  {
+    $sql = "insert into article " . getInsertSql($data);
+    $data = getData($sql,true);
+    return getArticle($data["id"]);
+  }
+}
 // get parametre
 function getParametre($id)
 {
@@ -83,8 +103,6 @@ function getParametre($id)
   $data =  getData($sql,false)[0];
   echo json_encode($data);
 }
-// fin liste article
-
 // get liste parametre
 function getListeParametre($data)
 {
@@ -130,6 +148,45 @@ function getSignin($data)
 }
 //-----------fin signin by login et mot de passe
 
+function deleteCategorie($data)
+{
+  $sql = "UPDATE categorie SET is_deleted = 1"; 
+  $sql .= getWhere($data); 
+  $rows = getData($sql,false);
+  echo json_encode($rows);
+}
+function getListeCategorie($data)
+{
+  $sql = "select * from categorie ";
+  $filter = $data ;
+  $whereClause = getWhere($filter);
+  $sql .= $whereClause; 
+  $data = getData($sql,false);
+  echo json_encode($data);
+}
+function getCategorie($id)
+{
+  $sql = "SELECT * FROM categorie where id = $id"; 
+  $data =  getData($sql,false)[0];
+  echo json_encode($data);
+}
+function saveCategorie($data)
+{
+  // mode update
+  if(isset($data["id"]) && $data["id"]>0)
+  {
+    $sql = "update categorie set " . getUpdateSql($data); 
+    getData($sql,false);
+    return getCategorie($data["id"]);
+  }
+  // mode add
+  else
+  {
+    $sql = "insert into categorie " . getInsertSql($data);
+    $data = getData($sql,true);
+    return getCategorie($data["id"]);
+  }
+}
 // verification admin connecter (existance de session)
 function verificationAdminConnecter()
 {
@@ -148,7 +205,7 @@ function getUpdateSql($data)
   {
     if($key != "id")
     {
-      if( (gettype($value) == "integer" || gettype($value) == "double") &&  !empty($value))
+      if( (gettype($value) == "integer" || gettype($value) == "double") &&  (!empty($value) || $value == "0" || $value == "1"))
         $sql .= " $key = $value , ";
       else if (!empty($value))
         $sql .= " $key = '$value' , ";
@@ -162,6 +219,37 @@ function getUpdateSql($data)
   $sql .= " where id = $id";
   return $sql;
 }
+function getInsertSql($data)
+{
+  $sql = " ( ";
+  $id = 0;
+  foreach ($data as $key => $value) 
+  {
+    if($key != "id")
+    {
+      if(  (!empty($value) || $value == "0" || $value == "1"))
+        $sql .= " $key , ";
+      
+    }
+  }
+  $sql = rtrim($sql, " , ");
+  $sql .= ") VALUES (";
+  foreach ($data as $key => $value) 
+  {
+    if($key != "id")
+    {
+      if( (gettype($value) == "integer" || gettype($value) == "double") &&  (!empty($value) || $value == "0" || $value == "1"))
+        $sql .= " $value , ";
+      else if (!empty($value))
+        $sql .= " '$value' , ";
+      else
+        $sql .= " NULL , ";
+    }
+  }
+  $sql = rtrim($sql, " , ");
+  $sql .= ")";
+  return $sql;
+}
 function getWhere($filter)
 {
   $whereClause = " where true ";
@@ -170,13 +258,16 @@ function getWhere($filter)
   {
     if((gettype($value) == "string" || gettype($value) == "integer" || gettype($value) == "double" || gettype($value) == "boolean" ) && !empty($value) || $value == "0" || $value == "1")
       $whereClause .= " AND CONVERT(". "$key,char)" . " like '%" . ((string) $value) . "%' ";
-    else
+    else if(isset($value->start) && !empty($value->start) && isset($value->end) && !empty($value->end))
     {
-      if(isset($value->start) && !empty($value->start) && isset($value->end) && !empty($value->end))
-      {
-        $property = str_replace("Filter", "", $key);
-        $whereClause .= " AND $property >=  '$value->start' AND $property <= '$value->end' ";
-      }
+      $property = str_replace("Filter", "", $key);
+      $whereClause .= " AND $property >=  '$value->start' AND $property <= '$value->end' ";
+    }
+    else if(gettype($value) == "array" && count($value)>0)
+    {
+      $property = str_replace("List", "", $key);
+      $string = implode(',', $value);
+      $whereClause .= " AND $property in ( $string ) ";
     }
   }
   return $whereClause;
