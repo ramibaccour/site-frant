@@ -58,7 +58,12 @@ function deleteAccueille($id)
   $rows = getData($sql,false);
   echo json_encode($rows);
 }
-
+function getTypeAccueille()
+{
+  $sql = "SELECT * FROM accueil_type"; 
+  $rows = getData($sql,false);
+  echo json_encode($rows);
+}
 function getHeadAccueille()
 {
   return getParametre(3);

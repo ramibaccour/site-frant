@@ -23,6 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
   {
     getHeadAccueille();
   }
+  if($path === '/type-accueille')
+  {
+    getTypeAccueille();
+  }
   if (preg_match('/\/find-article\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
