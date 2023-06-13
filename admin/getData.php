@@ -35,6 +35,52 @@ function getData($sql,$getAutoIncrement)
   }
   return $results;
 }
+function getListeAccueille($data)
+{
+  $sql = "SELECT * FROM accueil ";  
+  $whereClause = getWhere($data);
+  $sql .= $whereClause ;
+  $listeArt = getData($sql,false);
+  echo json_encode($listeArt);
+}
+function getAccueille($id)
+{
+  $sql = "SELECT * FROM accueil where id = $id"; 
+  $data =  getData($sql,false)[0];
+  echo json_encode($data);
+}
+function deleteAccueille($id)
+{
+  $sql = "SELECT * FROM accueil where id = $id"; 
+  $value = getData($sql,false)[0]["is_deleted"];
+  $value = ($value == 1? 0 : 1);
+  $sql = "UPDATE accueil SET is_deleted = $value where id = $id"; 
+  $rows = getData($sql,false);
+  echo json_encode($rows);
+}
+
+function getHeadAccueille()
+{
+  return getParametre(3);
+}
+function saveAccueille($data)
+{
+  // mode update
+  if(isset($data["id"]) && $data["id"]>0)
+  {
+    $sql = "update accueil set " . getUpdateSql($data); 
+    getData($sql,false);
+    return getAccueille($data["id"]);
+  }
+  // mode add
+  else
+  {
+    $sql = "insert into accueil " . getInsertSql($data);
+    $data = getData($sql,true);
+    return getAccueille($data["id"]);
+  }
+}
+
 // get article
 function getArticle($id)
 {
