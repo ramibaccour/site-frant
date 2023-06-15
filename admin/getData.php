@@ -35,6 +35,16 @@ function getData($sql,$getAutoIncrement)
   }
   return $results;
 }
+function saveImage($image,$name)
+{
+  $targetDirectory = '../assets/images_upload/';
+  $targetFile = $targetDirectory . $name;
+  // Décoder les données de l'image à partir de la base64
+  $imageData = base64_decode(explode(',', $image)[1]);
+  
+  // Enregistrer l'image sur le serveur
+  file_put_contents($targetFile, $imageData);
+}
 function getListeAccueille($data)
 {
   $sql = "SELECT * FROM accueil ";  

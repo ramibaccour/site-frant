@@ -49,31 +49,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
 } 
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST') 
 {  
-  $data = json_decode(file_get_contents('php://input'));
-  if($path === '/liste-article')
+  if(isset($_POST['image']) && isset($_POST['name']))
   {
-    getListeArticle($data);
+    if($path === '/save-image')
+    {
+      saveImage($_POST['image'],$_POST['name']);
+    }
   }
-  if($path === '/liste-accueille')
+  else
   {
-    getListeAccueille($data);
-  }
-  if($path === '/liste-parametre')
-  {
-    getListeParametre($data);
-  }
-  if($path === '/liste-categorie')
-  {
-    getListeCategorie($data);
-  }
-  if($path === '/delete-categorie')
-  {
-    deleteCategorie($data);
-  }
-  if($path === '/signin')
-  {
-    getSignin($data);
-  }
+    $data = json_decode(file_get_contents('php://input'));
+    if($path === '/liste-article')
+    {
+      getListeArticle($data);
+    }
+    if($path === '/liste-accueille')
+    {
+      getListeAccueille($data);
+    }
+    if($path === '/liste-parametre')
+    {
+      getListeParametre($data);
+    }
+    if($path === '/liste-categorie')
+    {
+      getListeCategorie($data);
+    }
+    if($path === '/delete-categorie')
+    {
+      deleteCategorie($data);
+    }  
+    if($path === '/signin')
+    {
+      getSignin($data);
+    }  
+  } 
 } 
 elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")  
 {
