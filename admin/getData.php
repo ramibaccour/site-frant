@@ -68,12 +68,6 @@ function deleteAccueille($id)
   $rows = getData($sql,false);
   echo json_encode($rows);
 }
-function getTypeAccueille()
-{
-  $sql = "SELECT * FROM accueil_type"; 
-  $rows = getData($sql,false);
-  echo json_encode($rows);
-}
 function getHeadAccueille()
 {
   return getParametre(3);
@@ -94,6 +88,72 @@ function saveAccueille($data)
     $data = getData($sql,true);
     return getAccueille($data["id"]);
   }
+}
+
+
+
+
+
+
+
+function getListeLigneAccueille($data)
+{
+  $sql = "SELECT * FROM ligne_accueil ";  
+  $whereClause = getWhere($data);
+  $sql .= $whereClause ;
+  $listeArt = getData($sql,false);
+  echo json_encode($listeArt);
+}
+function getLigneAccueille($id)
+{
+  $sql = "SELECT * FROM ligne_accueil where id = $id"; 
+  $data =  getData($sql,false)[0];
+  echo json_encode($data);
+}
+function deleteLigneAccueille($id)
+{
+  $sql = "SELECT * FROM ligne_accueil where id = $id"; 
+  $value = getData($sql,false)[0]["is_deleted"];
+  $value = ($value == 1? 0 : 1);
+  $sql = "UPDATE ligne_accueil SET is_deleted = $value where id = $id"; 
+  $rows = getData($sql,false);
+  echo json_encode($rows);
+}
+function getHeadLigneAccueille()
+{
+  return getParametre(4);
+}
+function saveLigneAccueille($data)
+{
+  // mode update
+  if(isset($data["id"]) && $data["id"]>0)
+  {
+    $sql = "update ligne_accueil set " . getUpdateSql($data); 
+    getData($sql,false);
+    return getLigneAccueille($data["id"]);
+  }
+  // mode add
+  else
+  {
+    $sql = "insert into ligne_accueil " . getInsertSql($data);
+    $data = getData($sql,true);
+    return getLigneAccueille($data["id"]);
+  }
+}
+
+
+
+
+
+
+
+
+
+function getTypeAccueille()
+{
+  $sql = "SELECT * FROM accueil_type"; 
+  $rows = getData($sql,false);
+  echo json_encode($rows);
 }
 
 // get article

@@ -19,9 +19,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
     $id = intval($matches[1]);
     getAccueille( $id);
   }
+  if (preg_match('/\/find-ligne-accueille\/(\d+)/', $path, $matches)) 
+  {
+    $id = intval($matches[1]);
+    getLigneAccueille( $id);
+  }
   if($path === '/head-accueille')
   {
     getHeadAccueille();
+  }
+  if($path === '/head-ligne-accueille')
+  {
+    getHeadLigneAccueille();
   }
   if($path === '/type-accueille')
   {
@@ -67,6 +76,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
       getListeAccueille($data);
     }
+    if($path === '/liste-ligne-accueille')
+    {
+      getListeLigneAccueille($data);
+    }
     if($path === '/liste-parametre')
     {
       getListeParametre($data);
@@ -96,7 +109,12 @@ elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
     deleteAccueille($id);
-  }  
+  }    
+  if (preg_match('/\/delete-ligne-accueille\/(\d+)/', $path, $matches)) 
+  {
+    $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
+    deleteLigneAccueille($id);
+  } 
 }
 elseif ($_SERVER['REQUEST_METHOD'] === "PUT")  
 {
@@ -112,6 +130,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
   if($path === '/save-accueille')
   {
     saveAccueille($data);
+  }
+  if($path === '/save-ligne-accueille')
+  {
+    saveLigneAccueille($data);
   }
   if($path === '/save-categorie')
   {
