@@ -17,43 +17,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
   if (preg_match('/\/find-accueille\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    getAccueille( $id);
+    echo json_encode(getAccueille( $id));
   }
   if (preg_match('/\/find-ligne-accueille\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    getLigneAccueille( $id);
+    echo json_encode(getLigneAccueille( $id));
   }
   if($path === '/head-accueille')
   {
-    getHeadAccueille();
+    echo json_encode(getHeadAccueille());
   }
   if($path === '/head-ligne-accueille')
   {
-    getHeadLigneAccueille();
+    echo json_encode(getHeadLigneAccueille());
   }
   if($path === '/type-accueille')
   {
-    getTypeAccueille();
+    echo json_encode(getTypeAccueille());
   }
   if (preg_match('/\/find-article\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    getArticle( $id);
+    echo json_encode(getArticle( $id));
   }
   if($path === '/head-article')
   {
-    getHeadArticle();
+    echo json_encode(getHeadArticle());
   }
   if (preg_match('/\/find-parametre\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    getParametre( $id);
+    echo json_encode(getParametre( $id));
   }
   if (preg_match('/\/find-categorie\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    getCategorie( $id);
+    echo json_encode(getCategorie( $id));
   }
 } 
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST') 
@@ -62,7 +62,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
   {
     if($path === '/save-image')
     {
-      saveImage($_POST['image'],$_POST['name']);
+      echo json_encode(saveImage($_POST['image'],$_POST['name']));
     }
   }
   else
@@ -70,31 +70,31 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     $data = json_decode(file_get_contents('php://input'));
     if($path === '/liste-article')
     {
-      getListeArticle($data);
+      echo json_encode(getListeArticle($data));
     }
     if($path === '/liste-accueille')
     {
-      getListeAccueille($data);
+      echo json_encode(getListeAccueille($data));
     }
     if($path === '/liste-ligne-accueille')
     {
-      getListeLigneAccueille($data);
+      echo json_encode(getListeLigneAccueille($data));
     }
     if($path === '/liste-parametre')
     {
-      getListeParametre($data);
+      echo json_encode(getListeParametre($data));
     }
     if($path === '/liste-categorie')
     {
-      getListeCategorie($data);
+      echo json_encode(getListeCategorie($data));
     }
     if($path === '/delete-categorie')
     {
-      deleteCategorie($data);
+      echo json_encode(deleteCategorie($data));
     }  
     if($path === '/signin')
     {
-      getSignin($data);
+      echo json_encode(getSignin($data));
     }  
   } 
 } 
@@ -103,17 +103,17 @@ elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")
   if (preg_match('/\/delete-article\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
-    deleteArticle($id);
+    echo json_encode(deleteArticle($id));
   }  
   if (preg_match('/\/delete-accueille\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
-    deleteAccueille($id);
+    echo json_encode(deleteAccueille($id));
   }    
   if (preg_match('/\/delete-ligne-accueille\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
-    deleteLigneAccueille($id);
+    echo json_encode(deleteLigneAccueille($id));
   } 
 }
 elseif ($_SERVER['REQUEST_METHOD'] === "PUT")  
@@ -121,23 +121,23 @@ elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
   $data = json_decode(file_get_contents('php://input'), true);
   if($path === '/save-parametre')
   {
-    saveParametre($data);
+    echo json_encode(saveParametre($data));
   }
   if($path === '/save-article')
   {
-    saveArticle($data);
+    echo json_encode(saveArticle($data));
   }
   if($path === '/save-accueille')
   {
-    saveAccueille($data);
+    echo json_encode(saveAccueille($data));
   }
   if($path === '/save-ligne-accueille')
   {
-    saveLigneAccueille($data);
+    echo json_encode(saveLigneAccueille($data));
   }
   if($path === '/save-categorie')
   {
-    saveCategorie($data);
+    echo json_encode(saveCategorie($data));
   }
 }
 ?>

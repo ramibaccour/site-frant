@@ -51,13 +51,21 @@ function getListeAccueille($data)
   $whereClause = getWhere($data);
   $sql .= $whereClause ;
   $listeArt = getData($sql,false);
-  echo json_encode($listeArt);
+  return($listeArt);
 }
 function getAccueille($id)
 {
   $sql = "SELECT * FROM accueil where id = $id"; 
   $data =  getData($sql,false)[0];
-  echo json_encode($data);
+  if($data["id_article"] > 0)
+  {
+    $data["article"] = getArticle($data['id_article']);
+  }
+  if($data["id_categorie"] > 0)
+  {
+    $data["categorie"] = getCategorie( $data['id_categorie']);
+  }
+  return($data);
 }
 function deleteAccueille($id)
 {
@@ -66,7 +74,7 @@ function deleteAccueille($id)
   $value = ($value == 1? 0 : 1);
   $sql = "UPDATE accueil SET is_deleted = $value where id = $id"; 
   $rows = getData($sql,false);
-  echo json_encode($rows);
+  return($rows);
 }
 function getHeadAccueille()
 {
@@ -90,25 +98,19 @@ function saveAccueille($data)
   }
 }
 
-
-
-
-
-
-
 function getListeLigneAccueille($data)
 {
   $sql = "SELECT * FROM ligne_accueil ";  
   $whereClause = getWhere($data);
   $sql .= $whereClause ;
   $listeArt = getData($sql,false);
-  echo json_encode($listeArt);
+  return($listeArt);
 }
 function getLigneAccueille($id)
 {
   $sql = "SELECT * FROM ligne_accueil where id = $id"; 
   $data =  getData($sql,false)[0];
-  echo json_encode($data);
+  return($data);
 }
 function deleteLigneAccueille($id)
 {
@@ -117,7 +119,7 @@ function deleteLigneAccueille($id)
   $value = ($value == 1? 0 : 1);
   $sql = "UPDATE ligne_accueil SET is_deleted = $value where id = $id"; 
   $rows = getData($sql,false);
-  echo json_encode($rows);
+  return($rows);
 }
 function getHeadLigneAccueille()
 {
@@ -141,19 +143,11 @@ function saveLigneAccueille($data)
   }
 }
 
-
-
-
-
-
-
-
-
 function getTypeAccueille()
 {
   $sql = "SELECT * FROM accueil_type"; 
   $rows = getData($sql,false);
-  echo json_encode($rows);
+  return($rows);
 }
 
 // get article
@@ -161,7 +155,7 @@ function getArticle($id)
 {
   $sql = "SELECT * FROM article where id = $id"; 
   $data =  getData($sql,false)[0];
-  echo json_encode($data);
+  return($data);
 }
 // delete article
 function deleteArticle($id)
@@ -171,7 +165,7 @@ function deleteArticle($id)
   $value = ($value == 1? 0 : 1);
   $sql = "UPDATE article SET is_deleted = $value where id = $id"; 
   $rows = getData($sql,false);
-  echo json_encode($rows);
+  return($rows);
 }
 // get liste article
 function getListeArticle($data)
@@ -194,7 +188,7 @@ function getListeArticle($data)
   $totalPages = ceil($count / ($data->pager->limit+1));
   $response['totalPages'] = $totalPages;
   $response['count'] = $count;
-  echo json_encode($response);
+  return($response);
 }
 function getHeadArticle()
 {
@@ -222,7 +216,7 @@ function getParametre($id)
 {
   $sql = "SELECT * FROM parametre where id = $id"; 
   $data =  getData($sql,false)[0];
-  echo json_encode($data);
+  return($data);
 }
 // get liste parametre
 function getListeParametre($data)
@@ -245,7 +239,7 @@ function getListeParametre($data)
   $totalPages = ceil($count / ($data->pager->limit+1));
   $response['totalPages'] = $totalPages;
   $response['count'] = $count;
-  echo json_encode($response);
+  return($response);
 }
 function saveParametre($data)
 {
@@ -262,10 +256,10 @@ function getSignin($data)
   {             
     $_SESSION["username"] = $data->username;
     $_SESSION["password"] = $data->password;  
-    echo json_encode($rows[0]);  
+    return($rows[0]);  
   }
   else
-  echo json_encode($rows);
+  return($rows);
 }
 //-----------fin signin by login et mot de passe
 
@@ -274,7 +268,7 @@ function deleteCategorie($data)
   $sql = "UPDATE categorie SET is_deleted = 1"; 
   $sql .= getWhere($data); 
   $rows = getData($sql,false);
-  echo json_encode($rows);
+  return($rows);
 }
 function getListeCategorie($data)
 {
@@ -283,13 +277,13 @@ function getListeCategorie($data)
   $whereClause = getWhere($filter);
   $sql .= $whereClause; 
   $data = getData($sql,false);
-  echo json_encode($data);
+  return($data);
 }
 function getCategorie($id)
 {
   $sql = "SELECT * FROM categorie where id = $id"; 
   $data =  getData($sql,false)[0];
-  echo json_encode($data);
+  return($data);
 }
 function saveCategorie($data)
 {
@@ -328,12 +322,12 @@ function getUpdateSql($data)
     {
       if( (gettype($value) == "integer" || gettype($value) == "double") &&  (!empty($value) || $value == "0" || $value == "1"))
         $sql .= " $key = $value , ";
-      else if (!empty($value))
+      else if (gettype($value) == "string" && !empty($value))
         $sql .= " $key = '$value' , ";
-      else
+      else if (gettype($value) == "string" && empty($value))
         $sql .= " $key = NULL , ";
     }
-    else
+    else 
       $id =  $value;
   }
   $sql = rtrim($sql, " , ");
@@ -348,7 +342,7 @@ function getInsertSql($data)
   {
     if($key != "id")
     {
-      if(  (!empty($value) || $value == "0" || $value == "1"))
+      if( (gettype($value) == "string" || gettype($value) == "integer" || gettype($value) == "double") &&  (!empty($value) || $value == "0" || $value == "1"))
         $sql .= " $key , ";
       
     }
@@ -361,10 +355,8 @@ function getInsertSql($data)
     {
       if( (gettype($value) == "integer" || gettype($value) == "double") &&  (!empty($value) || $value == "0" || $value == "1"))
         $sql .= " $value , ";
-      else if (!empty($value))
+      else if (!empty($value) && gettype($value) == "string")
         $sql .= " '$value' , ";
-      else
-        $sql .= " NULL , ";
     }
   }
   $sql = rtrim($sql, " , ");
