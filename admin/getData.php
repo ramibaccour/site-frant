@@ -65,6 +65,12 @@ function getAccueille($id)
   {
     $data["categorie"] = getCategorie( $data['id_categorie']);
   }
+  if($data["id_accueil_type"] > 0)
+  {
+    $accueilType = getAccueilType( $data['id_accueil_type']);
+    $accueilType["resolution"] = getResolution( $accueilType["id_resolution"]);
+    $data["accueilType"] = $accueilType;
+  }
   return($data);
 }
 function deleteAccueille($id)
@@ -97,7 +103,12 @@ function saveAccueille($data)
     return getAccueille($data["id"]);
   }
 }
-
+function getResolution($id)
+{
+  $sql = "SELECT * FROM resolution where id = $id"; 
+  $data =  getData($sql,false)[0];
+  return($data);
+}
 function getListeLigneAccueille($data)
 {
   $sql = "SELECT * FROM ligne_accueil ";  
@@ -147,9 +158,28 @@ function getTypeAccueille()
 {
   $sql = "SELECT * FROM accueil_type"; 
   $rows = getData($sql,false);
+  $idResolution_uniques = array_unique(array_column($rows, 'id_resolution'));
+  $idResolution_concatenes = implode(',', $idResolution_uniques);
+  $listeResolution = getData("select * from resolution where id in ( $idResolution_concatenes )",false);
+  for ($i = 0; $i < count($rows); $i++) 
+  {
+    foreach ($listeResolution as $resolution) 
+    {
+      if ($resolution['id'] == $rows[$i]["id_resolution"]) 
+      {
+        $rows[$i]["resolution"] = $resolution;
+      }
+    }
+  }
+  
   return($rows);
 }
-
+function getAccueilType($id)
+{
+  $sql = "SELECT * FROM accueil_type where id = $id"; 
+  $data =  getData($sql,false)[0];
+  return($data);
+}
 // get article
 function getArticle($id)
 {
