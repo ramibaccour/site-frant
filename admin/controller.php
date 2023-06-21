@@ -32,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
   {
     echo json_encode(getHeadLigneAccueille());
   }
-  if($path === '/type-accueille')
+  if($path === '/liste-accueille-type')
   {
-    echo json_encode(getTypeAccueille());
+    echo json_encode(getListeAccueilType());
   }
   if (preg_match('/\/find-article\/(\d+)/', $path, $matches)) 
   {

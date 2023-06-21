@@ -154,7 +154,7 @@ function saveLigneAccueille($data)
   }
 }
 
-function getTypeAccueille()
+function getListeAccueilType()
 {
   $sql = "SELECT * FROM accueil_type"; 
   $rows = getData($sql,false);
@@ -171,7 +171,6 @@ function getTypeAccueille()
       }
     }
   }
-  
   return($rows);
 }
 function getAccueilType($id)
