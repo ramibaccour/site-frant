@@ -115,12 +115,52 @@ function getListeLigneAccueille($data)
   $whereClause = getWhere($data);
   $sql .= $whereClause ;
   $listeArt = getData($sql,false);
+  $idArticle_uniques = array_unique(array_column($listeArt, 'id_article'));
+  if(count($idArticle_uniques)>0 && $idArticle_uniques[0] != null)
+  {
+    $idArticle_concatenes = implode(',', $idArticle_uniques);
+    $listeArticle = getData("select * from article where id in ( $idArticle_concatenes )",false);
+    for ($i = 0; $i < count($listeArt); $i++) 
+    {
+      foreach ($listeArticle as $article) 
+      {
+        if ($article['id'] == $listeArt[$i]["id_article"]) 
+        {
+          $listeArt[$i]["article"] = $article;
+        }
+      }
+    }
+  }
+  $idCategorie_uniques = array_unique(array_column($listeArt, 'id_categorie'));
+  if(count($idCategorie_uniques)>0 && $idCategorie_uniques[0] != null)
+  {
+    $idCategorie_concatenes = implode(',', $idCategorie_uniques);
+    $listeCategorie = getData("select * from categorie where id in ( $idCategorie_concatenes )",false);
+    for ($i = 0; $i < count($listeArt); $i++) 
+    {
+      foreach ($listeCategorie as $categorie) 
+      {
+        if ($categorie['id'] == $listeArt[$i]["id_categorie"]) 
+        {
+          $listeArt[$i]["categorie"] = $categorie;
+        }
+      }
+    }
+  }
   return($listeArt);
 }
 function getLigneAccueille($id)
 {
   $sql = "SELECT * FROM ligne_accueil where id = $id"; 
   $data =  getData($sql,false)[0];
+  if($data["id_article"] != null && $data["id_article"] !="")
+  {
+    $data["article"] = getArticle($data["id_article"]);
+  }
+  if($data["id_categorie"] != null && $data["id_categorie"] !="")
+  {
+    $data["categorie"] = getCategorie($data["id_categorie"]);
+  }
   return($data);
 }
 function deleteLigneAccueille($id)
@@ -159,15 +199,18 @@ function getListeAccueilType()
   $sql = "SELECT * FROM accueil_type"; 
   $rows = getData($sql,false);
   $idResolution_uniques = array_unique(array_column($rows, 'id_resolution'));
-  $idResolution_concatenes = implode(',', $idResolution_uniques);
-  $listeResolution = getData("select * from resolution where id in ( $idResolution_concatenes )",false);
-  for ($i = 0; $i < count($rows); $i++) 
+  if(count($idResolution_uniques)>0 && $idResolution_uniques[0] != null)
   {
-    foreach ($listeResolution as $resolution) 
+    $idResolution_concatenes = implode(',', $idResolution_uniques);
+    $listeResolution = getData("select * from resolution where id in ( $idResolution_concatenes )",false);
+    for ($i = 0; $i < count($rows); $i++) 
     {
-      if ($resolution['id'] == $rows[$i]["id_resolution"]) 
+      foreach ($listeResolution as $resolution) 
       {
-        $rows[$i]["resolution"] = $resolution;
+        if ($resolution['id'] == $rows[$i]["id_resolution"]) 
+        {
+          $rows[$i]["resolution"] = $resolution;
+        }
       }
     }
   }
