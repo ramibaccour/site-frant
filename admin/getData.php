@@ -103,6 +103,13 @@ function saveAccueille($data)
     return getAccueille($data["id"]);
   }
 }
+
+function getResolutionByIdAccueilType($id)
+{
+  $sql = "select * from resolution where id in (SELECT id_resolution FROM site.accueil_type_resolution where id_accueil_type =  $id)"; 
+  $rows = getData($sql,false);
+  return($rows);
+}
 function getResolution($id)
 {
   $sql = "SELECT * FROM resolution where id = $id"; 
