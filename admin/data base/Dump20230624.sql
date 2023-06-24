@@ -34,7 +34,7 @@ CREATE TABLE `accueil` (
   `id_article` int DEFAULT NULL,
   `id_categorie` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `accueil` (
 
 LOCK TABLES `accueil` WRITE;
 /*!40000 ALTER TABLE `accueil` DISABLE KEYS */;
-INSERT INTO `accueil` VALUES (33,'Groupe 1','<p>Groupe 1 text</p>',NULL,NULL,2,0,6,NULL,NULL),(34,'Welcome','<p>Lorem ipsum dolor sit amet</p>',NULL,NULL,1,0,1,NULL,NULL);
+INSERT INTO `accueil` VALUES (33,'Groupe 1','<p>Groupe 1 text</p>',NULL,NULL,2,0,6,NULL,NULL),(34,'Welcome','<p>Lorem ipsum dolor sit amet</p>',NULL,NULL,1,0,1,NULL,NULL),(35,'jhg','<p>fd</p>','Gq9G04LWn51965044_809534412394452_257104665_n.jpg',NULL,1,0,4,26,NULL),(36,NULL,NULL,NULL,NULL,6,0,4,NULL,32),(37,'fdv','<p>fsgb</p>',NULL,NULL,1,0,4,NULL,NULL),(38,NULL,NULL,NULL,NULL,1,0,4,10,NULL);
 /*!40000 ALTER TABLE `accueil` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +85,7 @@ CREATE TABLE `accueil_type_resolution` (
   `id_accueil_type` int DEFAULT NULL,
   `id_resolution` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +94,7 @@ CREATE TABLE `accueil_type_resolution` (
 
 LOCK TABLES `accueil_type_resolution` WRITE;
 /*!40000 ALTER TABLE `accueil_type_resolution` DISABLE KEYS */;
-INSERT INTO `accueil_type_resolution` VALUES (1,1,1),(2,2,2),(3,3,3),(4,4,4),(5,5,2),(6,6,4),(7,7,6),(8,8,4);
+INSERT INTO `accueil_type_resolution` VALUES (1,1,1),(2,2,2),(3,3,3),(4,4,5),(5,5,2),(6,6,4),(7,7,6),(8,8,4);
 /*!40000 ALTER TABLE `accueil_type_resolution` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -242,7 +242,7 @@ CREATE TABLE `ligne_accueil` (
   `id_parent` int DEFAULT NULL,
   `type_content` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -251,7 +251,7 @@ CREATE TABLE `ligne_accueil` (
 
 LOCK TABLES `ligne_accueil` WRITE;
 /*!40000 ALTER TABLE `ligne_accueil` DISABLE KEYS */;
-INSERT INTO `ligne_accueil` VALUES (22,33,'G 1_1',NULL,NULL,1,0,NULL,NULL,NULL,NULL),(23,34,NULL,NULL,'zbXg2GrWGM1965044_809534412394452_257104665_n.jpg',2,0,11,12,NULL,NULL);
+INSERT INTO `ligne_accueil` VALUES (22,33,'G 1_1',NULL,NULL,1,0,NULL,NULL,NULL,NULL),(23,34,NULL,NULL,'zbXg2GrWGM1965044_809534412394452_257104665_n.jpg',2,0,11,12,NULL,NULL),(24,36,'mpiuyhg',NULL,'21IkDozLlF1965044_809534412394452_257104665_n.jpg',2,0,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `ligne_accueil` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -295,7 +295,9 @@ DROP TABLE IF EXISTS `resolution`;
 CREATE TABLE `resolution` (
   `id` int NOT NULL,
   `name` varchar(45) DEFAULT NULL,
-  `resolution` varchar(45) DEFAULT NULL,
+  `width` int DEFAULT NULL,
+  `height` int DEFAULT NULL,
+  `type_content` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -306,7 +308,7 @@ CREATE TABLE `resolution` (
 
 LOCK TABLES `resolution` WRITE;
 /*!40000 ALTER TABLE `resolution` DISABLE KEYS */;
-INSERT INTO `resolution` VALUES (1,'Bannière','1920_1080'),(2,'Liste 1','800_600'),(3,'Liste 2','48_48'),(4,'Image grande à gauche','1024_768'),(5,NULL,'28_28'),(6,NULL,'400_400');
+INSERT INTO `resolution` VALUES (1,'Bannière',1920,1080,'ACCUEIL'),(2,'Liste 1',800,600,'ACCUEIL'),(3,'Liste 2',48,48,'ACCUEIL'),(4,'Image grande à gauche',1024,768,'ACCUEIL'),(5,NULL,28,28,'ACCUEIL'),(6,NULL,400,400,'ACCUEIL'),(7,'Bannière',1920,1080,'ARTICLE'),(8,'Liste 1',800,600,'ARTICLE'),(9,'Image grande à gauche',1024,768,'ARTICLE'),(10,NULL,400,400,'ARTICLE'),(11,'Bannière',1920,1080,'CATEGORIE'),(12,'Liste 1',800,600,'CATEGORIE'),(13,'Image grande à gauche',1024,768,'CATEGORIE'),(14,NULL,400,400,'CATEGORIE');
 /*!40000 ALTER TABLE `resolution` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -345,4 +347,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-23  8:06:29
+-- Dump completed on 2023-06-24 12:29:56

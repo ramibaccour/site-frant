@@ -236,6 +236,12 @@ function getArticle($id)
   $data =  getData($sql,false)[0];
   return($data);
 }
+function getListeResolutionByTypeContent($type_content)
+{
+  $sql = "SELECT * FROM resolution where type_content = '$type_content'"; 
+  $data =  getData($sql,false);
+  return($data);
+}
 // delete article
 function deleteArticle($id)
 {

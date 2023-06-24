@@ -14,6 +14,12 @@ if ($path !== false)
 }
 if ($_SERVER['REQUEST_METHOD'] === 'GET') 
 {
+  //   
+  if (preg_match('/\/get-resolution-by-type-content\/(.*)/', $path, $matches)) 
+  {
+    $type_content = $matches[1];
+    echo json_encode(getListeResolutionByTypeContent($type_content));
+  }
   if (preg_match('/\/get-resolution-by-id-accueil-type\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
