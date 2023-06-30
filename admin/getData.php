@@ -35,7 +35,13 @@ function getData($sql,$getAutoIncrement)
   }
   return $results;
 }
-function saveImage($image,$name)
+function getImage($id)
+{
+  $sql = "SELECT * FROM image where id = $id"; 
+  $data =  getData($sql,false)[0];
+  return($data);
+}
+function saveImageFile($image,$name, $id_image)
 {
   $targetDirectory = '../assets/images_upload/';
   $targetFile = $targetDirectory . $name;
@@ -44,6 +50,35 @@ function saveImage($image,$name)
   
   // Enregistrer l'image sur le serveur
   file_put_contents($targetFile, $imageData);
+
+  if(!empty($id_image))
+  {
+    $image = getImage($id_image);
+    // suppression de l'encienne image
+    unlink($targetDirectory . $image["name"]);
+    // modification name image par la nouvelle image
+    $image["name"] = $name;
+    saveImage($image);
+  }
+}
+function saveImage($data)
+{
+  // converting stdClass -> array
+  $data = json_decode(json_encode($data), true);
+  // mode update
+  if(isset($data["id"]) && $data["id"]>0)
+  {
+    $sql = "update image set " . getUpdateSql($data); 
+    getData($sql,false);
+    return getImage($data["id"]);
+  }
+  // mode add
+  else
+  {
+    $sql = "insert into image " . getInsertSql($data);
+    $data = getData($sql,true);
+    return getImage($data["id"]);
+  }
 }
 function getListeAccueille($data)
 {
@@ -227,6 +262,12 @@ function getAccueilType($id)
 {
   $sql = "SELECT * FROM accueil_type where id = $id"; 
   $data =  getData($sql,false)[0];
+  return($data);
+}
+Function getListeImageArticle($id)
+{
+  $sql = "SELECT * FROM image  where id_article = $id"; 
+  $data =  getData($sql,false);
   return($data);
 }
 // get article

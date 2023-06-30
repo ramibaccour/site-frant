@@ -50,7 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
   if (preg_match('/\/find-article\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    echo json_encode(getArticle( $id));
+    echo json_encode(getArticle($id));
+  }
+  if (preg_match('/\/liste-image-article\/(\d+)/', $path, $matches)) 
+  {
+    $id = intval($matches[1]);
+    echo json_encode(getListeImageArticle($id));
   }
   if($path === '/head-article')
   {
@@ -71,9 +76,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
 {  
   if(isset($_POST['image']) && isset($_POST['name']))
   {
-    if($path === '/save-image')
+    if($path === '/save-image-file')
     {
-      echo json_encode(saveImage($_POST['image'],$_POST['name']));
+      echo json_encode(saveImageFile($_POST['image'],$_POST['name'] ,$_POST['id_image']));
     }
   }
   else
@@ -106,6 +111,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     if($path === '/signin')
     {
       echo json_encode(getSignin($data));
+    }   
+    if($path === '/save-image')
+    {
+      echo json_encode(saveImage($data));
     }  
   } 
 } 
