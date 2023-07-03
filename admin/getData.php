@@ -80,6 +80,11 @@ function saveImage($data)
     return getImage($data["id"]);
   }
 }
+function deleteImage($id)
+{
+  $sql = "delete from image where id = $id";
+  getData($sql,true); 
+}
 function getListeAccueille($data)
 {
   $sql = "SELECT * FROM accueil ";  
@@ -264,9 +269,15 @@ function getAccueilType($id)
   $data =  getData($sql,false)[0];
   return($data);
 }
-Function getListeImageArticle($id)
+function getListeImageArticle($id)
 {
   $sql = "SELECT * FROM image  where id_article = $id"; 
+  $data =  getData($sql,false);
+  return($data);
+}
+function getListeImageCategorie($id)
+{
+  $sql = "SELECT * FROM image  where id_categorie = $id"; 
   $data =  getData($sql,false);
   return($data);
 }
@@ -276,6 +287,11 @@ function getArticle($id)
   $sql = "SELECT * FROM article where id = $id"; 
   $data =  getData($sql,false)[0];
   return($data);
+}
+function getListeCategorieArticle($id)
+{
+  $sql = "select * from categorie where id in (select id_categorie from article_categorie where id_article =  $id)"; 
+  return getData($sql,false);
 }
 function getListeResolutionByTypeContent($type_content)
 {
@@ -426,6 +442,28 @@ function saveCategorie($data)
     $sql = "insert into categorie " . getInsertSql($data);
     $data = getData($sql,true);
     return getCategorie($data["id"]);
+  }
+}
+function saveListeArticleCategorie($data)
+{
+  for($i=0; $i<count($data); $i++)
+  {
+    $sql = "insert into article_categorie " . getInsertSql($data[$i]);
+    getData($sql,true);    
+  }
+}
+function saveArticleCategorie($data)
+{
+  $sql = "insert into article_categorie " . getInsertSql($data);
+  $data = getData($sql,true);
+  return getCategorie($data["id"]);
+}
+function deleteListeArticleCategorie($data)
+{
+  for($i=0; $i<count($data); $i++)
+  {
+    $sql = "delete from article_categorie " . getWhere($data[$i]);
+    getData($sql,true);    
   }
 }
 // verification admin connecter (existance de session)
