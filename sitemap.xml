@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> 
+  <url> 
+    <loc>https://horizontopo.com</loc>
+  </url> 
+  <url> 
+    <loc>https://horizontopo.com/compte.php</loc>
+  </url> 
+  <url> 
+    <loc>https://horizontopo.com/detail.php?id=23</loc> 
+  </url> 
+  <url> 
+    <loc>https://horizontopo.com/list-article.php?id=67&amp;page=0&amp;size=6</loc> 
+  </url> 
+</urlset>

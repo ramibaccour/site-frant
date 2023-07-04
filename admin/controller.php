@@ -66,6 +66,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
   {
     echo json_encode(getHeadArticle());
   }
+  if($path === '/liste-parametre-type/')
+  {
+    echo json_encode(getListeParametreType());
+  }
   if (preg_match('/\/find-parametre\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
@@ -109,6 +113,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     if($path === '/liste-parametre')
     {
       echo json_encode(getListeParametre($data));
+    }
+    if($path === '/liste-parametre-by-liste-id')
+    {
+      echo json_encode(getListeParametreByListeId($data));
     }
     if($path === '/liste-categorie')
     {

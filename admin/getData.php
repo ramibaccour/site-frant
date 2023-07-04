@@ -389,6 +389,18 @@ function saveParametre($data)
   getData($sql,false);
   return getParametre($data["id"]);
 }
+function getListeParametreType()
+{
+  $sql = "SELECT distinct type FROM parametre where type IS NOT NULL";  
+  $data = getData($sql,false);
+  return($data);
+}
+function getListeParametreByListeId($data)
+{
+  $sql = "SELECT * FROM parametre " . getWhere($data);  
+  $data = getData($sql,false);
+  return($data);
+}
 //-----------signin by login et mot de passe
 function getSignin($data)
 {
