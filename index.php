@@ -7,6 +7,8 @@
   $parametre = getListeParametreByListeId($array);
   $societe = find($parametre,"id", 6);
   $titre = find($parametre,"id", 7);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,11 +60,16 @@
         <!-- <img src="assets/img/logo.png" alt=""> -->
         <h1><?php echo($societe["value"]); ?><span>.</span></h1>
       </a>
-
       <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
       <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
       <nav id="navbar" class="navbar">
-        <ul>
+      <?php
+        $filter = ["is_deleted" => 0];
+        $data = getListeCategorie($filter);
+        $menuHTML = generateMenu($data);
+        echo $menuHTML;
+      ?>
+        <!-- <ul>
           <li><a href="index.php" class="active">Home</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="services.html">Services</a></li>
@@ -86,7 +93,7 @@
             </ul>
           </li>
           <li><a href="contact.html">Contact</a></li>
-        </ul>
+        </ul> -->
       </nav><!-- .navbar -->
 
     </div>
