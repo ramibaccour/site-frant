@@ -144,9 +144,127 @@ function saveAccueille($data)
   }
 }
 
+function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
+{
+  $sql = "select * from accueil where id in (SELECT id_accueil FROM categorie_accueil where id_categorie =  $id_categorie)"; 
+  $listeAccueil = getData($sql,false);
+  usort($listeAccueil, function($a, $b) {return $a['ordre'] - $b['ordre'];});
+  $idArticle_uniques = (array_column($listeAccueil, 'id_article'));
+  $idCategorie_uniques = (array_column($listeAccueil, 'id_categorie'));
+  // remplissage des ligneAcceuille
+  if($getLigneAcceuille == true)
+  {
+    // recherche liste accueil Type
+    $listeAccueilType = getListeAccueilType();
+    // recherche liste accueil Type Resolutio
+    $listeAccueilTypeResolution = getAccueilTypeResolution();
+
+    $idAccueil_uniques = array_unique(array_column($listeAccueil, 'id'));
+    $idAccueil_uniques =  array_filter($idAccueil_uniques, function ($value) {return !is_null($value); });
+    // remplissage  liste accueil Type
+    if(count($listeAccueilType)>0)
+    {
+      for ($i = 0; $i < count($listeAccueil); $i++) 
+      {
+        $accueilType = find($listeAccueilType, "id", $listeAccueil[$i]["id_accueil_type"]);
+        if(!empty($accueilType))
+        $accueilType["listeResolution"] = filter($listeAccueilTypeResolution, "id_accueil_type", $accueilType["id"]);
+        $listeAccueil[$i]["accueilType"] = $accueilType;
+      }
+    }
+    // recherche liste Ligne Accueil 
+    if(count($idAccueil_uniques)>0)
+    {
+      $idAccueil_concatenes = implode(',', $idAccueil_uniques);
+      $listeLigneAccueil = getData("select * from ligne_accueil where id_accueil in ( $idAccueil_concatenes )",false);
+      $idArticle_uniques = array_merge($idArticle_uniques, array_column($listeLigneAccueil, 'id_article'));
+      $idCategorie_uniques = array_merge($idCategorie_uniques, array_column($listeLigneAccueil, 'id_categorie'));
+      for ($i = 0; $i < count($listeAccueil); $i++) 
+      {
+        $lst = filter($listeLigneAccueil, "id_accueil", $listeAccueil[$i]["id"]);
+        usort($lst, function($a, $b){return $a['ordre'] - $b['ordre'];});
+        $listeAccueil[$i]["listeLigneAccueil"] = $lst;
+      }
+    }
+    // remplissage des article au accueille et ligne accueille et les image
+    $idArticle_uniques = array_unique($idArticle_uniques);
+    $idArticle_uniques =  array_filter($idArticle_uniques, function ($value) {return !is_null($value); });
+    if(count($idArticle_uniques)>0)
+    {
+      $idArticle_concatenes = implode(',', $idArticle_uniques);
+      $listeArticle = getData("select * from article where id in ( $idArticle_concatenes )",false);
+      // rechreche des images
+      $listeImage = getData("select * from image where id_article in ( $idArticle_concatenes )",false);
+
+      for ($i = 0; $i < count($listeAccueil); $i++) 
+      {
+        $art = find($listeArticle, "id", $listeAccueil[$i]["id_article"]);
+        if(!empty($art))
+          $art["listeImage"] = filter($listeImage, "id_article",$art["id"]);
+        $listeAccueil[$i]["article"] = $art;
+        if(isset($listeAccueil[$i]["listeLigneAccueil"]) && count($listeAccueil[$i]["listeLigneAccueil"])>0)
+        {
+          $listeLigneAccueil = $listeAccueil[$i]["listeLigneAccueil"];
+          // remplissage des ligne accueille
+          for($j=0; $j<count($listeLigneAccueil); $j++)
+          {
+            if(!empty($listeLigneAccueil[$j]["id_article"]))
+            {
+              $listeLigneAccueil[$j]["article"] =  find($listeArticle, "id", $listeLigneAccueil[$j]["id_article"]);
+              // remplissage des image
+              $listeLigneAccueil[$j]["article"]["listeImage"] = filter($listeImage, "id_article",$listeLigneAccueil[$j]["article"]["id"]);
+            }
+          }
+          $listeAccueil[$i]["listeLigneAccueil"] = $listeLigneAccueil;
+        }
+      }
+    }
+    // remplissage des categorie au accueille et ligne accueille
+    $idCategorie_uniques = array_unique($idCategorie_uniques);
+    $idCategorie_uniques =  array_filter($idCategorie_uniques, function ($value) {return !is_null($value); });
+    if(count($idCategorie_uniques)>0)
+    {
+      $idCategorie_concatenes = implode(',', $idCategorie_uniques);
+      $listeCategorie = getData("select * from categorie where id in ( $idCategorie_concatenes )",false);
+      // rechreche des images
+      $listeImage = getData("select * from image where id_categorie in ( $idCategorie_concatenes )",false);
+
+      for ($i = 0; $i < count($listeAccueil); $i++) 
+      {
+        $cat = find($listeCategorie, "id", $listeAccueil[$i]["id_categorie"]);
+        if(!empty($cat))
+          $cat["listeImage"] = filter($listeImage, "id_categorie",$cat["id"]);
+        $listeAccueil[$i]["categorie"] = $cat;
+        if(isset($listeAccueil[$i]["listeLigneAccueil"]) && count($listeAccueil[$i]["listeLigneAccueil"])>0)
+        {
+          $listeLigneAccueil = $listeAccueil[$i]["listeLigneAccueil"];
+          // remplissage des ligne accueille
+          for($j=0; $j<count($listeLigneAccueil); $j++)
+          {
+            if(!empty($listeLigneAccueil[$j]["id_categorie"]))
+            {
+              $listeLigneAccueil[$j]["categorie"] =  find($listeCategorie, "id", $listeLigneAccueil[$j]["id_categorie"]);
+              // remplissage des image
+              $listeLigneAccueil[$j]["categorie"]["listeImage"] = filter($listeImage, "id_categorie",$listeLigneAccueil[$j]["categorie"]["id"]);
+            }
+          }
+          $listeAccueil[$i]["listeLigneAccueil"] = $listeLigneAccueil;
+        }
+      }
+    }
+  }
+  
+  return($listeAccueil);
+}
 function getResolutionByIdAccueilType($id)
 {
-  $sql = "select * from resolution where id in (SELECT id_resolution FROM site.accueil_type_resolution where id_accueil_type =  $id)"; 
+  $sql = "select * from resolution where id in (SELECT id_resolution FROM accueil_type_resolution where id_accueil_type =  $id)"; 
+  $rows = getData($sql,false);
+  return($rows);
+}
+function getAccueilTypeResolution()
+{
+  $sql = "select * from accueil_type_resolution"; 
   $rows = getData($sql,false);
   return($rows);
 }
@@ -163,7 +281,8 @@ function getListeLigneAccueille($data)
   $sql .= $whereClause ;
   $listeArt = getData($sql,false);
   $idArticle_uniques = array_unique(array_column($listeArt, 'id_article'));
-  if(count($idArticle_uniques)>0 && $idArticle_uniques[0] != null)
+  $idArticle_uniques =  array_filter($idArticle_uniques, function ($value) {return !is_null($value); });
+  if(count($idArticle_uniques)>0)
   {
     $idArticle_concatenes = implode(',', $idArticle_uniques);
     $listeArticle = getData("select * from article where id in ( $idArticle_concatenes )",false);
@@ -179,7 +298,8 @@ function getListeLigneAccueille($data)
     }
   }
   $idCategorie_uniques = array_unique(array_column($listeArt, 'id_categorie'));
-  if(count($idCategorie_uniques)>0 && $idCategorie_uniques[0] != null)
+  $idCategorie_uniques =  array_filter($idCategorie_uniques, function ($value) {return !is_null($value); });
+  if(count($idCategorie_uniques)>0)
   {
     $idCategorie_concatenes = implode(',', $idCategorie_uniques);
     $listeCategorie = getData("select * from categorie where id in ( $idCategorie_concatenes )",false);
@@ -246,7 +366,8 @@ function getListeAccueilType()
   $sql = "SELECT * FROM accueil_type"; 
   $rows = getData($sql,false);
   $idResolution_uniques = array_unique(array_column($rows, 'id_resolution'));
-  if(count($idResolution_uniques)>0 && $idResolution_uniques[0] != null)
+  $idResolution_uniques =  array_filter($idResolution_uniques, function ($value){return !is_null($value);});
+  if(count($idResolution_uniques)>0 )
   {
     $idResolution_concatenes = implode(',', $idResolution_uniques);
     $listeResolution = getData("select * from resolution where id in ( $idResolution_concatenes )",false);
@@ -456,6 +577,15 @@ function saveCategorie($data)
     return getCategorie($data["id"]);
   }
 }
+
+function saveListeCategorieAccueil($data)
+{
+  for($i=0; $i<count($data); $i++)
+  {
+    $sql = "insert into categorie_accueil " . getInsertSql($data[$i]);
+    getData($sql,true);    
+  }
+}
 function saveListeArticleCategorie($data)
 {
   for($i=0; $i<count($data); $i++)
@@ -474,7 +604,15 @@ function deleteListeArticleCategorie($data)
 {
   for($i=0; $i<count($data); $i++)
   {
-    $sql = "delete from article_categorie " . getWhere($data[$i]);
+    $sql = "delete from article_categorie " . getWhere($data[$i],2);
+    getData($sql,true);    
+  }
+}
+function deleteListeCategorieAccueil($data)
+{
+  for($i=0; $i<count($data); $i++)
+  {
+    $sql = "delete from categorie_accueil " . getWhere($data[$i],2);
     getData($sql,true);    
   }
 }
@@ -539,27 +677,41 @@ function getInsertSql($data)
   $sql .= ")";
   return $sql;
 }
-function getWhere($filter)
+function getWhere($filter, $modeLike = 0)
 {
-  $whereClause = " where true ";
+  // $modeLike = 0     %xxx%
+  // $modeLike = 1     xxx%
+  // $modeLike = 2     xxx
+
+  $whereClause = "";
 
   foreach ($filter as $key => $value) 
   {
     if((gettype($value) == "string" || gettype($value) == "integer" || gettype($value) == "double" || gettype($value) == "boolean" ) && !empty($value) || $value == "0" || $value == "1")
-      $whereClause .= " AND CONVERT(". "$key,char)" . " like '%" . ((string) $value) . "%' ";
+    {
+      if(gettype($value) == "string")
+        $whereClause .= (strlen($whereClause)>0? " AND " :" ") .   $key . ($modeLike == 2? " = " : " LIKE ") .  " '" . ($modeLike == 0? "%" : "") . ((string) $value) . ($modeLike == 0 || $modeLike == 1? "%" : "") . "' ";
+      else
+      {
+        if($modeLike == 2)
+          $whereClause .= (strlen($whereClause)>0? " AND " :" ") .  $key . " = " . ((string)$value);
+        else
+          $whereClause .= (strlen($whereClause)>0? " AND " :" ") .  " CONVERT(". "$key,char) LIKE '" . ($modeLike == 0? "%" : "") . ((string) $value) . ($modeLike == 0 || $modeLike == 1? "%" : "") . "' ";
+      }
+    }
     else if(isset($value->start) && !empty($value->start) && isset($value->end) && !empty($value->end))
     {
       $property = str_replace("Filter", "", $key);
-      $whereClause .= " AND $property >=  '$value->start' AND $property <= '$value->end' ";
+      $whereClause .= (strlen($whereClause)>0? " AND " :"") . "  $property >=  '$value->start' AND $property <= '$value->end' ";
     }
     else if(gettype($value) == "array" && count($value)>0)
     {
       $property = str_replace("List", "", $key);
       $string = implode(',', $value);
-      $whereClause .= " AND $property in ( $string ) ";
+      $whereClause .= (strlen($whereClause)>0? " AND " :"") .  "  $property in ( $string ) ";
     }
   }
-  return $whereClause;
+  return ((strlen($whereClause)>0? " WHERE " : "") .$whereClause);
 }
 function write($txt)
 {

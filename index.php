@@ -39,14 +39,6 @@
 
   <!-- Template Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: UpConstruction
-  * Updated: Mar 10 2023 with Bootstrap v5.2.3
-  * Template URL: https://bootstrapmade.com/upconstruction-bootstrap-construction-website-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -65,76 +57,132 @@
       <nav id="navbar" class="navbar">
       <?php
         $filter = ["is_deleted" => 0];
-        $data = getListeCategorie($filter);
-        $menuHTML = generateMenu($data);
+        $listeCategorie = getListeCategorie($filter);
+      
+        $minOrdre = PHP_INT_MAX;
+        // Iterate over the data array
+        foreach ($listeCategorie as $item) 
+        {
+            if ($item['ordre'] < $minOrdre && empty($item['id_parent'])) 
+            {
+                $minOrdre = $item['ordre'];
+            }
+        }
+        $categorie = find($listeCategorie, "ordre" , $minOrdre);
+        $listeAccueil = getListeAccueilleByCategorie( $categorie["id"], true);
+        $menuHTML = generateMenu($listeCategorie, 0, true);
         echo $menuHTML;
       ?>
-        <!-- <ul>
-          <li><a href="index.php" class="active">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="services.html">Services</a></li>
-          <li><a href="projects.html">Projects</a></li>
-          <li><a href="blog.html">Blog</a></li>
-          <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
-            <ul>
-              <li><a href="#">Dropdown 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
-                <ul>
-                  <li><a href="#">Deep Dropdown 1</a></li>
-                  <li><a href="#">Deep Dropdown 2</a></li>
-                  <li><a href="#">Deep Dropdown 3</a></li>
-                  <li><a href="#">Deep Dropdown 4</a></li>
-                  <li><a href="#">Deep Dropdown 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Dropdown 2</a></li>
-              <li><a href="#">Dropdown 3</a></li>
-              <li><a href="#">Dropdown 4</a></li>
-            </ul>
-          </li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul> -->
       </nav><!-- .navbar -->
-
     </div>
   </header><!-- End Header -->
-
-  <!-- ======= Hero Section ======= -->
-  <section id="hero" class="hero">
-
-    <div class="info d-flex align-items-center">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-6 text-center">
-            <h2 data-aos="fade-down">Welcome to <span>UpConstruction</span></h2>
-            <p data-aos="fade-up">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <a data-aos="fade-up" data-aos-delay="200" href="#get-started" class="btn-get-started">Get Started</a>
+  <?php
+    $index1 = 0;
+    $testBaniere = false;
+    $randomString = base64_encode(random_bytes(4));
+    $idBaniere = substr($randomString, 0, 5);
+    foreach($listeAccueil as $accueil)
+    {
+      $accueil = getStaticAccueille($accueil);
+      // ----------------------------------------- Bannière -----------------------------------------
+      if($accueil["id_accueil_type"] == 1)
+      {
+        $testBaniere = true;
+  ?>
+      <!-- ======= Hero Section ======= -->
+      <section id="hero" class="hero">
+    
+        <div class="info d-flex align-items-center">
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-lg-6 text-center">
+                <h2 data-aos="fade-down"><?php echo($accueil["name"]); ?></h2>
+                <p data-aos="fade-up"><?php echo($accueil["text"]); ?></p>
+                <a data-aos="fade-up" data-aos-delay="200" href="#<?php echo($idBaniere); ?>" class="btn-get-started">Allons-y</a>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      <?php
+        if(isset($accueil["listeLigneAccueil"]) && count($accueil["listeLigneAccueil"])>0)
+        {      
+      ?>
+        <div id="hero-carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+          <?php
+            $index2 = 0;
+            foreach($accueil["listeLigneAccueil"] as $ligneAccueil)
+            {
+          ?>
+              <div class="carousel-item<?php if($index2 == 0) echo(' active '); ?>" style="background-image: url(assets/images_upload/<?php echo($ligneAccueil["image"]); ?>)"></div>
+          <?php   
+              $index2 +=1;
+            }
+          ?>
+                <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
+                </a>
+                <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
+                  <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
+                </a>
+          
+        </div>
+      <?php   
+      }
+      ?>
+      </section><!-- End Hero Section -->
+    <?php
+      }
+      // ----------------------------------------- fin Bannière -----------------------------------------
+      $index1 +=1;
+      // ----------------------------------------- Liste 2 / N élements  -----------------------------------------
+      if($accueil["id_accueil_type"] == 2)
+      {
+    ?>
+        <!-- ======= Constructions Section ======= -->
+        <main>
+          <section id="constructions" class="constructions">
+            <div class="container" data-aos="fade-up">
 
-    <div id="hero-carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+              <div class="section-header">
+                <h2><?php echo($accueil["name"]); ?></h2>
+                <p><?php echo($accueil["text"]); ?></p>
+              </div>
 
-      <div class="carousel-item active" style="background-image: url(assets/img/hero-carousel/hero-carousel-1.jpg)"></div>
-      <div class="carousel-item" style="background-image: url(assets/img/hero-carousel/hero-carousel-2.jpg)"></div>
-      <div class="carousel-item" style="background-image: url(assets/img/hero-carousel/hero-carousel-3.jpg)"></div>
-      <div class="carousel-item" style="background-image: url(assets/img/hero-carousel/hero-carousel-4.jpg)"></div>
-      <div class="carousel-item" style="background-image: url(assets/img/hero-carousel/hero-carousel-5.jpg)"></div>
+              <div class="row gy-4">
+                <?php
+                  $index2 = 0;
+                  foreach($accueil["listeLigneAccueil"] as $ligneAccueil)
+                  {
+                ?>
+                    <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                      <div class="card-item">
+                        <div class="row">
+                          <div class="col-xl-5">
+                            <div class="card-bg" style="background-image: url(assets/images_upload/<?php echo($ligneAccueil["image"]); ?>);"></div>
+                          </div>
+                          <div class="col-xl-7 d-flex align-items-center">
+                            <div class="card-body">
+                              <h4 class="card-title"><?php echo($ligneAccueil["name"]); ?></h4>
+                              <p><?php echo($ligneAccueil["text"]); ?></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div><!-- End Card Item -->
+                <?php
+                  }
+                ?>
+              </div>
 
-      <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
-      </a>
-
-      <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
-        <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
-      </a>
-
-    </div>
-
-  </section><!-- End Hero Section -->
-
-  <main id="main">
+            </div>
+          </section><!-- End Constructions Section -->
+        </main>
+    <?php
+      }
+      // ----------------------------------------- fin Bannière -----------------------------------------
+    }
+  ?>
+   <main id="main">
 
     <!-- ======= Get Started Section ======= -->
     <section id="get-started" class="get-started section-bg">
@@ -188,87 +236,7 @@
 
       </div>
     </section><!-- End Get Started Section -->
-
-    <!-- ======= Constructions Section ======= -->
-    <section id="constructions" class="constructions">
-      <div class="container" data-aos="fade-up">
-
-        <div class="section-header">
-          <h2>Constructions</h2>
-          <p>Nulla dolorum nulla nesciunt rerum facere sed ut inventore quam porro nihil id ratione ea sunt quis dolorem dolore earum</p>
-        </div>
-
-        <div class="row gy-4">
-
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-            <div class="card-item">
-              <div class="row">
-                <div class="col-xl-5">
-                  <div class="card-bg" style="background-image: url(assets/img/constructions-1.jpg);"></div>
-                </div>
-                <div class="col-xl-7 d-flex align-items-center">
-                  <div class="card-body">
-                    <h4 class="card-title">Eligendi omnis sunt veritatis.</h4>
-                    <p>Fuga in dolorum et iste et culpa. Commodi possimus nesciunt modi voluptatem placeat deleniti adipisci. Cum delectus doloribus non veritatis. Officia temporibus illo magnam. Dolor eos et.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Card Item -->
-
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-            <div class="card-item">
-              <div class="row">
-                <div class="col-xl-5">
-                  <div class="card-bg" style="background-image: url(assets/img/constructions-2.jpg);"></div>
-                </div>
-                <div class="col-xl-7 d-flex align-items-center">
-                  <div class="card-body">
-                    <h4 class="card-title">Possimus ut sed velit assumenda</h4>
-                    <p>Sunt deserunt maiores voluptatem autem est rerum perferendis rerum blanditiis. Est laboriosam qui iste numquam laboriosam voluptatem architecto. Est laudantium sunt at quas aut hic. Eum dignissimos.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Card Item -->
-
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
-            <div class="card-item">
-              <div class="row">
-                <div class="col-xl-5">
-                  <div class="card-bg" style="background-image: url(assets/img/constructions-3.jpg);"></div>
-                </div>
-                <div class="col-xl-7 d-flex align-items-center">
-                  <div class="card-body">
-                    <h4 class="card-title">Error beatae dolor inventore aut</h4>
-                    <p>Dicta porro nobis. Velit cum in. Nesciunt dignissimos enim molestiae facilis numquam quae quaerat ipsam omnis. Neque debitis ipsum at architecto officia laboriosam odit. Ut sunt temporibus nulla culpa.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Card Item -->
-
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
-            <div class="card-item">
-              <div class="row">
-                <div class="col-xl-5">
-                  <div class="card-bg" style="background-image: url(assets/img/constructions-4.jpg);"></div>
-                </div>
-                <div class="col-xl-7 d-flex align-items-center">
-                  <div class="card-body">
-                    <h4 class="card-title">Expedita voluptas ut ut nesciunt</h4>
-                    <p>Aut est quidem doloremque voluptatem magnam quis excepturi vero quia. Eum eos doloremque architecto illo at beatae dolore. Fugiat suscipit et sint ratione dolores. Aut aliquid ea dolores libero nobis.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Card Item -->
-
-        </div>
-
-      </div>
-    </section><!-- End Constructions Section -->
-
+ 
     <!-- ======= Services Section ======= -->
     <section id="services" class="services section-bg">
       <div class="container" data-aos="fade-up">
@@ -802,11 +770,11 @@
 
     <!-- ======= Recent Blog Posts Section ======= -->
     <section id="recent-blog-posts" class="recent-blog-posts">
-      <div class="container" data-aos="fade-up"">
+      <div class="container" data-aos="fade-up">
 
     
     
-  <div class=" section-header">
+      <div class=" section-header">
         <h2>Recent Blog Posts</h2>
         <p>In commodi voluptatem excepturi quaerat nihil error autem voluptate ut et officia consequuntu</p>
       </div>

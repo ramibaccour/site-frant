@@ -30,6 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
     $id = intval($matches[1]);
     echo json_encode(getAccueille( $id));
   }
+  if (preg_match('/\/get-liste-accueille-by-categorie\/(\d+)/', $path, $matches)) 
+  {
+    $id = intval($matches[1]);
+    echo json_encode(getListeAccueilleByCategorie( $id));
+  }
   if (preg_match('/\/find-ligne-accueille\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
@@ -138,6 +143,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
       echo json_encode(deleteListeArticleCategorie($data));
     }  
+    if($path === '/delete-liste-categorie-accueil')
+    {
+      echo json_encode(deleteListeCategorieAccueil($data));
+    }  
   } 
 } 
 elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")  
@@ -189,6 +198,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
   if($path === '/save-liste-article-categorie')
   {
     echo json_encode(saveListeArticleCategorie($data));
+  }
+  if($path === '/save-liste-categorie-accueil')
+  {
+    echo json_encode(saveListeCategorieAccueil($data));
   }
 }
 ?>
