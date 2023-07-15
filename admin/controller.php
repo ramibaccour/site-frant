@@ -131,6 +131,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
       echo json_encode(deleteCategorie($data));
     }  
+    if ( $path === "/delete-ligne-accueille") 
+    {
+      echo json_encode(deleteLigneAccueille($data));
+    }  
     if($path === '/signin')
     {
       echo json_encode(getSignin($data));
@@ -161,11 +165,6 @@ elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
     echo json_encode(deleteAccueille($id));
   }    
-  if (preg_match('/\/delete-ligne-accueille\/(\d+)/', $path, $matches)) 
-  {
-    $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
-    echo json_encode(deleteLigneAccueille($id));
-  }  
   if (preg_match('/\/delete-image\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL

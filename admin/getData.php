@@ -107,10 +107,11 @@ function getAccueille($id)
   }
   if($data["id_accueil_type"] > 0)
   {
-    $accueilType = getAccueilType( $data['id_accueil_type']);
-    $accueilType["resolution"] = getResolution( $accueilType["id_resolution"]);
+    $accueilType = getAccueilType( $data['id_accueil_type']);    
     $data["accueilType"] = $accueilType;
   }
+  if(!empty($accueilType["id_resolution"]))
+    $accueilType["resolution"] = getResolution( $accueilType["id_resolution"]);
   return($data);
 }
 function deleteAccueille($id)
@@ -168,7 +169,11 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
       {
         $accueilType = find($listeAccueilType, "id", $listeAccueil[$i]["id_accueil_type"]);
         if(!empty($accueilType))
-        $accueilType["listeResolution"] = filter($listeAccueilTypeResolution, "id_accueil_type", $accueilType["id"]);
+        {
+          $listeResolution = filter($listeAccueilTypeResolution, "id_accueil_type", $accueilType["id"]);
+          usort($listeResolution, function($a, $b) {return $a['ordre'] - $b['ordre'];});
+          $accueilType["listeResolution"] = $listeResolution;
+        }
         $listeAccueil[$i]["accueilType"] = $accueilType;
       }
     }
@@ -176,7 +181,7 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
     if(count($idAccueil_uniques)>0)
     {
       $idAccueil_concatenes = implode(',', $idAccueil_uniques);
-      $listeLigneAccueil = getData("select * from ligne_accueil where id_accueil in ( $idAccueil_concatenes )",false);
+      $listeLigneAccueil = getData("select * from ligne_accueil where id_accueil in ( $idAccueil_concatenes ) and is_deleted = 0",false);
       $idArticle_uniques = array_merge($idArticle_uniques, array_column($listeLigneAccueil, 'id_article'));
       $idCategorie_uniques = array_merge($idCategorie_uniques, array_column($listeLigneAccueil, 'id_categorie'));
       for ($i = 0; $i < count($listeAccueil); $i++) 
@@ -189,9 +194,12 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
     // remplissage des article au accueille et ligne accueille et les image
     $idArticle_uniques = array_unique($idArticle_uniques);
     $idArticle_uniques =  array_filter($idArticle_uniques, function ($value) {return !is_null($value); });
+    $lsiteCategorieArticle = [];
     if(count($idArticle_uniques)>0)
-    {
+    {      
       $idArticle_concatenes = implode(',', $idArticle_uniques);
+      // rechreche categorie article
+      $lsiteCategorieArticle = getData("select * from article_categorie where id_article in ( $idArticle_concatenes )",false);
       $listeArticle = getData("select * from article where id in ( $idArticle_concatenes )",false);
       // rechreche des images
       $listeImage = getData("select * from image where id_article in ( $idArticle_concatenes )",false);
@@ -219,6 +227,8 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
         }
       }
     }
+    
+    $idCategorie_uniques = array_merge($idCategorie_uniques, array_column($lsiteCategorieArticle, 'id_categorie'));
     // remplissage des categorie au accueille et ligne accueille
     $idCategorie_uniques = array_unique($idCategorie_uniques);
     $idCategorie_uniques =  array_filter($idCategorie_uniques, function ($value) {return !is_null($value); });
@@ -235,6 +245,16 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
         if(!empty($cat))
           $cat["listeImage"] = filter($listeImage, "id_categorie",$cat["id"]);
         $listeAccueil[$i]["categorie"] = $cat;
+        // remplissage  categorie article pour listeAccueil
+        if(isset($listeAccueil[$i]["article"]))
+        {
+          $listeAccueil[$i]["article"]["listeCategorie"] = [];
+          $listeCategorieFiltred = filter($lsiteCategorieArticle, "id_article", $listeAccueil[$i]["article"]["id"]);
+          foreach($listeCategorieFiltred as $catart)
+          {
+            array_push($listeAccueil[$i]["article"]["listeCategorie"], find($listeCategorie, "id", $catart["id_categorie"]));
+          }
+        }
         if(isset($listeAccueil[$i]["listeLigneAccueil"]) && count($listeAccueil[$i]["listeLigneAccueil"])>0)
         {
           $listeLigneAccueil = $listeAccueil[$i]["listeLigneAccueil"];
@@ -246,6 +266,16 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
               $listeLigneAccueil[$j]["categorie"] =  find($listeCategorie, "id", $listeLigneAccueil[$j]["id_categorie"]);
               // remplissage des image
               $listeLigneAccueil[$j]["categorie"]["listeImage"] = filter($listeImage, "id_categorie",$listeLigneAccueil[$j]["categorie"]["id"]);
+            }
+            // remplissage  categorie article pour listeLigneAccueil
+            if(isset($listeLigneAccueil[$j]["article"]))
+            {
+                $listeLigneAccueil[$j]["article"]["listeCategorie"] = [];
+                $listeCategorieFiltred = filter($lsiteCategorieArticle, "id_article", $listeLigneAccueil[$j]["article"]["id"]);
+                foreach($listeCategorieFiltred as $catart)
+                {
+                  array_push($listeLigneAccueil[$j]["article"]["listeCategorie"], find($listeCategorie, "id", $catart["id_categorie"]));
+                }
             }
           }
           $listeAccueil[$i]["listeLigneAccueil"] = $listeLigneAccueil;
@@ -330,12 +360,14 @@ function getLigneAccueille($id)
   }
   return($data);
 }
-function deleteLigneAccueille($id)
+function deleteLigneAccueille($data)
 {
-  $sql = "SELECT * FROM ligne_accueil where id = $id"; 
+  $sql = "SELECT * FROM ligne_accueil "; 
+  $sql.= getWhere($data);
   $value = getData($sql,false)[0]["is_deleted"];
   $value = ($value == 1? 0 : 1);
-  $sql = "UPDATE ligne_accueil SET is_deleted = $value where id = $id"; 
+  $sql = "UPDATE ligne_accueil SET is_deleted = $value ";
+  $sql.= getWhere($data);
   $rows = getData($sql,false);
   return($rows);
 }
@@ -414,10 +446,22 @@ function getListeCategorieArticle($id)
   $sql = "select * from categorie where id in (select id_categorie from article_categorie where id_article =  $id)"; 
   return getData($sql,false);
 }
+function getAllResolution()
+{
+  $sql = "SELECT * FROM resolution"; 
+  return getData($sql,false);
+}
 function getListeResolutionByTypeContent($type_content)
 {
-  $sql = "SELECT * FROM resolution where type_content = '$type_content'"; 
+  $sql = "SELECT * FROM resolution_by_content where type_content = '$type_content'"; 
+  $allResolution = getAllResolution();
   $data =  getData($sql,false);
+  for($i=0;$i<count($data);$i++)
+  {
+    $id_resolution = $data[$i]["id_resolution"];
+    $j = array_search($id_resolution, array_column($allResolution, "id"));
+    $data[$i]["resolution"] = ($j !== false ? $allResolution[$j] : null);
+  }
   return($data);
 }
 // delete article
@@ -634,8 +678,17 @@ function getUpdateSql($data)
   {
     if($key != "id")
     {
+      $date = false;
+      if (gettype($value) == "string")
+        $date = strtotime($value);
       if( (gettype($value) == "integer" || gettype($value) == "double") &&  (!empty($value) || $value == "0" || $value == "1"))
         $sql .= " $key = $value , ";
+
+      else if ($date !== false) 
+      {
+          $formattedDate = date("Y-m-d H:i:s", $date);
+          $sql .= " $key = '$formattedDate' , ";
+      } 
       else if (gettype($value) == "string" && !empty($value))
         $sql .= " $key = '$value' , ";
       else if (gettype($value) == "string" && empty($value))

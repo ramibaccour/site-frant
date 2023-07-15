@@ -61,10 +61,15 @@
         {
             $accueille["name"] = $accueille["article"]["name"];
             $accueille["text"] = $accueille["article"]["text"];
+            $accueille["name2"] = $accueille["article"]["name2"];
+            $accueille["text2"] = $accueille["article"]["text2"];
+            $accueille["date1"] = $accueille["article"]["date1"];
             if(isset($accueille["article"]["listeImage"]) && count($accueille["article"]["listeImage"])>0)
             {
-                $image = find($accueille["article"]["listeImage"],"id_resolution", $accueille["accueilType"]["id_resolution"]);
-                $accueille["image"] = $image ;
+                $images = filter($accueille["article"]["listeImage"],"id_resolution", $accueille["accueilType"]["id_resolution"]);
+                usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
+                if(count($image )>0)
+                    $accueille["image"] = $image[0]["name"];
 
             }
         }
@@ -75,27 +80,38 @@
             // $accueille["image"] = $accueille["categorie"]["image"];
             if(isset($accueille["categorie"]["listeImage"]) && count($accueille["categorie"]["listeImage"])>0)
             {
-                $image = find($accueille["categorie"]["listeImage"],"id_resolution", $accueille["accueilType"]["id_resolution"]);
-                $accueille["image"] = $image ;
-
+                $images = filter($accueille["categorie"]["listeImage"],"id_resolution", $accueille["accueilType"]["id_resolution"]);
+                usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
+                if(count($image )>0)
+                    $accueille["image"] = $image[0]["name"];
             }
         }
         if(isset($accueille["listeLigneAccueil"]) && count($accueille["listeLigneAccueil"])>0)
-        {      
+        {    
+            $compte = 0;  
             for($i=0; $i<count($accueille["listeLigneAccueil"]); $i++)
             {
+                if($compte >= (count($accueille["accueilType"]["listeResolution"])))
+                    $compte = 0;
                 $ligneAccueil = $accueille["listeLigneAccueil"][$i];
                 if(!empty($ligneAccueil["id_article"]))
                 {
                     $ligneAccueil["name"] = $ligneAccueil["article"]["name"];
-                    $ligneAccueil["text"] = (!empty($ligneAccueil["article"]["full_description"])? $ligneAccueil["article"]["full_description"]: $ligneAccueil["article"]["description"] );
+                    $ligneAccueil["text"] = $ligneAccueil["article"]["description"] ;
+
+                    $ligneAccueil["name2"] = $ligneAccueil["article"]["name2"];
+                    $ligneAccueil["text2"] = $ligneAccueil["article"]["full_description"];
+                    $ligneAccueil["date1"] = $ligneAccueil["article"]["date1"];
+
                     if(isset($accueille["accueilType"]) && isset($accueille["accueilType"]["listeResolution"]))
                     {
                         if(count($accueille["accueilType"]["listeResolution"])>0)
                         {
-                            $id_resolution = $accueille["accueilType"]["listeResolution"][0]["id_resolution"];
-                            $image = find($ligneAccueil["article"]["listeImage"],"id_resolution", $id_resolution);
-                            $ligneAccueil["image"] = $image;
+                            $id_resolution = $accueille["accueilType"]["listeResolution"][$compte]["id_resolution"];
+                            $images = filter($ligneAccueil["article"]["listeImage"],"id_resolution", $id_resolution);
+                            usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
+                            if(count($images )>0)
+                                $ligneAccueil["image"] = $images[0]["name"];
                         }
                     }
                 }
@@ -107,13 +123,16 @@
                     {
                         if(count($accueille["accueilType"]["listeResolution"])>0)
                         {
-                            $id_resolution = $accueille["accueilType"]["listeResolution"][0]["id_resolution"];
-                            $image = find($ligneAccueil["categorie"]["listeImage"],"id_resolution", $id_resolution);
-                            $ligneAccueil["image"] = $image;
+                            $id_resolution = $accueille["accueilType"]["listeResolution"][$compte]["id_resolution"];
+                            $images = filter($ligneAccueil["categorie"]["listeImage"],"id_resolution", $id_resolution);
+                            usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
+                            if(count($images )>0)
+                                $ligneAccueil["image"] = $images[0]["name"];
                         }
                     }
                 }
                 $accueille["listeLigneAccueil"][$i] = $ligneAccueil ;
+                $compte +=1;
             }
         }
         return $accueille;
