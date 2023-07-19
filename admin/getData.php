@@ -236,6 +236,11 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
     {
       $idCategorie_concatenes = implode(',', $idCategorie_uniques);
       $listeCategorie = getData("select * from categorie where id in ( $idCategorie_concatenes )",false);
+      // recherche les article pour les categorie
+      $listeArticleCategorie = getData("select * from article_categorie where id_categorie in ( $idCategorie_concatenes )",false);
+
+      // recherche accueil par categorie
+      $listeCategorieAccueil = getData("select * from categorie_accueil where id_categorie in ( $idCategorie_concatenes )",false);
       // rechreche des images
       $listeImage = getData("select * from image where id_categorie in ( $idCategorie_concatenes )",false);
 
@@ -243,7 +248,11 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
       {
         $cat = find($listeCategorie, "id", $listeAccueil[$i]["id_categorie"]);
         if(!empty($cat))
+        {
           $cat["listeImage"] = filter($listeImage, "id_categorie",$cat["id"]);
+          $cat["listeCategorieAccueil"] = filter($listeCategorieAccueil, "id_categorie",$cat["id"]);
+          $cat["listeArticleCategorie"] = filter($listeArticleCategorie, "id_categorie",$cat["id"]);
+        }
         $listeAccueil[$i]["categorie"] = $cat;
         // remplissage  categorie article pour listeAccueil
         if(isset($listeAccueil[$i]["article"]))
@@ -266,6 +275,10 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
               $listeLigneAccueil[$j]["categorie"] =  find($listeCategorie, "id", $listeLigneAccueil[$j]["id_categorie"]);
               // remplissage des image
               $listeLigneAccueil[$j]["categorie"]["listeImage"] = filter($listeImage, "id_categorie",$listeLigneAccueil[$j]["categorie"]["id"]);
+              // remplissage accueil par categorie
+              $listeLigneAccueil[$j]["categorie"]["listeCategorieAccueil"] = filter($listeCategorieAccueil, "id_categorie",$listeLigneAccueil[$j]["categorie"]["id"]);
+              
+              $listeLigneAccueil[$j]["categorie"]["listeArticleCategorie"] = filter($listeArticleCategorie, "id_categorie",$listeLigneAccueil[$j]["categorie"]["id"]);
             }
             // remplissage  categorie article pour listeLigneAccueil
             if(isset($listeLigneAccueil[$j]["article"]))
@@ -434,6 +447,12 @@ function getListeImageCategorie($id)
   $data =  getData($sql,false);
   return($data);
 }
+function getListeModelAffichage()
+{
+  $sql = "SELECT * FROM model_affichage"; 
+  $data =  getData($sql,false);
+  return($data);
+}
 // get article
 function getArticle($id)
 {
@@ -589,13 +608,24 @@ function deleteCategorie($data)
   $rows = getData($sql,false);
   return($rows);
 }
-function getListeCategorie($data)
+function getListeCategorie($data, $getArticleCategorie=false)
 {
-  $sql = "select * from categorie ";
-  $filter = $data ;
-  $whereClause = getWhere($filter);
-  $sql .= $whereClause; 
+  $sql = "select * from categorie " . getWhere($data);
   $data = getData($sql,false);
+  if($getArticleCategorie == true)
+  {
+    $sql = "select * from article_categorie" ;
+    $listeArticleCategorie = getData($sql,false);
+
+     $sql = "SELECT * FROM categorie_accueil" ;
+     $listeCategorieAccueil = getData($sql,false);
+     
+    for($i=0;$i< count($data);$i++)
+    {
+      $data[$i]["listeArticleCategorie"]= filter($listeArticleCategorie,"id_categorie", $data[$i]["id"]);
+      $data[$i]["listeCategorieAccueil"]= filter($listeCategorieAccueil,"id_categorie", $data[$i]["id"]);
+    }
+  }
   return($data);
 }
 function getCategorie($id)

@@ -27,8 +27,8 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="<?php echo($myHoste); ?>/assets/img/favicon.png" rel="icon">
+  <link href="<?php echo($myHoste); ?>/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,15 +36,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Roboto:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="<?php echo($myHoste); ?>/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="<?php echo($myHoste); ?>/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="<?php echo($myHoste); ?>/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="<?php echo($myHoste); ?>/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="<?php echo($myHoste); ?>/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="<?php echo($myHoste); ?>/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
   <!-- Template Main CSS File -->
-  <link href="assets/css/main.css" rel="stylesheet">
+  <link href="<?php echo($myHoste); ?>/assets/css/main.css" rel="stylesheet">
 </head>
 
 <body>
@@ -53,9 +53,9 @@
   <header id="header" class="header d-flex align-items-center">
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
 
-      <a href="index.php" class="logo d-flex align-items-center">
+      <a href="index" class="logo d-flex align-items-center">
         <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <!-- <img src="<?php echo($myHoste); ?>/assets/img/logo.png" alt=""> -->
         <h1><?php echo($societeName["value"]); ?><span>.</span></h1>
       </a>
       <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
@@ -63,16 +63,26 @@
       <nav id="navbar" class="navbar">
       <?php
         $filter = ["is_deleted" => 0];
-        $listeCategorie = getListeCategorie($filter);
-      
-        $minOrdre = PHP_INT_MAX;
-        foreach ($listeCategorie as $item) 
+        $listeCategorie = getListeCategorie($filter,true);
+        $id_categorie = "";
+        if(isset($_GET["id_categorie"]))
         {
-            if ($item['ordre'] < $minOrdre && empty($item['id_parent'])) 
-                $minOrdre = $item['ordre'];
+          $id_categorie = $_GET["id_categorie"];
+          $categorie = find($listeCategorie, "id" , $id_categorie);
         }
-        $categorie = find($listeCategorie, "ordre" , $minOrdre);
-        $listeAccueil = getListeAccueilleByCategorie( $categorie["id"], true);
+        else
+        {
+          $minOrdre = PHP_INT_MAX;
+          foreach ($listeCategorie as $item) 
+          {
+              if ($item['ordre'] < $minOrdre && empty($item['id_parent'])) 
+                  $minOrdre = $item['ordre'];
+          }
+          $categorie = find($listeCategorie, "ordre" , $minOrdre);
+        }
+        $listeAccueil = [];
+        if(isset($categorie["id"]))
+          $listeAccueil = getListeAccueilleByCategorie( $categorie["id"], true);
         $menuHTML = generateMenu($listeCategorie, 0, true);
         echo $menuHTML;
       ?>
@@ -116,7 +126,7 @@
             foreach($accueil["listeLigneAccueil"] as $ligneAccueil)
             {
           ?>
-              <div class="carousel-item<?php if($index2 == 0) echo(' active '); ?>" style="background-image: url(assets/images_upload/<?php echo($ligneAccueil["image"]); ?>)"></div>
+              <div class="carousel-item<?php if($index2 == 0) echo(' active '); ?>" style="background-image: url(<?php echo($myHoste); ?>/assets/images_upload/<?php echo($ligneAccueil["image"]); ?>)"></div>
           <?php   
               $index2 +=1;
             }
@@ -162,7 +172,7 @@
                       <div class="card-item">
                         <div class="row">
                           <div class="col-xl-5">
-                            <div class="card-bg" style="background-image: url(assets/images_upload/<?php echo($ligneAccueil["image"]); ?>);"></div>
+                            <div class="card-bg" style="background-image: url(<?php echo($myHoste); ?>/assets/images_upload/<?php echo($ligneAccueil["image"]); ?>);"></div>
                           </div>
                           <div class="col-xl-7 d-flex align-items-center">
                             <div class="card-body">
@@ -208,11 +218,11 @@
                     <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                       <div class="service-item  position-relative">
                         <div class="icon">
-                          <i><img class="fa-solid" src="assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" alt=""></i>
+                          <i><img class="fa-solid" src="<?php echo($myHoste); ?>/assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" alt=""></i>
                         </div>
                         <h3><?php echo($ligneAccueil["name"]); ?></h3>
                         <p><?php echo($ligneAccueil["text"]); ?></p>
-                        <a href="service-details.html" class="readmore stretched-link">Learn more <i class="bi bi-arrow-right"></i></a>
+                        <a href="<?php echo($ligneAccueil["url"]); ?>" class="readmore stretched-link">Voir plus <i class="bi bi-arrow-right"></i></a>
                       </div>
                     </div><!-- End Service Item -->
               <?php
@@ -239,7 +249,7 @@
               <div class="container" data-aos="fade-up">
 
                 <div class="row justify-content-around gy-4">
-                  <div class="col-lg-6 img-bg" style="background-image: url(assets/images_upload/<?php echo($accueil["image"]); ?>);" data-aos="zoom-in" data-aos-delay="100"></div>
+                  <div class="col-lg-6 img-bg" style="background-image: url(<?php echo($myHoste); ?>/assets/images_upload/<?php echo($accueil["image"]); ?>);" data-aos="zoom-in" data-aos-delay="100"></div>
 
                   <div class="col-lg-5 d-flex flex-column justify-content-center">
                     <h3><?php echo($accueil["name"]); ?></h3>
@@ -249,9 +259,9 @@
                     {
       ?>
                       <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="100">
-                        <i><img class="bi bi-easel flex-shrink-0" src="assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" alt=""></i>
+                        <i><img class="bi bi-easel flex-shrink-0" src="<?php echo($myHoste); ?>/assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" alt=""></i>
                         <div>
-                          <h4><a href="" class="stretched-link"><?php echo($ligneAccueil["name"]); ?></a></h4>
+                          <h4><a href="<?php echo($ligneAccueil["url"]); ?>" class="stretched-link"><?php echo($ligneAccueil["name"]); ?></a></h4>
                           <p><?php echo($ligneAccueil["text"]); ?></p>
                         </div>
                       </div><!-- End Icon Box -->
@@ -307,7 +317,7 @@
                         </p>
                       </div>
                       <div class="col-lg-6 order-1 order-lg-2 text-center" data-aos="fade-up" data-aos-delay="200">
-                        <img src="assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" alt="" class="img-fluid">
+                        <img src="<?php echo($myHoste); ?>/assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" alt="" class="img-fluid">
                       </div>
                     </div>
                   </div><!-- End tab content item -->
@@ -367,12 +377,12 @@
     ?>  
                       <div class="col-lg-4 col-md-6 portfolio-item filter-<?php echo($myLigneAccueil["id"]); ?>">
                         <div class="portfolio-content h-100">
-                          <img src="assets/images_upload/<?php echo($la["image"]); ?>" class="img-fluid" alt="">
+                          <img src="<?php echo($myHoste); ?>/assets/images_upload/<?php echo($la["image"]); ?>" class="img-fluid" alt="">
                           <div class="portfolio-info">
                             <h4><?php echo($la["name"]); ?></h4>
                             <p><?php echo($la["text"]); ?></p>
-                            <a href="assets/images_upload/<?php echo($la["image"]); ?>" title="Remodeling 1" data-gallery="portfolio-gallery-remodeling" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                            <a href="project-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                            <a href="<?php echo($myHoste); ?>/assets/images_upload/<?php echo($la["image"]); ?>" title="Remodeling 1" data-gallery="portfolio-gallery-remodeling" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                            <a href="<?php echo($la["url"]); ?>" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
                           </div>
                         </div>
                       </div><!-- End Projects Item -->
@@ -417,7 +427,7 @@
                     <div class="swiper-slide">
                       <div class="testimonial-wrap">
                         <div class="testimonial-item">
-                          <img src="assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" class="testimonial-img" alt="">
+                          <img src="<?php echo($myHoste); ?>/assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" class="testimonial-img" alt="">
                           <h3><?php echo($ligneAccueil["name"]); ?></h3>
                           <h4><?php echo($ligneAccueil["name2"]); ?></h4>
                           <div class="stars">
@@ -488,7 +498,7 @@
                     <div class="post-item position-relative h-100">
 
                       <div class="post-img position-relative overflow-hidden">
-                        <img src="assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" class="img-fluid" alt="">
+                        <img src="<?php echo($myHoste); ?>/assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" class="img-fluid" alt="">
                         <span class="post-date"><?php echo(!empty($ligneAccueil["date1"])? date("F Y", strtotime($ligneAccueil["date1"])) : ''); ?></span>
                       </div>
 
@@ -518,7 +528,7 @@
 
                         <hr>
 
-                        <a href="blog-details.html" class="readmore stretched-link"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
+                        <a href="<?php echo($ligneAccueil["url"]); ?>" class="readmore stretched-link"><span>Voir plus</span><i class="bi bi-arrow-right"></i></a>
 
                       </div>
 

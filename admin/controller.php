@@ -23,22 +23,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
   if (preg_match('/\/get-resolution-by-id-accueil-type\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    echo json_encode(getResolutionByIdAccueilType( $id));
+    echo json_encode(getResolutionByIdAccueilType($id));
   }
   if (preg_match('/\/find-accueille\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    echo json_encode(getAccueille( $id));
+    echo json_encode(getAccueille($id));
   }
   if (preg_match('/\/get-liste-accueille-by-categorie\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    echo json_encode(getListeAccueilleByCategorie( $id));
+    echo json_encode(getListeAccueilleByCategorie($id));
   }
   if (preg_match('/\/find-ligne-accueille\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    echo json_encode(getLigneAccueille( $id));
+    echo json_encode(getLigneAccueille($id));
   }
   if($path === '/head-accueille')
   {
@@ -78,17 +78,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
   if (preg_match('/\/find-parametre\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    echo json_encode(getParametre( $id));
+    echo json_encode(getParametre($id));
   }
   if (preg_match('/\/find-categorie\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    echo json_encode(getCategorie( $id));
+    echo json_encode(getCategorie($id));
   }
   if (preg_match('/\/liste-categorie-article\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
-    echo json_encode(getListeCategorieArticle( $id));
+    echo json_encode(getListeCategorieArticle($id));
+  }
+  if ($path ==='/liste-model_affichage/') 
+  {
+    echo json_encode(getListeModelAffichage());
   }
 } 
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST') 
