@@ -87,9 +87,7 @@ function deleteImage($id)
 }
 function getListeAccueille($data)
 {
-  $sql = "SELECT * FROM accueil ";  
-  $whereClause = getWhere($data);
-  $sql .= $whereClause ;
+  $sql = "SELECT * FROM accueil " .  getWhere($data) . " order by ordre";  
   $listeArt = getData($sql,false);
   return($listeArt);
 }
@@ -147,7 +145,7 @@ function saveAccueille($data)
 
 function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
 {
-  $sql = "select * from accueil where id in (SELECT id_accueil FROM categorie_accueil where id_categorie =  $id_categorie)"; 
+  $sql = "select * from accueil where id in (SELECT id_accueil FROM categorie_accueil where id_categorie =  $id_categorie)  order by ordre"; 
   $listeAccueil = getData($sql,false);
   usort($listeAccueil, function($a, $b) {return $a['ordre'] - $b['ordre'];});
   $idArticle_uniques = (array_column($listeAccueil, 'id_article'));
@@ -181,7 +179,7 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
     if(count($idAccueil_uniques)>0)
     {
       $idAccueil_concatenes = implode(',', $idAccueil_uniques);
-      $listeLigneAccueil = getData("select * from ligne_accueil where id_accueil in ( $idAccueil_concatenes ) and is_deleted = 0",false);
+      $listeLigneAccueil = getData("select * from ligne_accueil where id_accueil in ( $idAccueil_concatenes ) and is_deleted = 0   order by ordre",false);
       $idArticle_uniques = array_merge($idArticle_uniques, array_column($listeLigneAccueil, 'id_article'));
       $idCategorie_uniques = array_merge($idCategorie_uniques, array_column($listeLigneAccueil, 'id_categorie'));
       for ($i = 0; $i < count($listeAccueil); $i++) 
@@ -202,7 +200,7 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
       $lsiteCategorieArticle = getData("select * from article_categorie where id_article in ( $idArticle_concatenes )",false);
       $listeArticle = getData("select * from article where id in ( $idArticle_concatenes )",false);
       // rechreche des images
-      $listeImage = getData("select * from image where id_article in ( $idArticle_concatenes )",false);
+      $listeImage = getData("select * from image where id_article in ( $idArticle_concatenes ) order by ordre",false);
 
       for ($i = 0; $i < count($listeAccueil); $i++) 
       {
@@ -235,14 +233,14 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
     if(count($idCategorie_uniques)>0)
     {
       $idCategorie_concatenes = implode(',', $idCategorie_uniques);
-      $listeCategorie = getData("select * from categorie where id in ( $idCategorie_concatenes )",false);
+      $listeCategorie = getData("select * from categorie where id in ( $idCategorie_concatenes )  order by ordre",false);
       // recherche les article pour les categorie
       $listeArticleCategorie = getData("select * from article_categorie where id_categorie in ( $idCategorie_concatenes )",false);
 
       // recherche accueil par categorie
       $listeCategorieAccueil = getData("select * from categorie_accueil where id_categorie in ( $idCategorie_concatenes )",false);
       // rechreche des images
-      $listeImage = getData("select * from image where id_categorie in ( $idCategorie_concatenes )",false);
+      $listeImage = getData("select * from image where id_categorie in ( $idCategorie_concatenes ) order by ordre",false);
 
       for ($i = 0; $i < count($listeAccueil); $i++) 
       {
@@ -307,7 +305,7 @@ function getResolutionByIdAccueilType($id)
 }
 function getAccueilTypeResolution()
 {
-  $sql = "select * from accueil_type_resolution"; 
+  $sql = "select * from accueil_type_resolution  order by ordre"; 
   $rows = getData($sql,false);
   return($rows);
 }
@@ -319,9 +317,7 @@ function getResolution($id)
 }
 function getListeLigneAccueille($data)
 {
-  $sql = "SELECT * FROM ligne_accueil ";  
-  $whereClause = getWhere($data);
-  $sql .= $whereClause ;
+  $sql = "SELECT * FROM ligne_accueil " .  getWhere($data) . " order by ordre";  
   $listeArt = getData($sql,false);
   $idArticle_uniques = array_unique(array_column($listeArt, 'id_article'));
   $idArticle_uniques =  array_filter($idArticle_uniques, function ($value) {return !is_null($value); });
@@ -345,7 +341,7 @@ function getListeLigneAccueille($data)
   if(count($idCategorie_uniques)>0)
   {
     $idCategorie_concatenes = implode(',', $idCategorie_uniques);
-    $listeCategorie = getData("select * from categorie where id in ( $idCategorie_concatenes )",false);
+    $listeCategorie = getData("select * from categorie where id in ( $idCategorie_concatenes )  order by ordre",false);
     for ($i = 0; $i < count($listeArt); $i++) 
     {
       foreach ($listeCategorie as $categorie) 
@@ -375,7 +371,7 @@ function getLigneAccueille($id)
 }
 function deleteLigneAccueille($data)
 {
-  $sql = "SELECT * FROM ligne_accueil "; 
+  $sql = "SELECT * FROM ligne_accueil   order by ordre"; 
   $sql.= getWhere($data);
   $value = getData($sql,false)[0]["is_deleted"];
   $value = ($value == 1? 0 : 1);
@@ -437,13 +433,13 @@ function getAccueilType($id)
 }
 function getListeImageArticle($id)
 {
-  $sql = "SELECT * FROM image  where id_article = $id"; 
+  $sql = "SELECT * FROM image  where id_article = $id  order by ordre"; 
   $data =  getData($sql,false);
   return($data);
 }
 function getListeImageCategorie($id)
 {
-  $sql = "SELECT * FROM image  where id_categorie = $id"; 
+  $sql = "SELECT * FROM image  where id_categorie = $id order by ordre"; 
   $data =  getData($sql,false);
   return($data);
 }
@@ -454,6 +450,24 @@ function getListeModelAffichage()
   return($data);
 }
 // get article
+function getArticleByCategorie($id_categorie)
+{
+  $sql = "SELECT * FROM article where id in (select id_article from article_categorie where id_categorie = $id_categorie)"; 
+  $listeArt =  getData($sql,false);
+
+  $idart = (array_column($listeArt, 'id'));
+  $idart =  array_filter($idart, function ($value) {return !is_null($value); });
+  $idart = implode(',', $idart);
+  $sql = "SELECT * FROM image  where id_article in ($idart) "; 
+  $lstImg = getData($sql,false);
+  for($i=0;$i<count($listeArt);$i++)
+  {
+    $lst_Img = filter($lstImg,"id_article",$listeArt[$i]["id"]);
+    usort($lst_Img, function($a, $b) {return $a['ordre'] - $b['ordre'];});
+    $listeArt[$i]["listeImage"] = $lst_Img;
+  }
+  return($listeArt);
+}
 function getArticle($id)
 {
   $sql = "SELECT * FROM article where id = $id"; 
@@ -462,7 +476,7 @@ function getArticle($id)
 }
 function getListeCategorieArticle($id)
 {
-  $sql = "select * from categorie where id in (select id_categorie from article_categorie where id_article =  $id)"; 
+  $sql = "select * from categorie where id in (select id_categorie from article_categorie where id_article =  $id)  order by ordre"; 
   return getData($sql,false);
 }
 function getAllResolution()
@@ -492,6 +506,21 @@ function deleteArticle($id)
   $sql = "UPDATE article SET is_deleted = $value where id = $id"; 
   $rows = getData($sql,false);
   return($rows);
+}
+function getLastBlog($id_model_affichage = 3)
+{
+  $sql = "select * from article where id_model_affichage = $id_model_affichage order by date1 desc limit 5";  
+  $listeArt = getData($sql,false);
+  $idart = (array_column($listeArt, 'id'));
+  $idart =  array_filter($idart, function ($value) {return !is_null($value); });
+  $idart = implode(',', $idart);
+  $sql = "SELECT * FROM image  where id_article in ($idart)  order by ordre"; 
+  $lstImg = getData($sql,false);
+  for($i=0;$i<count($listeArt);$i++)
+  {
+    $listeArt[$i]["listeImage"] = filter($lstImg,"id_article",$listeArt[$i]["id"]);
+  }
+  return($listeArt);
 }
 // get liste article
 function getListeArticle($data)
@@ -608,9 +637,22 @@ function deleteCategorie($data)
   $rows = getData($sql,false);
   return($rows);
 }
+function getCategorieByModelAffichage($id_model_affichage=3)
+{
+  $sql = "select * from categorie where id in (select id_categorie from article_categorie where id_article in (select id from article where id_model_affichage =$id_model_affichage))"; 
+  $rows = getData($sql,false);
+  for($i=0;$i<count($rows);$i++)
+  {
+    $sql = "select count(id) as count from article where id_model_affichage = $id_model_affichage and id in (select id_article from article_categorie where id_categorie = " . $rows[$i]['id'] . ")";
+    $count = getData($sql,false);
+    $rows[$i]['count'] = $count[0]["count"];
+  } 
+  return($rows);
+  //
+}
 function getListeCategorie($data, $getArticleCategorie=false)
 {
-  $sql = "select * from categorie " . getWhere($data);
+  $sql = "select * from categorie " . getWhere($data) . "   order by ordre";
   $data = getData($sql,false);
   if($getArticleCategorie == true)
   {

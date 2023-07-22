@@ -2,7 +2,7 @@
   include("admin/getData.php");
   include("admin/utility.php");
   $array =  [
-              "id" => [6,7,14,15,16,17,18,19],
+              "id" => [6,7,14,15,16,17,18,19]
             ];
   $parametre = getListeParametreByListeId($array);
   $societeName = find($parametre,"id", 6);
@@ -13,83 +13,19 @@
   $societeFacebook = find($parametre,"id", 18);
   $societeLinkedin = find($parametre,"id", 19);
   $titre = find($parametre,"id", 7);
-
-
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-  <title><?php echo($titre["value"]); ?></title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
-
-  <!-- Favicons -->
-  <link href="<?php echo($myHoste); ?>/assets/img/favicon.png" rel="icon">
-  <link href="<?php echo($myHoste); ?>/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Roboto:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
-  <link href="<?php echo($myHoste); ?>/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="<?php echo($myHoste); ?>/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="<?php echo($myHoste); ?>/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="<?php echo($myHoste); ?>/assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="<?php echo($myHoste); ?>/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="<?php echo($myHoste); ?>/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
-  <!-- Template Main CSS File -->
-  <link href="<?php echo($myHoste); ?>/assets/css/main.css" rel="stylesheet">
-</head>
+<html lang="fr">
+<?php
+  include("head.php");
+?>
 
 <body>
-
-  <!-- ======= Header ======= -->
-  <header id="header" class="header d-flex align-items-center">
-    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-
-      <a href="index" class="logo d-flex align-items-center">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="<?php echo($myHoste); ?>/assets/img/logo.png" alt=""> -->
-        <h1><?php echo($societeName["value"]); ?><span>.</span></h1>
-      </a>
-      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
-      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
-      <nav id="navbar" class="navbar">
-      <?php
-        $filter = ["is_deleted" => 0];
-        $listeCategorie = getListeCategorie($filter,true);
-        $id_categorie = "";
-        if(isset($_GET["id_categorie"]))
-        {
-          $id_categorie = $_GET["id_categorie"];
-          $categorie = find($listeCategorie, "id" , $id_categorie);
-        }
-        else
-        {
-          $minOrdre = PHP_INT_MAX;
-          foreach ($listeCategorie as $item) 
-          {
-              if ($item['ordre'] < $minOrdre && empty($item['id_parent'])) 
-                  $minOrdre = $item['ordre'];
-          }
-          $categorie = find($listeCategorie, "ordre" , $minOrdre);
-        }
-        $listeAccueil = [];
-        if(isset($categorie["id"]))
-          $listeAccueil = getListeAccueilleByCategorie( $categorie["id"], true);
-        $menuHTML = generateMenu($listeCategorie, 0, true);
-        echo $menuHTML;
-      ?>
-      </nav><!-- .navbar -->
-    </div>
-  </header><!-- End Header -->
   <?php
+    include("header.php");
+?>
+<?php
     $index1 = 0;
     $testBaniere = false;
     $randomString = base64_encode(random_bytes(4));
@@ -101,50 +37,50 @@
       if($accueil["id_accueil_type"] == 1)
       {
         $testBaniere = true;
-  ?>
-      <!-- ======= Hero Section ======= -->
-      <section  class="hero">
-    
-        <div class="info d-flex align-items-center">
-          <div class="container">
-            <div class="row justify-content-center">
-              <div class="col-lg-6 text-center">
-                <h2 data-aos="fade-down"><?php echo($accueil["name"]); ?></h2>
-                <p data-aos="fade-up"><?php echo($accueil["text"]); ?></p>
-                <a data-aos="fade-up" data-aos-delay="200" href="#<?php echo($idBaniere); ?>" class="btn-get-started">Allons-y</a>
+?>
+        <!-- ======= Hero Section ======= -->
+        <section  class="hero">
+      
+          <div class="info d-flex align-items-center">
+            <div class="container">
+              <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                  <h2 data-aos="fade-down"><?php echo($accueil["name"]); ?></h2>
+                  <p data-aos="fade-up"><?php echo($accueil["text"]); ?></p>
+                  <a data-aos="fade-up" data-aos-delay="200" href="#<?php echo($idBaniere); ?>" class="btn-get-started">Allons-y</a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      <?php
-        if(isset($accueil["listeLigneAccueil"]) && count($accueil["listeLigneAccueil"])>0)
-        {      
-      ?>
-        <div class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-          <?php
-            $index2 = 0;
-            foreach($accueil["listeLigneAccueil"] as $ligneAccueil)
-            {
-          ?>
-              <div class="carousel-item<?php if($index2 == 0) echo(' active '); ?>" style="background-image: url(<?php echo($myHoste); ?>/assets/images_upload/<?php echo($ligneAccueil["image"]); ?>)"></div>
-          <?php   
-              $index2 +=1;
-            }
-          ?>
-                <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
-                  <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
-                </a>
-                <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
-                  <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
-                </a>
-          
-        </div>
-      <?php   
-      }
-      ?>
-      </section><!-- End Hero Section -->
-    <?php
-      }
+<?php 
+          if(isset($accueil["listeLigneAccueil"]) && count($accueil["listeLigneAccueil"])>0)
+          {      
+?>  
+          <div id="<?php echo($accueil["id"])?>hero-carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+<?php
+              $index2 = 0;
+              foreach($accueil["listeLigneAccueil"] as $ligneAccueil)
+              {
+?>  
+                <div class="carousel-item<?php if($index2 == 0) echo(' active '); ?>" style="background-image: url(<?php echo($myHoste); ?>/assets/images_upload/<?php echo($ligneAccueil["image"]); ?>)"></div>
+<?php   
+                $index2 +=1;
+              }
+?>
+                  <a class="carousel-control-prev" href="#<?php echo($accueil["id"])?>hero-carousel" role="button" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
+                  </a>
+                  <a class="carousel-control-next" href="#<?php echo($accueil["id"])?>hero-carousel" role="button" data-bs-slide="next">
+                    <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
+                  </a>
+            
+          </div>
+<?php   
+        }
+  ?>
+        </section><!-- End Hero Section -->
+<?php
+        }
       // ----------------------------------------- fin Bannière -----------------------------------------
      
      
@@ -155,7 +91,7 @@
     ?>
         <!-- ======= Constructions Section ======= -->
         <main>
-          <section  class="constructions">
+          <section <?php echo($testBaniere? ('id="'.$idBaniere . '"') : ""); if($testBaniere)$testBaniere = false; ?> class="constructions">
             <div class="container" data-aos="fade-up">
 
               <div class="section-header">
@@ -202,7 +138,7 @@
     ?>
         <main >
           <!-- ======= Services Section ======= -->
-          <section class="services section-bg">
+          <section <?php echo($testBaniere? ('id="'.$idBaniere . '"') : ""); if($testBaniere)$testBaniere = false; ?> class="services section-bg">
             <div class="container" data-aos="fade-up">
 
               <div class="section-header">
@@ -245,7 +181,7 @@
   ?>
         <main > 
             <!-- ======= Alt Services Section ======= -->
-            <section class="alt-services">
+            <section <?php echo($testBaniere? ('id="'.$idBaniere . '"') : ""); if($testBaniere)$testBaniere = false; ?> class="alt-services">
               <div class="container" data-aos="fade-up">
 
                 <div class="row justify-content-around gy-4">
@@ -284,7 +220,7 @@
   ?>
         <main > 
           <!-- ======= Features Section ======= -->
-          <section id="features" class="features section-bg">
+          <section <?php echo($testBaniere? ('id="'.$idBaniere . '"') : ""); if($testBaniere)$testBaniere = false; ?> class="features section-bg">
             <div class="container" data-aos="fade-up">
               <ul class="nav nav-tabs row  g-2 d-flex">
     <?php        
@@ -341,7 +277,7 @@
         <main > 
 
           <!-- ======= Our Projects Section ======= -->
-          <section id="projects" class="projects">
+          <section  <?php echo($testBaniere? ('id="'.$idBaniere . '"') : ""); if($testBaniere)$testBaniere = false; ?> class="projects">
             <div class="container" data-aos="fade-up">
 
               <div class="section-header">
@@ -409,7 +345,7 @@
   ?>
         <main > 
           <!-- ======= Testimonials Section ======= -->
-          <section class="testimonials section-bg">
+          <section <?php echo($testBaniere? ('id="'.$idBaniere . '"') : ""); if($testBaniere)$testBaniere = false; ?> class="testimonials section-bg">
             <div class="container" data-aos="fade-up">
 
               <div class="section-header">
@@ -482,7 +418,7 @@
   ?>
         <main>
           <!-- ======= Recent Blog Posts Section ======= -->
-          <section id="recent-blog-posts" class="recent-blog-posts">
+          <section <?php echo($testBaniere? ('id="'.$idBaniere . '"') : ""); if($testBaniere)$testBaniere = false; ?> class="recent-blog-posts">
             <div class="container" data-aos="fade-up">
               <div class=" section-header">
                 <h2><?php echo($accueil["name"]); ?></h2>
@@ -546,7 +482,132 @@
   <?php
       }
       // ----------------------------------------- fin Liste 3 / N élements ( image 1024_768 ) -----------------------------------------
+      if($accueil["id_accueil_type"] == 10)
+      {  
+  ?>  
+        <!-- ======= Stats Counter Section ======= -->
+        <section <?php echo($testBaniere? ('id="'.$idBaniere . '"') : ""); if($testBaniere)$testBaniere = false; ?> class="stats-counter section-bg">
+          <div class="container">
 
+            <div class="row gy-4">
+<?php 
+                foreach($accueil["listeLigneAccueil"] as $ligneAccueil)
+                { 
+?>
+                  <div class="col-lg-3 col-md-6">
+                    <div class="stats-item d-flex align-items-center w-100 h-100">
+                      <i>
+                      <img src="<?php echo($myHoste); ?>/assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" class="bi bi-emoji-smile color-blue flex-shrink-0" alt="">
+                      </i>
+                      <div>
+                        <span data-purecounter-start="0" data-purecounter-end="<?php echo($ligneAccueil["name"]); ?>" data-purecounter-duration="1" class="purecounter"></span>
+                        <p><?php echo($ligneAccueil["text"]); ?></p>
+                      </div>
+                    </div>
+                  </div><!-- End Stats Item -->
+<?php 
+                }
+?>
+            </div>
+
+          </div>
+        </section><!-- End Stats Counter Section -->
+  <?php     
+      }
+      if($accueil["id_accueil_type"] == 11)
+      {     
+  ?>
+        <!-- ======= Our Team Section ======= -->
+        <section  <?php echo($testBaniere? ('id="'.$idBaniere . '"') : ""); if($testBaniere)$testBaniere = false; ?> class="team">
+            <div class="container" data-aos="fade-up">
+
+              <div class="section-header">
+                <h2><?php echo($accueil["name"]); ?></h2>
+                <p><?php echo($accueil["text"]); ?></p>
+              </div>
+
+              <div class="row gy-5">
+<?php 
+                foreach($accueil["listeLigneAccueil"] as $ligneAccueil)
+                { 
+?>
+                  <div class="col-lg-4 col-md-6 member" data-aos="fade-up" data-aos-delay="100">
+                    <div class="member-img">
+                      <img src="<?php echo($myHoste); ?>/assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" class="img-fluid" alt="">
+                      <div class="social">
+                        <a href="<?php echo($ligneAccueil["facebook"]); ?>"><i class="bi bi-facebook"></i></a>
+                        <a href="<?php echo($ligneAccueil["linkedin"]); ?>"><i class="bi bi-linkedin"></i></a>
+                      </div>
+                    </div>
+                    <div class="member-info text-center">
+                      <h4><?php echo($ligneAccueil["name"]); ?></h4>
+                      <span><?php echo($ligneAccueil["name2"]); ?></span>
+                      <p><?php echo($ligneAccueil["text"]); ?></p>
+                    </div>
+                  </div><!-- End Team Member -->
+<?php 
+                }
+?>
+              </div>
+
+            </div>
+          </section><!-- End Our Team Section -->
+  <?php  
+      }
+      if($accueil["id_accueil_type"] == 12)
+      { 
+?>  
+        <!-- ======= Testimonials Section ======= -->
+        <section  <?php echo($testBaniere? ('id="'.$idBaniere . '"') : ""); if($testBaniere)$testBaniere = false; ?> class="testimonials section-bg">
+          <div class="container" data-aos="fade-up">
+
+            <div class="section-header">
+              <h2><?php echo($accueil["name"]); ?></h2>
+              <p><?php echo($accueil["text"]); ?></p>
+            </div>
+
+            <div class="slides-2 swiper">
+              <div class="swiper-wrapper">
+<?php 
+                foreach($accueil["listeLigneAccueil"] as $ligneAccueil)
+                { 
+?>
+                  <div class="swiper-slide">
+                    <div class="testimonial-wrap">
+                      <div class="testimonial-item">
+                        <img src="<?php echo($myHoste); ?>/assets/images_upload/<?php echo($ligneAccueil["image"]); ?>" class="testimonial-img" alt="">
+                        <h3><?php echo($ligneAccueil["name"]); ?></h3>
+                        <h4><?php echo($ligneAccueil["name2"]); ?></h4>
+                        <div class="stars">
+<?php 
+                        for($i=0; $i<$ligneAccueil["number1"];$i++)
+                              {
+  ?>
+                                <i class="bi bi-star-fill"></i>
+  <?php            
+                              }         
+  ?>
+  </div>
+                        <p>
+                          <i class="bi bi-quote quote-icon-left"></i>
+                          <?php echo($ligneAccueil["text"]); ?>
+                          <i class="bi bi-quote quote-icon-right"></i>
+                        </p>
+                      </div>
+                    </div>
+                  </div><!-- End testimonial item -->
+<?php 
+                }
+?>
+              </div>
+              <div class="swiper-pagination"></div>
+            </div>
+
+          </div>
+        </section><!-- End Testimonials Section -->
+
+<?php    
+      }
     }
     include("footer.php");
   ?>

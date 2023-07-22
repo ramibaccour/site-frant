@@ -48,7 +48,22 @@
                         $html .= '<ul>';
                         foreach ($level2Elements as $level2) 
                         {
-                            $html .= '<li><a href="#">' . $level2['name'] . '</a></li>';
+                          // Vérifier si le menu a des sous-menus
+                          $hasChildren = false;
+                          foreach ($listeCategorie as $childItem) 
+                          {
+                              if ($childItem['id_parent'] == $level2['id']) 
+                              {
+                                  $hasChildren = true;
+                                  break;
+                              }
+                          }
+                          if(count($level2["listeCategorieAccueil"])>0)
+                            $html .= '<li><a href="' . $GLOBALS['myHoste'] . '/index/categorie/' . $categorie['id'] . '/' . urlencode($categorie['name']) . '">' . $level2['name'] . '</a></li>';
+                          else if(count($level2["listeArticleCategorie"])>0 || $hasChildren == false)
+                            $html .= '<li><a href="' . $GLOBALS['myHoste'] . '/liste/article/' . $level2['id'] . '/' . urlencode($level2['name']) . '">' . $level2['name'] . '</a></li>';
+                          else
+                            $html .= '<li><a href="' . $GLOBALS['myHoste'] . '/liste/categorie/' . $level2['id'] . '/' . urlencode($level2['name']) . '">' . $level2['name'] . '</a></li>';
                         }
                         $html .= '</ul>';
                     }
