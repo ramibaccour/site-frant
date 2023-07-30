@@ -87,7 +87,7 @@ function deleteImage($id)
 }
 function getListeAccueille($data)
 {
-  $sql = "SELECT * FROM accueil " .  getWhere($data) . " order by ordre";  
+  $sql = "SELECT * FROM accueil " .  getWhere($data->filter) . " order by ordre";  
   $listeArt = getData($sql,false);
   return($listeArt);
 }
@@ -317,7 +317,7 @@ function getResolution($id)
 }
 function getListeLigneAccueille($data)
 {
-  $sql = "SELECT * FROM ligne_accueil " .  getWhere($data) . " order by ordre";  
+  $sql = "SELECT * FROM ligne_accueil " .  getWhere($data->filter) . " order by ordre";  
   $listeArt = getData($sql,false);
   $idArticle_uniques = array_unique(array_column($listeArt, 'id_article'));
   $idArticle_uniques =  array_filter($idArticle_uniques, function ($value) {return !is_null($value); });
@@ -371,7 +371,7 @@ function getLigneAccueille($id)
 }
 function deleteLigneAccueille($data)
 {
-  $sql = "SELECT * FROM ligne_accueil   order by ordre"; 
+  $sql = "SELECT * FROM ligne_accueil "; 
   $sql.= getWhere($data);
   $value = getData($sql,false)[0]["is_deleted"];
   $value = ($value == 1? 0 : 1);
@@ -528,7 +528,7 @@ function getListeArticle($data)
   $sql = "SELECT * FROM article ";  
   $filter = $data->filter ;
   $whereClause = getWhere($filter);
-  $sql .= $whereClause . " LIMIT " . $data->pager->page . " , " . $data->pager->limit;
+  $sql .= $whereClause . " LIMIT " . $data->pager->limit . " , " . $data->pager->size;
   $listeArt = getData($sql,false);
   if (count($listeArt) > 0) 
   {   
@@ -540,7 +540,7 @@ function getListeArticle($data)
   }
   $sql = "SELECT COUNT(*) AS count FROM article " . $whereClause;
   $count = getData($sql,false)[0]["count"];
-  $totalPages = ceil($count / ($data->pager->limit+1));
+  $totalPages = ceil($count / ($data->pager->size+1));
   $response['totalPages'] = $totalPages;
   $response['count'] = $count;
   return($response);
@@ -579,7 +579,7 @@ function getListeParametre($data)
   $sql = "SELECT * FROM parametre ";  
   $filter = $data->filter ;
   $whereClause = getWhere($filter);
-  $sql .= $whereClause . " LIMIT " . $data->pager->page . " , " . $data->pager->limit; 
+  $sql .= $whereClause . " LIMIT " . $data->pager->limit . " , " . $data->pager->size;
   $listeArt = getData($sql,false);
   if (count($listeArt) > 0) 
   {   
@@ -591,7 +591,7 @@ function getListeParametre($data)
   }
   $sql = "SELECT COUNT(*) AS count FROM parametre " . $whereClause;
   $count = getData($sql,false)[0]["count"];
-  $totalPages = ceil($count / ($data->pager->limit+1));
+  $totalPages = ceil($count / ($data->pager->size+1));
   $response['totalPages'] = $totalPages;
   $response['count'] = $count;
   return($response);
@@ -630,7 +630,7 @@ function getSignin($data)
 }
 //-----------fin signin by login et mot de passe
 
-function deleteCategorie($data)
+function deleteCategorie($data) 
 {
   $sql = "UPDATE categorie SET is_deleted = 1"; 
   $sql .= getWhere($data); 
@@ -652,7 +652,7 @@ function getCategorieByModelAffichage($id_model_affichage=3)
 }
 function getListeCategorie($data, $getArticleCategorie=false)
 {
-  $sql = "select * from categorie " . getWhere($data) . "   order by ordre";
+  $sql = "select * from categorie " . getWhere($data->filter) . "   order by ordre";
   $data = getData($sql,false);
   if($getArticleCategorie == true)
   {
@@ -716,15 +716,15 @@ function saveArticleCategorie($data)
   $data = getData($sql,true);
   return getCategorie($data["id"]);
 }
-function deleteListeArticleCategorie($data)
+function deleteListeArticleCategorie($data) 
 {
   for($i=0; $i<count($data); $i++)
   {
-    $sql = "delete from article_categorie " . getWhere($data[$i],2);
+    $sql = "delete from article_categorie " . getWhere($data[$i]->filter,2);
     getData($sql,true);    
   }
 }
-function deleteListeCategorieAccueil($data)
+function deleteListeCategorieAccueil($data) 
 {
   for($i=0; $i<count($data); $i++)
   {
@@ -812,22 +812,24 @@ function getWhere($filter, $modeLike = 0)
 
   foreach ($filter as $key => $value) 
   {
-    if((gettype($value) == "string" || gettype($value) == "integer" || gettype($value) == "double" || gettype($value) == "boolean" ) && !empty($value) || $value == "0" || $value == "1")
+    $value = json_decode(json_encode($value), true);
+    if((isset($value["value"])))
     {
-      if(gettype($value) == "string")
-        $whereClause .= (strlen($whereClause)>0? " AND " :" ") .   $key . ($modeLike == 2? " = " : " LIKE ") .  " '" . ($modeLike == 0? "%" : "") . ((string) $value) . ($modeLike == 0 || $modeLike == 1? "%" : "") . "' ";
-      else
+      if(!empty($value["value"]) || $value["value"] == "0" || $value["value"] == "1")
       {
-        if($modeLike == 2)
-          $whereClause .= (strlen($whereClause)>0? " AND " :" ") .  $key . " = " . ((string)$value);
-        else
-          $whereClause .= (strlen($whereClause)>0? " AND " :" ") .  " CONVERT(". "$key,char) LIKE '" . ($modeLike == 0? "%" : "") . ((string) $value) . ($modeLike == 0 || $modeLike == 1? "%" : "") . "' ";
+        if((gettype($value["value"]) == "string" || gettype($value["value"]) == "integer" || gettype($value["value"]) == "double" || gettype($value["value"]) == "boolean" ))
+        {
+          if(gettype($value["value"]) == "string")
+            $whereClause .= (strlen($whereClause)>0? " AND " :" ") .   $key . (($value["operator"] != '%' && $value["operator"] != '%%')? $value["operator"] : " LIKE ") .  " '" . ($value["operator"] == '%%'? "%" : "") . ((string) $value["value"]) . ($value["operator"] == "%" || $value["operator"] == "%%"? "%" : "") . "' ";
+          else
+            $whereClause .= (strlen($whereClause)>0? " AND " :" ") .  $key . $value["operator"] . ((string)$value["value"]);
+        }
+        else if(isset($value["start"]) && !empty($value["start"]) && isset($value["end"]) && !empty($value["end"]))
+        {
+          $property = str_replace("Filter", "", $key);
+          $whereClause .= (strlen($whereClause)>0? " AND " :" ") . $property . " >=  '" . $value["start"] . "' AND " . $property . " <= '" . $value["end"] . "' ";
+        }
       }
-    }
-    else if(isset($value->start) && !empty($value->start) && isset($value->end) && !empty($value->end))
-    {
-      $property = str_replace("Filter", "", $key);
-      $whereClause .= (strlen($whereClause)>0? " AND " :"") . "  $property >=  '$value->start' AND $property <= '$value->end' ";
     }
     else if(gettype($value) == "array" && count($value)>0)
     {
@@ -835,6 +837,7 @@ function getWhere($filter, $modeLike = 0)
       $string = implode(',', $value);
       $whereClause .= (strlen($whereClause)>0? " AND " :"") .  "  $property in ( $string ) ";
     }
+    
   }
   return ((strlen($whereClause)>0? " WHERE " : "") .$whereClause);
 }

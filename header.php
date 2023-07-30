@@ -1,5 +1,8 @@
 <?php
-    $filter = ["is_deleted" => 0];
+
+    $filter = '{"filter" : {"is_deleted" : {"value" : "0", "operator" : "="}}}';
+    $filter = json_decode($filter, true);
+    $filter = (object)$filter;
     $listeCategorie = getListeCategorie($filter,true);
     $id_categorie = "";
     $path = $_SERVER['REQUEST_URI'];
