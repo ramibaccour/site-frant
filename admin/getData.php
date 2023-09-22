@@ -4,11 +4,14 @@ header ("Access-Control-Expose-Headers: Content-Length, X-JSON");
 header ("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
 header ("Access-Control-Allow-Headers: *");
 
+include("utility.php");
+include("entity/UserFilter.php");
+include("entity/ParametreFilter.php");
 
 define('DB_HOST', 'localhost:3306');
 define('DB_USER', 'root');
 define('DB_PASS', 'root');
-define('DB_NAME', 'site');
+define('DB_NAME', 'big_open');
 //  define('DB_HOST', 'karamasfax.org');
 //  define('DB_USER', 'karamasf_rami');
 //  define('DB_PASS', 'rami_123');
@@ -16,7 +19,7 @@ define('DB_NAME', 'site');
 
 
 $rows = array();
-function getData($sql,$getAutoIncrement)
+function executeSql($sql,$getAutoIncrement)
 {
   $pdo = new PDO("mysql:dbname=" . DB_NAME . ";host=" . DB_HOST, DB_USER, DB_PASS,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
   $statement = $pdo->prepare($sql);
@@ -34,6 +37,14 @@ function getData($sql,$getAutoIncrement)
     $results = $statement->fetchAll(PDO::FETCH_ASSOC);
   }
   return $results;
+}
+function getData($sql,$getAutoIncrement)
+{
+  if(verificationUserConnecter())
+  {
+    return executeSql($sql,$getAutoIncrement);
+  }
+
 }
 function getImage($id)
 {
@@ -458,7 +469,10 @@ function getArticleByCategorie($id_categorie)
   $idart = (array_column($listeArt, 'id'));
   $idart =  array_filter($idart, function ($value) {return !is_null($value); });
   $idart = implode(',', $idart);
-  $sql = "SELECT * FROM image  where id_article in ($idart) "; 
+  $sql = "SELECT * FROM image "; 
+
+  if(!empty($idart))
+    $sql .=  " where id_article in ($idart) ";
   $lstImg = getData($sql,false);
   for($i=0;$i<count($listeArt);$i++)
   {
@@ -570,31 +584,40 @@ function saveArticle($data)
 function getParametre($id)
 {
   $sql = "SELECT * FROM parametre where id = $id"; 
-  $data =  getData($sql,false)[0];
-  return($data);
+  $data =  getData($sql,false);
+  if(empty($data))
+    return  array(  'id' => null );
+  else
+    return(convertKeys($data[0]));
 }
 // get liste parametre
 function getListeParametre($data)
 {
   $sql = "SELECT * FROM parametre ";  
-  $filter = $data->filter ;
-  $whereClause = getWhere($filter);
+
+  $whereClause = getWhere(convertInstance($data,"ParametreFilter"));
   $sql .= $whereClause . " LIMIT " . $data->pager->limit . " , " . $data->pager->size;
   $listeArt = getData($sql,false);
   if (count($listeArt) > 0) 
   {   
-    $response = array(  'listeParametre' => $listeArt );
+    for($i=0; $i<count($listeArt);$i++)
+    {
+      $listeArt[$i] = convertKeys($listeArt[$i]);
+    }
+    $response = array(  'listParametreResponse' => $listeArt );
+    $sql = "SELECT COUNT(*) AS count FROM parametre " . $whereClause;
+    $data->pager->count = getData($sql,false)[0]["count"];
+    $response['pager'] = $data->pager;
+    return($response);
   }
   else
   {
-    $response = array('listeParametre' => array());
+    $response = array('listParametreResponse' => array());
+    $data->pager->count = 0;
+    $response['pager'] = $data->pager;
+    return($response);
   }
-  $sql = "SELECT COUNT(*) AS count FROM parametre " . $whereClause;
-  $count = getData($sql,false)[0]["count"];
-  $totalPages = ceil($count / ($data->pager->size+1));
-  $response['totalPages'] = $totalPages;
-  $response['count'] = $count;
-  return($response);
+  
 }
 function saveParametre($data)
 {
@@ -614,19 +637,130 @@ function getListeParametreByListeId($data)
   $data = getData($sql,false);
   return($data);
 }
+function getListeTypeUser($data)
+{
+  $response = array('listTypeUserResponse' => array());
+  $data->pager->count = 0;
+  $response['pager'] = $data->pager;
+
+  $typeUserFilter = convertInstance($data,"TypeUserFilter");
+  $sql = "SELECT * FROM type_user ";  
+  $whereClause = getWhere($typeUserFilter);
+  $sql .= $whereClause;
+  $listeTypeUser = getData($sql,false);
+  if (!empty($listeTypeUser)) 
+  {   
+    for($i=0; $i<count($listeTypeUser);$i++)
+    {
+      $listeTypeUser[$i] = convertKeys($listeTypeUser[$i]);
+    }
+    $response = array(  'listTypeUserResponse' => $listeTypeUser );
+    
+    $data->pager->count = count($listeTypeUser);
+    $response['pager'] = $data->pager;
+  }
+  return $response;
+}
+// get user type
+function getTypeUser($id)
+{
+  $sql = "SELECT * FROM type_user where id = $id"; 
+  $data =  getData($sql,false);
+  if(empty($data))
+  {
+    return  array(  'id' => null );
+  }
+  else
+  {
+    return convertKeys($data[0]);
+  }
+}
+// get user
+function getUser($id)
+{
+  $sql = "SELECT * FROM user where id = $id"; 
+  $data =  getData($sql,false);
+  if(empty($data))
+  {
+    return  array(  'id' => null );
+  }
+  else
+  {
+    return convertKeys($data[0]);
+  }
+}
+function getListeUser($data)
+{
+  $response = array('listUserResponse' => array());
+  $data->pager->count = 0;
+  $response['pager'] = $data->pager;
+
+
+
+  $userFilter = convertInstance($data,"UserFilter");
+  $userConnected = getUser($data->idUserCreater->value);
+  if(!empty($userConnected) && !empty($userConnected["idTypeUser"]))
+  {
+    $typeUser = getTypeUser($userConnected["idTypeUser"]);
+    if(!empty($typeUser))
+    {
+      $sql = "SELECT * FROM user ";  
+      // type admin
+      if($typeUser["id"] == 1)
+        $whereClause = "";
+      // type user
+      else if($typeUser["id"] == 2)
+        $whereClause = getWhere($userFilter);
+      $sql .= $whereClause . " LIMIT " . $data->pager->limit . " , " . $data->pager->size;
+      $listUser = getData($sql,false);
+      if (count($listUser) > 0) 
+      {   
+        // get list type user
+        $typeUserFilter  = new stdClass();
+        $typeUserFilter->pager = new stdClass();
+        $typeUserFilter->pager->count = 0;
+        $listeTypeUser = getListeTypeUser($typeUserFilter);
+
+        for($i=0; $i<count($listUser);$i++)
+        {
+          $listUser[$i] = convertKeys($listUser[$i]);
+          if(!empty($listeTypeUser) && !empty($listeTypeUser["listTypeUserResponse"]))
+            $listUser[$i]["typeUser"] = find($listeTypeUser["listTypeUserResponse"], "id", $listUser[$i]["idTypeUser"]);
+        }
+        $response = array(  'listUserResponse' => $listUser );
+        $sql = "SELECT COUNT(*) AS count FROM user " . $whereClause;
+        $data->pager->count = getData($sql,false)[0]["count"];
+        $response['pager'] = $data->pager;
+        return $response;
+      }
+    }
+  }
+  return $response;
+}
 //-----------signin by login et mot de passe
 function getSignin($data)
 {
-  $sql = "SELECT * FROM `user`  WHERE username='" . $data->username . "' AND password='" . $data->password . "'" ;
-  $rows = getData($sql,false);
+  $sql = "SELECT * FROM `user`  WHERE username='" . $data->username . "' AND is_deleted=0" ;
+  $rows = executeSql($sql,false);
   if (count($rows) > 0) 
-  {             
-    $_SESSION["username"] = $data->username;
-    $_SESSION["password"] = $data->password;  
-    return($rows[0]);  
+  {    
+    $user = convertKeys($rows[0]);
+    if(password_verify($data->password, $user["password"]))
+    {
+      createSessionByCookie("idUserConnected", $user["id"]);
+      
+      $user["jwt"] = generateRandomAlphanumeric(60);
+      $sql = "SELECT * FROM `personne`  WHERE id=" . $user["idPersonne"] . " AND is_deleted=0" ;
+      $rows = executeSql($sql,false);
+      if (count($rows) > 0) 
+      { 
+        $user["personne"] =convertKeys( $rows[0]);
+      }
+      return($user);  
+    }
   }
   else
-  return($rows);
+    return($rows);
 }
 //-----------fin signin by login et mot de passe
 
@@ -733,14 +867,7 @@ function deleteListeCategorieAccueil($data)
   }
 }
 // verification admin connecter (existance de session)
-function verificationAdminConnecter()
-{
-    return true;
-    if( isset($_SESSION["username"]) && isset($_SESSION["password"]))
-        return true;
-    else
-        return false;
-}
+
 // fin verification admin connecter
 function getUpdateSql($data)
 {
@@ -748,26 +875,28 @@ function getUpdateSql($data)
   $id = 0;
   foreach ($data as $key => $value) 
   {
-    if($key != "id")
-    {
-      $date = false;
-      if (gettype($value) == "string")
-        $date = strtotime($value);
-      if( (gettype($value) == "integer" || gettype($value) == "double") &&  (!empty($value) || $value == "0" || $value == "1"))
-        $sql .= " $key = $value , ";
-
-      else if ($date !== false) 
+      if($key != "id")
       {
-          $formattedDate = date("Y-m-d H:i:s", $date);
-          $sql .= " $key = '$formattedDate' , ";
-      } 
-      else if (gettype($value) == "string" && !empty($value))
-        $sql .= " $key = '$value' , ";
-      else if (gettype($value) == "string" && empty($value))
-        $sql .= " $key = NULL , ";
-    }
-    else 
-      $id =  $value;
+        $key = convertKeysFormatSql($key);
+        $date = false;
+        if (gettype($value) == "string")
+          $date = strtotime($value);
+        if( (gettype($value) == "integer" || gettype($value) == "double") &&  (!empty($value) || $value == "0" || $value == "1"))
+          $sql .= " $key = $value , ";
+  
+        else if ($date !== false) 
+        {
+            $formattedDate = date("Y-m-d H:i:s", $date);
+            $sql .= " $key = '$formattedDate' , ";
+        } 
+        else if (gettype($value) == "string" && !empty($value))
+          $sql .= " $key = '$value' , ";
+        else if (gettype($value) == "string" && empty($value))
+          $sql .= " $key = NULL , ";
+      }
+      else 
+        $id =  $value;
+    
   }
   $sql = rtrim($sql, " , ");
   $sql .= " where id = $id";
@@ -776,11 +905,11 @@ function getUpdateSql($data)
 function getInsertSql($data)
 {
   $sql = " ( ";
-  $id = 0;
   foreach ($data as $key => $value) 
   {
-    if($key != "id")
+    if($key != "id"  )
     {
+      $key = convertKeysFormatSql($key);
       if( (gettype($value) == "string" || gettype($value) == "integer" || gettype($value) == "double") &&  (!empty($value) || $value == "0" || $value == "1"))
         $sql .= " $key , ";
       
@@ -790,8 +919,9 @@ function getInsertSql($data)
   $sql .= ") VALUES (";
   foreach ($data as $key => $value) 
   {
-    if($key != "id")
+    if($key != "id" )
     {
+      $key = convertKeysFormatSql($key);
       if( (gettype($value) == "integer" || gettype($value) == "double") &&  (!empty($value) || $value == "0" || $value == "1"))
         $sql .= " $value , ";
       else if (!empty($value) && gettype($value) == "string")
@@ -802,42 +932,41 @@ function getInsertSql($data)
   $sql .= ")";
   return $sql;
 }
-function getWhere($filter, $modeLike = 0)
+function getWhere($filter)
 {
-  // $modeLike = 0     %xxx%
-  // $modeLike = 1     xxx%
-  // $modeLike = 2     xxx
-
   $whereClause = "";
 
-  foreach ($filter as $key => $value) 
+  if(!empty($filter))
   {
-    $value = json_decode(json_encode($value), true);
-    if((isset($value["value"])))
+    foreach ($filter as $key => $value) 
     {
-      if(!empty($value["value"]) || $value["value"] == "0" || $value["value"] == "1")
+      $key = convertKeysFormatSql($key);
+      $value = json_decode(json_encode($value), true);
+      if((isset($value["value"])))
       {
-        if((gettype($value["value"]) == "string" || gettype($value["value"]) == "integer" || gettype($value["value"]) == "double" || gettype($value["value"]) == "boolean" ))
+        if(!empty($value["value"]) || $value["value"] == "0" || $value["value"] == "1")
         {
-          if(gettype($value["value"]) == "string")
-            $whereClause .= (strlen($whereClause)>0? " AND " :" ") .   $key . (($value["operator"] != '%' && $value["operator"] != '%%')? $value["operator"] : " LIKE ") .  " '" . ($value["operator"] == '%%'? "%" : "") . ((string) $value["value"]) . ($value["operator"] == "%" || $value["operator"] == "%%"? "%" : "") . "' ";
-          else
-            $whereClause .= (strlen($whereClause)>0? " AND " :" ") .  $key . $value["operator"] . ((string)$value["value"]);
-        }
-        else if(isset($value["start"]) && !empty($value["start"]) && isset($value["end"]) && !empty($value["end"]))
-        {
-          $property = str_replace("Filter", "", $key);
-          $whereClause .= (strlen($whereClause)>0? " AND " :" ") . $property . " >=  '" . $value["start"] . "' AND " . $property . " <= '" . $value["end"] . "' ";
+          if((gettype($value["value"]) == "string" || gettype($value["value"]) == "integer" || gettype($value["value"]) == "double" || gettype($value["value"]) == "boolean" ))
+          {
+            if(gettype($value["value"]) == "string")
+              $whereClause .= (strlen($whereClause)>0? " AND " :" ") .   $key . (($value["operator"] != '%' && $value["operator"] != '%%')? $value["operator"] : " LIKE ") .  " '" . ($value["operator"] == '%%'? "%" : "") . ((string) $value["value"]) . ($value["operator"] == "%" || $value["operator"] == "%%"? "%" : "") . "' ";
+            else
+              $whereClause .= (strlen($whereClause)>0? " AND " :" ") .  $key . $value["operator"] . ((string)$value["value"]);
+          }
+          else if(isset($value["start"]) && !empty($value["start"]) && isset($value["end"]) && !empty($value["end"]))
+          {
+            $property = str_replace("Filter", "", $key);
+            $whereClause .= (strlen($whereClause)>0? " AND " :" ") . $property . " >=  '" . $value["start"] . "' AND " . $property . " <= '" . $value["end"] . "' ";
+          }
         }
       }
-    }
-    else if(gettype($value) == "array" && count($value)>0)
-    {
-      $property = str_replace("List", "", $key);
-      $string = implode(',', $value);
-      $whereClause .= (strlen($whereClause)>0? " AND " :"") .  "  $property in ( $string ) ";
-    }
-    
+      else if(gettype($value) == "array" && count($value)>0)
+      {
+        $property = str_replace("List", "", $key);
+        $string = implode(',', $value);
+        $whereClause .= (strlen($whereClause)>0? " AND " :"") .  "  $property in ( $string ) ";
+      }      
+    }    
   }
   return ((strlen($whereClause)>0? " WHERE " : "") .$whereClause);
 }

@@ -12,9 +12,9 @@ if ($path !== false)
 {
     $path = substr($path, strlen("controller.php"));
 }
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') 
 {
-  //   
   if (preg_match('/\/get-resolution-by-type-content\/(.*)/', $path, $matches)) 
   {
     $type_content = $matches[1];
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
   {
     echo json_encode(getListeParametreType());
   }
-  if (preg_match('/\/find-parametre\/(\d+)/', $path, $matches)) 
+  if (preg_match('/\/parametre\/findById\/(\d+)/', $path, $matches)) 
   {
     $id = intval($matches[1]);
     echo json_encode(getParametre($id));
@@ -119,7 +119,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
       echo json_encode(getListeLigneAccueille($data));
     }
-    if($path === '/liste-parametre')
+    if($path === '/parametre/findByFilter')
     {
       echo json_encode(getListeParametre($data));
     }
@@ -139,9 +139,17 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
       echo json_encode(deleteLigneAccueille($data));
     }  
-    if($path === '/signin')
+    if($path === '/user/signin')
     {
       echo json_encode(getSignin($data));
+    }
+    if($path === '/user/findByFilter')
+    {
+      echo json_encode(getListeUser($data));
+    }
+    if($path === '/typeUser/findByFilter')
+    {
+      echo json_encode(getListeTypeUser($data));
     }
     if($path === '/save-image')
     {
@@ -178,7 +186,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")
 elseif ($_SERVER['REQUEST_METHOD'] === "PUT")  
 {
   $data = json_decode(file_get_contents('php://input'), true);
-  if($path === '/save-parametre')
+  if($path === '/parametre/save')
   {
     echo json_encode(saveParametre($data));
   }

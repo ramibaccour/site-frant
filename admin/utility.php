@@ -1,5 +1,6 @@
 <?php
     $myHoste = "https://localhost/site-frant";
+    $jwtSecret="=================================================jwt=autentification =====================================================";
     function find($liste, $property, $value)
     {
         $i = array_search($value, array_column($liste, $property));
@@ -171,5 +172,83 @@
             }
         }
         return $accueille;
+    }
+
+
+    function generateRandomAlphanumeric($length = 5)
+    {
+        // Caractères alphanumériques possibles
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+
+        // Générer la chaîne aléatoire
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+        }
+
+        return $randomString;
+    }
+    function convertKeys($array) 
+    {
+        $convertedArray = array();
+        
+        foreach ($array as $key => $value) 
+        {
+            $newKey = str_replace('_', '', ucwords($key, '_'));
+            $newKey = lcfirst($newKey);
+            $convertedArray[$newKey] = $value;
+        }
+        return $convertedArray;
+    }
+    function convertKeysFormatSql($chaine) 
+    {
+        // Remplacer la lettre majuscule par la lettre minuscule précédée par '_'
+        $chaine = str_replace(range('A', 'Z'), array_map(function ($char) 
+        {
+            return '_' . strtolower($char);
+        }, range('A', 'Z')), $chaine);
+
+        return $chaine;
+    }
+    function convertInstance($sourceInstance, $targetClass) 
+    {
+        if(!empty($sourceInstance))
+            $sourceInstance = (object) $sourceInstance;
+        $myClass =  !class_exists($targetClass);
+        $myObject = !is_object($sourceInstance);
+        if ( $myClass  || $myObject) 
+        {
+            return null;
+        }
+        $targetInstance = new $targetClass();
+        // Récupérer les propriétés publiques de l'instance source
+        $sourceProperties = get_object_vars($sourceInstance);
+        // Parcourir les propriétés de l'instance cible
+        foreach ($sourceProperties as $propertyName => $propertyValue) 
+        {
+            // Vérifier si la propriété existe dans l'instance cible
+            if (property_exists($targetInstance, $propertyName)) 
+            {
+                // Affecter la valeur de la propriété de l'instance source à l'instance cible
+                $targetInstance->{$propertyName} = $propertyValue;
+            }
+        }
+        return $targetInstance;
+    }
+    function createSessionByCookie($nomCookie, $valeurCookie)
+    {
+        $dureeVie = time() + 30 * 24 * 60 * 60; 
+        // Définir le chemin du cookie (ici, le chemin racine '/')
+        $cheminCookie = "/";
+
+        // Créer le cookie
+        setcookie($nomCookie, $valeurCookie, $dureeVie, $cheminCookie);
+    }
+    function verificationUserConnecter()
+    {
+        return true;
+        if(isset($_COOKIE['idUserConnected'])) 
+            return true;
+        return false;
     }
 ?>
