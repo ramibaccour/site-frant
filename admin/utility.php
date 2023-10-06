@@ -1,6 +1,5 @@
 <?php
     $myHoste = "https://localhost/site-frant";
-    $jwtSecret="=================================================jwt=autentification =====================================================";
     function find($liste, $property, $value)
     {
         $i = array_search($value, array_column($liste, $property));
@@ -250,5 +249,45 @@
         if(isset($_COOKIE['idUserConnected'])) 
             return true;
         return false;
+    }
+    function clean($value)
+    {
+        if(!empty($value) && gettype($value) == "string")
+        {
+            $value = str_replace("'", "''", $value);
+            $value = str_replace(";", '', $value);
+        }
+        return $value;
+    }
+    function checkModule($idUser, $idModule)
+    {
+        $sql = "SELECT * FROM detail_type_user where id_type_user = ".
+                "(SELECT id_type_user from user where id = $idUser) and id_module = $idModule;";
+        $detailTypeUser = getData($sql,false);
+        if(!empty($detailTypeUser))
+        {
+            $detailTypeUser = convertKeys($detailTypeUser[0]);
+            if($detailTypeUser["value"] == 1)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    function getConditionOnlyMyData($idUser, $idModule, $whereClause)
+    {
+        if(checkModule($idUser, $idModule) === true)
+        {
+            if(strlen($whereClause)>0)
+            {
+                $whereClause .= " AND id_user = $idUser";
+            }
+            else
+            {
+                $whereClause .= " WHERE id_user = $idUser";
+            }
+        }
+        return $whereClause;
+        
     }
 ?>

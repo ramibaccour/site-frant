@@ -9,7 +9,7 @@
         public $idLng;
         public $idPersonne;
         public $idDefaultMenu;
-        public $idUserCreater;
+        public $idUser;
         public $idTypeUser;
     }
 ?>

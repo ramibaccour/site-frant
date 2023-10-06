@@ -40,6 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
     $id = intval($matches[1]);
     echo json_encode(getLigneAccueille($id));
   }
+  if (preg_match('/\/user\/findById\/(\d+)/', $path, $matches)) 
+  {
+    $id = intval($matches[1]);
+    echo json_encode(getUser($id));
+  }
   if($path === '/head-accueille')
   {
     echo json_encode(getHeadAccueille());
@@ -123,6 +128,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
       echo json_encode(getListeParametre($data));
     }
+    if($path === '/parametre/findByListId')
+    {
+      echo json_encode(getListeParametreByListeId($data));
+    }
     if($path === '/liste-parametre-by-liste-id')
     {
       echo json_encode(getListeParametreByListeId($data));
@@ -150,6 +159,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     if($path === '/typeUser/findByFilter')
     {
       echo json_encode(getListeTypeUser($data));
+    }
+    if($path === '/document/findByFilter')
+    {
+      echo json_encode(getListeDocument($data));
     }
     if($path === '/save-image')
     {
@@ -181,6 +194,11 @@ elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
     echo json_encode(deleteImage($id));
+  }     
+  if (preg_match('/\/user\/delete\/(\d+)/', $path, $matches)) 
+  {
+    $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
+    echo json_encode(deleteUser($id));
   } 
 }
 elseif ($_SERVER['REQUEST_METHOD'] === "PUT")  
@@ -189,6 +207,18 @@ elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
   if($path === '/parametre/save')
   {
     echo json_encode(saveParametre($data));
+  }
+  if($path === '/user/save')
+  {
+    echo json_encode(saveUser($data));
+  }
+  if($path === '/document/save')
+  {
+    echo json_encode(saveDocument($data));
+  }
+  if($path === '/user/savePassword')
+  {
+    echo json_encode(savePassword($data));
   }
   if($path === '/save-article')
   {
