@@ -14,20 +14,19 @@ define('DB_HOST', 'localhost:3306');
 define('DB_USER', 'root');
 define('DB_PASS', 'root');
 define('DB_NAME', 'big_open');
-//  define('DB_HOST', 'karamasfax.org');
-//  define('DB_USER', 'karamasf_rami');
-//  define('DB_PASS', 'rami_123');
-//  define('DB_NAME', 'karamasf_karama');
 
 
 $rows = array();
 function executeSql($sql,$getAutoIncrement)
 {
-  $pdo = new PDO("mysql:dbname=" . DB_NAME . ";host=" . DB_HOST, DB_USER, DB_PASS,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+  $pdo = new PDO("mysql:dbname=" . DB_NAME .";host=" . DB_HOST,
+                  DB_USER,
+                  DB_PASS,
+                  array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
   $statement = $pdo->prepare($sql);
   $statement->execute();
   $results = "";
-  if($getAutoIncrement == true)
+  if($getAutoIncrement === true)
   {
     $autoIncrement = $pdo->lastInsertId();
     $results = array(
@@ -46,13 +45,11 @@ function getData($sql,$getAutoIncrement)
   {
     return executeSql($sql,$getAutoIncrement);
   }
-
 }
 function getImage($id)
 {
-  $sql = "SELECT * FROM image where id = $id"; 
-  $data =  getData($sql,false)[0];
-  return($data);
+  $sql = "SELECT * FROM image where id = $id";
+  return getData($sql,false)[0];
 }
 function saveImageFile($image,$name, $id_image)
 {
@@ -81,7 +78,7 @@ function saveImage($data)
   // mode update
   if(isset($data["id"]) && $data["id"]>0)
   {
-    $sql = "update image set " . getUpdateSql($data); 
+    $sql = "update image set " . getUpdateSql($data);
     getData($sql,false);
     return getImage($data["id"]);
   }
@@ -96,17 +93,16 @@ function saveImage($data)
 function deleteImage($id)
 {
   $sql = "delete from image where id = $id";
-  getData($sql,true); 
+  getData($sql,true);
 }
 function getListeAccueille($data)
 {
-  $sql = "SELECT * FROM accueil " .  getWhere($data->filter) . " order by ordre";  
-  $listeArt = getData($sql,false);
-  return($listeArt);
+  $sql = "SELECT * FROM accueil " .  getWhere($data->filter) . " order by ordre";
+  return getData($sql,false);
 }
 function getAccueille($id)
 {
-  $sql = "SELECT * FROM accueil where id = $id"; 
+  $sql = "SELECT * FROM accueil where id = $id";
   $data =  getData($sql,false)[0];
   if($data["id_article"] > 0)
   {
@@ -118,21 +114,20 @@ function getAccueille($id)
   }
   if($data["id_accueil_type"] > 0)
   {
-    $accueilType = getAccueilType( $data['id_accueil_type']);    
+    $accueilType = getAccueilType( $data['id_accueil_type']);
     $data["accueilType"] = $accueilType;
   }
   if(!empty($accueilType["id_resolution"]))
-    $accueilType["resolution"] = getResolution( $accueilType["id_resolution"]);
-  return($data);
+    {$accueilType["resolution"] = getResolution( $accueilType["id_resolution"]);}
+  return $data;
 }
 function deleteAccueille($id)
 {
-  $sql = "SELECT * FROM accueil where id = $id"; 
+  $sql = "SELECT * FROM accueil where id = $id";
   $value = getData($sql,false)[0]["is_deleted"];
   $value = ($value == 1? 0 : 1);
-  $sql = "UPDATE accueil SET is_deleted = $value where id = $id"; 
-  $rows = getData($sql,false);
-  return($rows);
+  $sql = "UPDATE accueil SET is_deleted = $value where id = $id";
+  return getData($sql,false);
 }
 function getHeadAccueille()
 {
@@ -143,7 +138,7 @@ function saveAccueille($data)
   // mode update
   if(isset($data["id"]) && $data["id"]>0)
   {
-    $sql = "update accueil set " . getUpdateSql($data); 
+    $sql = "update accueil set " . getUpdateSql($data);
     getData($sql,false);
     return getAccueille($data["id"]);
   }
@@ -158,13 +153,16 @@ function saveAccueille($data)
 
 function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
 {
-  $sql = "select * from accueil where id in (SELECT id_accueil FROM categorie_accueil where id_categorie =  $id_categorie)  order by ordre"; 
+  $sql = " select * from accueil".
+          " where id in ".
+          "(SELECT id_accueil FROM categorie_accueil where id_categorie =  $id_categorie)  ".
+          "order by ordre";
   $listeAccueil = getData($sql,false);
   usort($listeAccueil, function($a, $b) {return $a['ordre'] - $b['ordre'];});
   $idArticle_uniques = (array_column($listeAccueil, 'id_article'));
   $idCategorie_uniques = (array_column($listeAccueil, 'id_categorie'));
   // remplissage des ligneAcceuille
-  if($getLigneAcceuille == true)
+  if($getLigneAcceuille === true)
   {
     // recherche liste accueil Type
     $listeAccueilType = getListeAccueilType();
@@ -192,7 +190,9 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
     if(count($idAccueil_uniques)>0)
     {
       $idAccueil_concatenes = implode(',', $idAccueil_uniques);
-      $listeLigneAccueil = getData("select * from ligne_accueil where id_accueil in ( $idAccueil_concatenes ) and is_deleted = 0   order by ordre",false);
+      $listeLigneAccueil = getData("select * from ligne_accueil ".
+                                    "where id_accueil in ( $idAccueil_concatenes ) and".
+                                    " is_deleted = 0   order by ordre",false);
       $idArticle_uniques = array_merge($idArticle_uniques, array_column($listeLigneAccueil, 'id_article'));
       $idCategorie_uniques = array_merge($idCategorie_uniques, array_column($listeLigneAccueil, 'id_categorie'));
       for ($i = 0; $i < count($listeAccueil); $i++) 
@@ -207,10 +207,11 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
     $idArticle_uniques =  array_filter($idArticle_uniques, function ($value) {return !is_null($value); });
     $lsiteCategorieArticle = [];
     if(count($idArticle_uniques)>0)
-    {      
+    {
       $idArticle_concatenes = implode(',', $idArticle_uniques);
       // rechreche categorie article
-      $lsiteCategorieArticle = getData("select * from article_categorie where id_article in ( $idArticle_concatenes )",false);
+      $lsiteCategorieArticle = getData("select * from article_categorie ".
+                                        "where id_article in ( $idArticle_concatenes )",false);
       $listeArticle = getData("select * from article where id in ( $idArticle_concatenes )",false);
       // rechreche des images
       $listeImage = getData("select * from image where id_article in ( $idArticle_concatenes ) order by ordre",false);
@@ -219,7 +220,7 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
       {
         $art = find($listeArticle, "id", $listeAccueil[$i]["id_article"]);
         if(!empty($art))
-          $art["listeImage"] = filter($listeImage, "id_article",$art["id"]);
+        {$art["listeImage"] = filter($listeImage, "id_article",$art["id"]);}
         $listeAccueil[$i]["article"] = $art;
         if(isset($listeAccueil[$i]["listeLigneAccueil"]) && count($listeAccueil[$i]["listeLigneAccueil"])>0)
         {
@@ -231,7 +232,10 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
             {
               $listeLigneAccueil[$j]["article"] =  find($listeArticle, "id", $listeLigneAccueil[$j]["id_article"]);
               // remplissage des image
-              $listeLigneAccueil[$j]["article"]["listeImage"] = filter($listeImage, "id_article",$listeLigneAccueil[$j]["article"]["id"]);
+              $listeLigneAccueil[$j]["article"]["listeImage"] =
+                                                              filter($listeImage,
+                                                              "id_article",
+                                                              $listeLigneAccueil[$j]["article"]["id"]);
             }
           }
           $listeAccueil[$i]["listeLigneAccueil"] = $listeLigneAccueil;
@@ -246,16 +250,20 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
     if(count($idCategorie_uniques)>0)
     {
       $idCategorie_concatenes = implode(',', $idCategorie_uniques);
-      $listeCategorie = getData("select * from categorie where id in ( $idCategorie_concatenes )  order by ordre",false);
+      $listeCategorie = getData("select * from categorie where id in
+                                ( $idCategorie_concatenes )  order by ordre",false);
       // recherche les article pour les categorie
-      $listeArticleCategorie = getData("select * from article_categorie where id_categorie in ( $idCategorie_concatenes )",false);
+      $listeArticleCategorie = getData("select * from article_categorie where id_categorie in
+                                      ( $idCategorie_concatenes )",false);
 
       // recherche accueil par categorie
-      $listeCategorieAccueil = getData("select * from categorie_accueil where id_categorie in ( $idCategorie_concatenes )",false);
+      $listeCategorieAccueil = getData("select * from categorie_accueil where id_categorie in
+                                      ( $idCategorie_concatenes )",false);
       // rechreche des images
-      $listeImage = getData("select * from image where id_categorie in ( $idCategorie_concatenes ) order by ordre",false);
+      $listeImage = getData("select * from image where id_categorie in
+                          ( $idCategorie_concatenes ) order by ordre",false);
 
-      for ($i = 0; $i < count($listeAccueil); $i++) 
+      for ($i = 0; $i < count($listeAccueil); $i++)
       {
         $cat = find($listeCategorie, "id", $listeAccueil[$i]["id_categorie"]);
         if(!empty($cat))
@@ -272,7 +280,8 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
           $listeCategorieFiltred = filter($lsiteCategorieArticle, "id_article", $listeAccueil[$i]["article"]["id"]);
           foreach($listeCategorieFiltred as $catart)
           {
-            array_push($listeAccueil[$i]["article"]["listeCategorie"], find($listeCategorie, "id", $catart["id_categorie"]));
+            array_push( $listeAccueil[$i]["article"]["listeCategorie"],
+                        find($listeCategorie, "id", $catart["id_categorie"]));
           }
         }
         if(isset($listeAccueil[$i]["listeLigneAccueil"]) && count($listeAccueil[$i]["listeLigneAccueil"])>0)
@@ -283,22 +292,38 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
           {
             if(!empty($listeLigneAccueil[$j]["id_categorie"]))
             {
-              $listeLigneAccueil[$j]["categorie"] =  find($listeCategorie, "id", $listeLigneAccueil[$j]["id_categorie"]);
+              $listeLigneAccueil[$j]["categorie"] =  find(
+                                                          $listeCategorie,
+                                                          "id",
+                                                          $listeLigneAccueil[$j]["id_categorie"]);
               // remplissage des image
-              $listeLigneAccueil[$j]["categorie"]["listeImage"] = filter($listeImage, "id_categorie",$listeLigneAccueil[$j]["categorie"]["id"]);
+              $listeLigneAccueil[$j]["categorie"]["listeImage"] = filter(
+                                                                          $listeImage,
+                                                                          "id_categorie",
+                                                                          $listeLigneAccueil[$j]["categorie"]["id"]);
               // remplissage accueil par categorie
-              $listeLigneAccueil[$j]["categorie"]["listeCategorieAccueil"] = filter($listeCategorieAccueil, "id_categorie",$listeLigneAccueil[$j]["categorie"]["id"]);
+              $listeLigneAccueil[$j]["categorie"]["listeCategorieAccueil"] = filter(
+                                                                            $listeCategorieAccueil,
+                                                                            "id_categorie",
+                                                                            $listeLigneAccueil[$j]["categorie"]["id"]);
               
-              $listeLigneAccueil[$j]["categorie"]["listeArticleCategorie"] = filter($listeArticleCategorie, "id_categorie",$listeLigneAccueil[$j]["categorie"]["id"]);
+              $listeLigneAccueil[$j]["categorie"]["listeArticleCategorie"] = filter(
+                                                                            $listeArticleCategorie,
+                                                                            "id_categorie",
+                                                                            $listeLigneAccueil[$j]["categorie"]["id"]);
             }
             // remplissage  categorie article pour listeLigneAccueil
             if(isset($listeLigneAccueil[$j]["article"]))
             {
                 $listeLigneAccueil[$j]["article"]["listeCategorie"] = [];
-                $listeCategorieFiltred = filter($lsiteCategorieArticle, "id_article", $listeLigneAccueil[$j]["article"]["id"]);
+                $listeCategorieFiltred = filter($lsiteCategorieArticle,
+                                                "id_article",
+                                                $listeLigneAccueil[$j]["article"]["id"]);
                 foreach($listeCategorieFiltred as $catart)
                 {
-                  array_push($listeLigneAccueil[$j]["article"]["listeCategorie"], find($listeCategorie, "id", $catart["id_categorie"]));
+                  array_push($listeLigneAccueil[$j]["article"]["listeCategorie"],
+                            find($listeCategorie, 
+                            "id", $catart["id_categorie"]));
                 }
             }
           }
@@ -308,29 +333,27 @@ function getListeAccueilleByCategorie($id_categorie,$getLigneAcceuille = false)
     }
   }
   
-  return($listeAccueil);
+  return $listeAccueil;
 }
 function getResolutionByIdAccueilType($id)
 {
-  $sql = "select * from resolution where id in (SELECT id_resolution FROM accueil_type_resolution where id_accueil_type =  $id)"; 
-  $rows = getData($sql,false);
-  return($rows);
+  $sql = "select * from resolution where id in
+          (SELECT id_resolution FROM accueil_type_resolution where id_accueil_type =  $id)";
+  return getData($sql,false);
 }
 function getAccueilTypeResolution()
 {
-  $sql = "select * from accueil_type_resolution  order by ordre"; 
-  $rows = getData($sql,false);
-  return($rows);
+  $sql = "select * from accueil_type_resolution  order by ordre";
+  return getData($sql,false);
 }
 function getResolution($id)
 {
-  $sql = "SELECT * FROM resolution where id = $id"; 
-  $data =  getData($sql,false)[0];
-  return($data);
+  $sql = "SELECT * FROM resolution where id = $id";
+  return getData($sql,false);
 }
 function getListeLigneAccueille($data)
 {
-  $sql = "SELECT * FROM ligne_accueil " .  getWhere($data->filter) . " order by ordre";  
+  $sql = "SELECT * FROM ligne_accueil " .  getWhere($data->filter) . " order by ordre";
   $listeArt = getData($sql,false);
   $idArticle_uniques = array_unique(array_column($listeArt, 'id_article'));
   $idArticle_uniques =  array_filter($idArticle_uniques, function ($value) {return !is_null($value); });
@@ -338,11 +361,11 @@ function getListeLigneAccueille($data)
   {
     $idArticle_concatenes = implode(',', $idArticle_uniques);
     $listeArticle = getData("select * from article where id in ( $idArticle_concatenes )",false);
-    for ($i = 0; $i < count($listeArt); $i++) 
+    for ($i = 0; $i < count($listeArt); $i++)
     {
-      foreach ($listeArticle as $article) 
+      foreach ($listeArticle as $article)
       {
-        if ($article['id'] == $listeArt[$i]["id_article"]) 
+        if ($article['id'] == $listeArt[$i]["id_article"])
         {
           $listeArt[$i]["article"] = $article;
         }
@@ -355,18 +378,18 @@ function getListeLigneAccueille($data)
   {
     $idCategorie_concatenes = implode(',', $idCategorie_uniques);
     $listeCategorie = getData("select * from categorie where id in ( $idCategorie_concatenes )  order by ordre",false);
-    for ($i = 0; $i < count($listeArt); $i++) 
+    for ($i = 0; $i < count($listeArt); $i++)
     {
-      foreach ($listeCategorie as $categorie) 
+      foreach ($listeCategorie as $categorie)
       {
-        if ($categorie['id'] == $listeArt[$i]["id_categorie"]) 
+        if ($categorie['id'] == $listeArt[$i]["id_categorie"])
         {
           $listeArt[$i]["categorie"] = $categorie;
         }
       }
     }
   }
-  return($listeArt);
+  return $listeArt;
 }
 function getLigneAccueille($id)
 {
@@ -380,7 +403,7 @@ function getLigneAccueille($id)
   {
     $data["categorie"] = getCategorie($data["id_categorie"]);
   }
-  return($data);
+  return data;
 }
 function deleteLigneAccueille($data)
 {
@@ -391,7 +414,7 @@ function deleteLigneAccueille($data)
   $sql = "UPDATE ligne_accueil SET is_deleted = $value ";
   $sql.= getWhere($data);
   $rows = getData($sql,false);
-  return($rows);
+  return $rows;
 }
 function getHeadLigneAccueille()
 {
@@ -402,7 +425,7 @@ function saveLigneAccueille($data)
   // mode update
   if(isset($data["id"]) && $data["id"]>0)
   {
-    $sql = "update ligne_accueil set " . getUpdateSql($data); 
+    $sql = "update ligne_accueil set " . getUpdateSql($data);
     getData($sql,false);
     return getLigneAccueille($data["id"]);
   }
@@ -417,7 +440,7 @@ function saveLigneAccueille($data)
 
 function getListeAccueilType()
 {
-  $sql = "SELECT * FROM accueil_type"; 
+  $sql = "SELECT * FROM accueil_type";
   $rows = getData($sql,false);
   $idResolution_uniques = array_unique(array_column($rows, 'id_resolution'));
   $idResolution_uniques =  array_filter($idResolution_uniques, function ($value){return !is_null($value);});
@@ -425,18 +448,18 @@ function getListeAccueilType()
   {
     $idResolution_concatenes = implode(',', $idResolution_uniques);
     $listeResolution = getData("select * from resolution where id in ( $idResolution_concatenes )",false);
-    for ($i = 0; $i < count($rows); $i++) 
+    for ($i = 0; $i < count($rows); $i++)
     {
-      foreach ($listeResolution as $resolution) 
+      foreach ($listeResolution as $resolution)
       {
-        if ($resolution['id'] == $rows[$i]["id_resolution"]) 
+        if ($resolution['id'] == $rows[$i]["id_resolution"])
         {
           $rows[$i]["resolution"] = $resolution;
         }
       }
     }
   }
-  return($rows);
+  return $rows;
 }
 function getAccueilType($id)
 {
@@ -562,7 +585,7 @@ function saveArticle($data)
   // mode update
   if(isset($data["id"]) && $data["id"]>0)
   {
-    $sql = "update article set " . getUpdateSql($data); 
+    $sql = "update article set " . getUpdateSql($data);
     getData($sql,false);
     return getArticle($data["id"]);
   }
@@ -594,7 +617,7 @@ function getListeParametre($data)
   $sql = "SELECT * FROM parametre ";
 
   $whereClause = getWhere(convertInstance($data,"ParametreFilter"));
-  $sql .= $whereClause . " LIMIT " . $data->pager->limit . " , " . $data->pager->size;
+  $sql .= $whereClause . " LIMIT  " . $data->pager->limit . " , " . $data->pager->size;
   $listeArt = getData($sql,false);
   if (!empty($listeArt))
   {
@@ -623,6 +646,16 @@ function saveParametre($data)
   getData($sql,false);
   return getParametre($data["id"]);
 }
+function saveCommissionCommercialle($data)
+{
+  $sql = "insert into commission_commercialle  " . getInsertSql($data);
+  $com = getData($sql,false);
+  $document = getDocument($data["idDocument"]);
+  $sql = "update document set  etat ='livrer_payer' where id = ". $document['id'] ;
+  getData($sql,false);
+  return array( "commissionCommercialleResponse" => $com,
+                "commissionCommercialleResponseError" =>array("haveError" => false));
+}
 function getListeParametreType()
 {
   $sql = "SELECT distinct type FROM parametre where type IS NOT NULL";
@@ -647,6 +680,36 @@ function getListeParametreByListeId($data)
     $response = array(  'listParametreResponse' =>  array() );
     $response['pager'] = array("count"=>0);
     return $response;
+  }
+}
+
+function getDocument($id)
+{
+  $sql = "SELECT * FROM document where id = $id";
+  $data =  getData($sql,false);
+  if(empty($data))
+  {
+    return  array(  'id' => null );
+  }
+  else
+  {
+    $data = $data[0];
+    if(isset($data["id_user_commerciale"]) && !empty($data["id_user_commerciale"]))
+    {
+      $data["userCommerciale"] = getUser($data["id_user_commerciale"]);
+    }
+    $res = convertKeys($data);
+    $sql = "SELECT * FROM detail_document where id_document = $id";
+    $data =  getData($sql,false);
+    if(!empty($data))
+    {
+      for($i=0; $i<count($data);$i++)
+      {
+        $data[$i] = convertKeys($data[$i]);
+      }
+      $res["listDetailDocument"] = $data;
+    }
+    return $res;
   }
 }
 function getListeDocument($data)
@@ -678,12 +741,45 @@ function getListeDocument($data)
     {
       $listDocumentResponse[$i] = convertKeys($listDocumentResponse[$i]);
     }
+    $listDocumentResponse = affcterDetialDocument($listDocumentResponse);
     $response = array(  'listDocumentResponse' => $listDocumentResponse );
     $sql = "SELECT COUNT(*) AS count FROM document " . $whereClause;
     $data->pager->count = getData($sql,false)[0]["count"];
     $response['pager'] = $data->pager;
   }
   return $response;
+}
+function affcterDetialDocument($listDocumentResponse)
+{
+  $ids = array();
+  foreach ($listDocumentResponse as $item)
+  {
+    if (isset($item['id']))
+    {
+        $ids[] = $item['id'];
+    }
+  }
+  $listeDetailDocument = getListDetailDocument(implode(',', $ids));
+  for($i=0; $i<count($listDocumentResponse);$i++)
+  {
+    $listDocumentResponse[$i]["listDetailDocument"] = filter($listeDetailDocument,
+                                                                                  "idDocument",
+                                                                                  $listDocumentResponse[$i]["id"]);
+  }
+  return $listDocumentResponse;
+}
+function getListDetailDocument($listIdDocument)
+{
+  $sql = "SELECT * FROM detail_document where id_document in ( $listIdDocument )";
+  $data = getData($sql,false);
+  if (!empty($data))
+  {
+    for($i=0; $i<count($data);$i++)
+    {
+      $data[$i] = convertKeys($data[$i]);
+    }
+  }
+  return $data;
 }
 function saveDocument($data)
 {
@@ -706,27 +802,16 @@ function saveDocument($data)
     // mode update
     if( isset($data["id"]) && $data["id"]>0)
     {
-      $sql = "update user set " . getUpdateSql(convertInstance($data,"UserFilter")); 
-      getData($sql,false);
-      $userResponse = getUser($data["id"]);
-      return array( "userResponse" => $userResponse, "userResponseError" => $userResponseError);
+      updateDocument($data);
     }
     // mode add
     else
     {
-      $sql = "insert into document " . getInsertSql(convertInstance($data,"DocumentFilter"));
-      $data["id"] = getData($sql,true)["id"];
-
-      for($i=0; $i<count($data["listDetailDocument"]);$i++)
-      {
-        $data["listDetailDocument"][$i]["idDocument"] = $data["id"];
-        $sql ="insert detail_document ".getInsertSql(convertInstance($data["listDetailDocument"][$i],"DetailDocumentFilter"));
-        $data["listDetailDocument"][$i]["id"] = getData($sql,true)["id"];
-      }
-      return array( "documentResponse"=>$data,
-                    "documentResponseError"=>$documentResponseError,
-                    "detailDocumentResponseError" => $detailDocumentResponseError );
+      addDocument($data);
     }
+    return array( "documentResponse"=>$data,
+                "documentResponseError"=>$documentResponseError,
+                "detailDocumentResponseError" => $detailDocumentResponseError );
   }
   else
   {
@@ -736,6 +821,66 @@ function saveDocument($data)
                   "detailDocumentResponseError" => $detailDocumentResponseError );
   }
 }
+function updateDocument($data)
+{
+  $sql = "update document set " . getUpdateSql(convertInstance($data,"DocumentFilter"));
+  getData($sql,false);
+  // recherche encienne detail_document
+  $sql = "select * from  detail_document where id_document = ".$data['id'];
+  $listEncienneDetailDocument = getData($sql,false);
+  if(!empty($data["listDetailDocument"]) && count($data["listDetailDocument"])>0)
+  {
+    deleteRemovedDetailDocument($data, $listEncienneDetailDocument);
+    updateAndAddDetailDocument($data, $listEncienneDetailDocument);
+    
+  }
+}
+function addDocument($data)
+{
+  $sql = "insert into document " . getInsertSql(convertInstance($data,"DocumentFilter"));
+  $data["id"] = getData($sql,true)["id"];
+
+  for($i=0; $i<count($data["listDetailDocument"]);$i++)
+  {
+    $data["listDetailDocument"][$i]["idDocument"] = $data["id"];
+    $sql ="insert into detail_document ".
+            getInsertSql(convertInstance($data["listDetailDocument"][$i],"DetailDocumentFilter"));
+    $data["listDetailDocument"][$i]["id"] = getData($sql,true)["id"];
+  }
+  
+}
+function  deleteRemovedDetailDocument($data, $listEncienneDetailDocument)
+{
+  if(!empty($listEncienneDetailDocument))
+  {
+    for($i=0; $i<count($listEncienneDetailDocument);$i++)
+    {
+      if(find($data["listDetailDocument"], "id", $listEncienneDetailDocument[$i]["id"]) == null)
+      {
+        $sql = "delete from detail_document where id = " .$listEncienneDetailDocument[$i]["id"];
+        getData($sql,false);
+      }
+    }
+  }
+}
+function updateAndAddDetailDocument($data, $listEncienneDetailDocument)
+{
+  for($i=0; $i<count($data["listDetailDocument"]);$i++)
+  {
+    if(find($listEncienneDetailDocument, "id", $data["listDetailDocument"][$i]["id"]) == null)
+    {
+      $sql ="insert into detail_document  ".
+            getInsertSql(convertInstance($data["listDetailDocument"][$i],"DetailDocumentFilter"));
+      $data["listDetailDocument"][$i]["id"] = getData($sql,true)["id"];
+    }
+    else
+    {
+      $sql =  "update detail_document set".
+              getUpdateSql(convertInstance($data["listDetailDocument"][$i],"DetailDocumentFilter"));
+              getData($sql,false);
+    }
+  }
+}
 function getListeTypeUser($data)
 {
   $response = array('listTypeUserResponse' => array());
@@ -743,12 +888,12 @@ function getListeTypeUser($data)
   $response['pager'] = $data->pager;
 
   $typeUserFilter = convertInstance($data,"TypeUserFilter");
-  $sql = "SELECT * FROM type_user ";  
+  $sql = "SELECT * FROM type_user ";
   $whereClause = getWhere($typeUserFilter);
   $sql .= $whereClause;
   $listeTypeUser = getData($sql,false);
-  if (!empty($listeTypeUser)) 
-  {   
+  if (!empty($listeTypeUser))
+  {
     for($i=0; $i<count($listeTypeUser);$i++)
     {
       $listeTypeUser[$i] = convertKeys($listeTypeUser[$i]);
@@ -763,7 +908,7 @@ function getListeTypeUser($data)
 // get user type
 function getTypeUser($id)
 {
-  $sql = "SELECT * FROM type_user where id = $id"; 
+  $sql = "SELECT * FROM type_user where id = $id";
   $data =  getData($sql,false);
   if(empty($data))
   {
@@ -777,7 +922,7 @@ function getTypeUser($id)
 // get user
 function getUser($id)
 {
-  $sql = "SELECT * FROM user where id = $id"; 
+  $sql = "SELECT * FROM user where id = $id";
   $data =  getData($sql,false);
   if(empty($data))
   {
@@ -821,7 +966,7 @@ function getListeUser($data)
       $whereClause = getConditionOnlyMyData($data->idUserConnected, 49, $whereClause);
       $sql .= $whereClause . " LIMIT " . $data->pager->limit . " , " . $data->pager->size;
       $listUser = getData($sql,false);
-      if (!empt($listUser))
+      if (!empty($listUser))
       {
         // get list type user
         $typeUserFilter  = new stdClass();
@@ -858,7 +1003,7 @@ function saveUser($data)
       {
         savePersonne(json_decode(json_encode($data["personne"]),true));
       }
-      $sql = "update user set " . getUpdateSql(convertInstance($data,"UserFilter")); 
+      $sql = "update user set " . getUpdateSql(convertInstance($data,"UserFilter"));
       getData($sql,false);
       $userResponse = getUser($data["id"]);
       return array( "userResponse" => $userResponse, "userResponseError" => $userResponseError);
@@ -934,16 +1079,26 @@ function getSignin($data)
       {
         $sql = "SELECT * FROM `detail_type_user`  WHERE id_type_user=" . $user["idTypeUser"]  ;
         $rows = executeSql($sql,false);
-        if (!empty($rows)) 
-        { 
+        if (!empty($rows))
+        {
           for($i=0; $i<count($rows);$i++)
           {
             $rows[$i] = convertKeys( $rows[$i]);
           }
-          $user["typeUser"] = array("id" => $user["idTypeUser"],"listDetailTypeUser" =>$rows);
+          $sql = "SELECT * FROM `type_user_colonne`  WHERE id_type_user=" . $user["idTypeUser"]  ;
+          $typeUser = executeSql($sql,false);
+          if (!empty($typeUser))
+          {
+            for($i=0; $i<count($typeUser);$i++)
+            {
+              $typeUser[$i] = convertKeys( $typeUser[$i]);
+            }
+          }
+          $user["typeUser"]=array("id"=>$user["idTypeUser"],
+                                  "listDetailTypeUser"=>$rows,
+                                  "listTypeUserColonne"=>$typeUser);
         }
       }
-
       return $user ;
     }
   }
@@ -989,7 +1144,7 @@ function deleteCategorie($data)
 function getCategorieByModelAffichage($id_model_affichage=3)
 {
   $sql = "select * from categorie where id in (select id_categorie from article_categorie where id_article " .
-         "in (select id from article where id_model_affichage =$id_model_affichage))"; 
+         "in (select id from article where id_model_affichage =$id_model_affichage))";
   $rows = getData($sql,false);
   for($i=0;$i<count($rows);$i++)
   {
@@ -998,7 +1153,7 @@ function getCategorieByModelAffichage($id_model_affichage=3)
              $rows[$i]['id'] . ")";
     $count = getData($sql,false);
     $rows[$i]['count'] = $count[0]["count"];
-  } 
+  }
   return $rows;
   //
 }
@@ -1020,20 +1175,19 @@ function getListeCategorie($data, $getArticleCategorie=false)
       $data[$i]["listeCategorieAccueil"]= filter($listeCategorieAccueil,"id_categorie", $data[$i]["id"]);
     }
   }
-  return($data);
+  return $data;
 }
 function getCategorie($id)
 {
-  $sql = "SELECT * FROM categorie where id = $id"; 
-  $data =  getData($sql,false)[0];
-  return($data);
+  $sql = "SELECT * FROM categorie where id = $id";
+  return getData($sql,false)[0];
 }
 function saveCategorie($data)
 {
   // mode update
   if(isset($data["id"]) && $data["id"]>0)
   {
-    $sql = "update categorie set " . getUpdateSql($data); 
+    $sql = "update categorie set " . getUpdateSql($data);
     getData($sql,false);
     return getCategorie($data["id"]);
   }
@@ -1051,7 +1205,7 @@ function saveListeCategorieAccueil($data)
   for($i=0; $i<count($data); $i++)
   {
     $sql = "insert into categorie_accueil " . getInsertSql($data[$i]);
-    getData($sql,true);    
+    getData($sql,true);
   }
 }
 function saveListeArticleCategorie($data)
@@ -1059,7 +1213,7 @@ function saveListeArticleCategorie($data)
   for($i=0; $i<count($data); $i++)
   {
     $sql = "insert into article_categorie " . getInsertSql($data[$i]);
-    getData($sql,true);    
+    getData($sql,true);
   }
 }
 function saveArticleCategorie($data)
@@ -1068,15 +1222,15 @@ function saveArticleCategorie($data)
   $data = getData($sql,true);
   return getCategorie($data["id"]);
 }
-function deleteListeArticleCategorie($data) 
+function deleteListeArticleCategorie($data)
 {
   for($i=0; $i<count($data); $i++)
   {
-    $sql = "delete from article_categorie " . getWhere($data[$i]->filter,2);
-    getData($sql,true);    
+    $sql = "delete from article_categorie " . getWhere($data[$i]->filter);
+    getData($sql,true);
   }
 }
-function deleteListeCategorieAccueil($data) 
+function deleteListeCategorieAccueil($data)
 {
   for($i=0; $i<count($data); $i++)
   {
@@ -1101,25 +1255,36 @@ function getUpdateSql($data)
         {
           $date = false;
           if (gettype($value) == "string")
+          {
             $date = strtotime($value);
-          if( (gettype($value) == "integer" || gettype($value) == "double") &&  (!empty($value) || $value == "0" || $value == "1"))
-            $sql .= " $key = $value , ";
+          }
+          if( (gettype($value) == "integer" ||
+              gettype($value) == "double") &&
+              (!empty($value) || $value == "0" || $value == "1"))
+            {
+              $sql .= " $key = $value , ";
+            }
     
-          else if ($date !== false) 
+          elseif ($date !== false)
           {
               $formattedDate = date("Y-m-d H:i:s", $date);
               $sql .= " $key = '$formattedDate' , ";
-          } 
-          else if (gettype($value) == "string" && !empty($value))
+          }
+          elseif (gettype($value) == "string" && !empty($value))
+          {
             $sql .= " $key = '$value' , ";
-          else if (gettype($value) == "string" && empty($value))
-            $sql .= " $key = NULL , ";
+          }
+          elseif (gettype($value) == "string" && empty($value))
+          {
+             $sql .= " $key = NULL , ";
+          }
         }
         
       }
-      else 
+      else
+      {
         $id =  $value;
-    
+      }
   }
   $sql = rtrim($sql, " , ");
   $sql .= " where id = $id";
@@ -1128,36 +1293,42 @@ function getUpdateSql($data)
 function getInsertSql($data)
 {
   $sql = " ( ";
-  foreach ($data as $key => $value) 
+  foreach ($data as $key => $value)
   {
     if($key != "id" )
     {
       $key = convertKeysFormatSql($key);
-      if( (gettype($value) == "string" || 
-      gettype($value) == "integer" || 
-      gettype($value) == "double") &&  
+      if( (gettype($value) == "string" ||
+      gettype($value) == "integer" ||
+      gettype($value) == "double") &&
       (!empty($value) || $value == "0" ||  $value == "1") && 
       (!str_contains($key, "id_") || (str_contains($key, "id_") && $value != -1 )))
-        $sql .= " $key , ";
+      {
+         $sql .= " $key , ";
+      }
       
     }
   }
   $sql = rtrim($sql, " , ");
   $sql .= ") VALUES (";
-  foreach ($data as $key => $value) 
+  foreach ($data as $key => $value)
   {
     $value= clean($value);
     if($key != "id")
     {
       $key = convertKeysFormatSql($key);
-      if((!str_contains($key, "id_") || (str_contains($key, "id_") && $value != -1 )))
+      if(!str_contains($key, "id_") || (str_contains($key, "id_") && $value != -1 ))
       {
-        if( (gettype($value) == "integer" || 
-        gettype($value) == "double") &&  
+        if( (gettype($value) == "integer" ||
+        gettype($value) == "double") &&
         (!empty($value) || $value == "0" || $value == "1") )
+        {
           $sql .= " $value , ";
-        else if (!empty($value) && gettype($value) == "string")
+        }
+        elseif (!empty($value) && gettype($value) == "string")
+        {
           $sql .= " '$value' , ";
+        }
       }
       
     }
@@ -1193,7 +1364,7 @@ function getWhere($filter)
               if(gettype($value["value"]) == "string")
               {
                 $whereClause .= (strlen($whereClause)>0? " and " :" ") .
-                $key . (($value["operator"] != '%' && $value["operator"] != '%%')? $value["operator"] : " LIKE ") .  
+                $key . (($value["operator"] != '%' && $value["operator"] != '%%')? $value["operator"] : " LIKE ") .
                 " '" . ($value["operator"] == '%%'? "%" : "") . ((string) $value["value"]) .
                 ($value["operator"] == "%" || $value["operator"] == "%%"? "%" : "") . "' ";
               }
@@ -1224,7 +1395,7 @@ function getWhere($filter)
       }
     }
   }
-  return ((strlen($whereClause)>0? " WHERE " : "") .$whereClause);
+  return (strlen($whereClause)>0? " WHERE " : "") .$whereClause;
 }
 function write($txt)
 {
@@ -1243,18 +1414,21 @@ function checkData($idParametre, $sourceInstance)
     // Récupérer les propriétés publiques de l'instance source
     $sourceProperties = get_object_vars(json_decode(json_encode($sourceInstance)));
     // Parcourir les propriétés de l'instance cible
-    foreach ($sourceProperties as $propertyName => $propertyValue) 
+    foreach ($sourceProperties as $propertyName => $propertyValue)
     {
         // recherche configuration dans listeConfigData
         $configData = find($listeConfigData->fields, "name", $propertyName);
-        if(!empty($configData) && $configData->required === true &&  $configData->active === true && empty($propertyValue) && $propertyValue !=0  )
+        if( !empty($configData) &&
+            $configData->required === true &&
+            $configData->active === true &&
+            empty($propertyValue) &&
+            $propertyValue !=0  )
         {
           $error->{$propertyName} = $configData->messageLng1;
           $error->haveError = true;
         }
     }
   }
-  $result = array("error" => $error, "parametre" => $parametre );
-  return $result;
+  return array("error" => $error, "parametre" => $parametre );
 }
 ?>

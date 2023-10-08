@@ -4,6 +4,7 @@
         public $id;
         public $username;
         public $password;
+        public $pourcentCommission;
         public $isDeleted;
         public $idGroupeModule;
         public $idLng;

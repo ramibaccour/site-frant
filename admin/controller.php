@@ -13,7 +13,7 @@ if ($path !== false)
     $path = substr($path, strlen("controller.php"));
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') 
+if ($_SERVER['REQUEST_METHOD'] === 'GET')
 {
   if (preg_match('/\/get-resolution-by-type-content\/(.*)/', $path, $matches)) 
   {
@@ -75,6 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
   if($path === '/head-article')
   {
     echo json_encode(getHeadArticle());
+  }
+  if (preg_match('/\/document\/findById\/(\d+)/', $path, $matches)) 
+  {
+    $id = intval($matches[1]);
+    echo json_encode(getDocument($id));
   }
   if($path === '/liste-parametre-type/')
   {
@@ -178,7 +183,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     }  
   } 
 } 
-elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")  
+elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")
 {
   if (preg_match('/\/delete-article\/(\d+)/', $path, $matches)) 
   {
@@ -201,7 +206,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")
     echo json_encode(deleteUser($id));
   } 
 }
-elseif ($_SERVER['REQUEST_METHOD'] === "PUT")  
+elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
 {
   $data = json_decode(file_get_contents('php://input'), true);
   if($path === '/parametre/save')
@@ -211,6 +216,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
   if($path === '/user/save')
   {
     echo json_encode(saveUser($data));
+  }
+  if($path === '/commissionCommercialle/save')
+  {
+    echo json_encode(saveCommissionCommercialle($data));
   }
   if($path === '/document/save')
   {
