@@ -58,7 +58,7 @@
                                   break;
                               }
                           }
-                          if(count($level2["listeCategorieAccueil"])>0)
+                          if(count($level2["listeCategorieContenuWeb"])>0)
                             $html .= '<li><a href="' . $GLOBALS['myHoste'] . '/index/categorie/' . $categorie['id'] . '/' . urlencode($categorie['name']) . '">' . $level2['name'] . '</a></li>';
                           else if(count($level2["listeArticleCategorie"])>0 || $hasChildren == false)
                             $html .= '<li><a href="' . $GLOBALS['myHoste'] . '/liste/article/' . $level2['id'] . '/' . urlencode($level2['name']) . '">' . $level2['name'] . '</a></li>';

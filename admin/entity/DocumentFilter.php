@@ -9,6 +9,8 @@
     public $prenomLng1;
     public $adresseLng1;
     public $villeLng1;
+    public $referenceLivreur;
+	  public $urlLivreur;
     public $regionLng1;
     public $pays;
     public $telephone;

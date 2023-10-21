@@ -59,7 +59,7 @@
 
         <h2><?php echo($article["name"]); ?></h2>
         <ol>
-          <li><a href="<?php echo($myHoste); ?>/index">Accueil</a></li>
+          <li><a href="<?php echo($myHoste); ?>/index">ContenuWeb</a></li>
           <li>Détails service</li>
         </ol>
 

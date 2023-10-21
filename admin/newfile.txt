@@ -1,67 +1,20 @@
-update parametre set  name = 'Utilisateur colomnes' ,  value = '{
-    "fields" : 
-            [
-              {
-                "name" : "username",
-                "type" : "text",
-                "label" : "Nom d'utilisateur",
-                "minWidth" : "100px",
-                "width" : "40%",
-                "filter" : 
-                {
-                  "show" : true,
-                  "type" : "text",
-                  "value" : "",
-                   "operator" : "%"
-                },
-                "show" : true,
-                "required" : true,
-                "active" : true,
-                "order" : 1
-                
-              },
-             
-              {
-                "name" : "type",
-                "type" : "text",
-                "label" : "Type",
-                "minWidth" : "100px",
-                "width" : "40%",
-                "filter" : 
-                {
-                  "show" : true,
-                  "type" : "select",
-                  "showEmptyValue" : true,
-                  "returnProperty" : "type",
-                  "data" : [],
-                  "id" : "type",
-                  "name" : "type",
-                   "operator" : "=",
-                   "value" : ""
-                },
-                "show" : true,
-                "active" : true,
-                "required" : false,
-                "order" : 2
-                
-              },                
-              {
-                "name" :"action",
-                "type" : "action",
-                "label" : "Action",
-                "minWidth" : "100px",
-                "width" : "20%",
-                "buttons" :  
-                [
-                  {"name" :"delete","icon" :"delete","label" : "Supprimer","color" :"#f44336"},
-                  {"name" :"edit","icon" :"edit","label" : "Editer","color" :"#3f51b5"}
-                ],
-             "active" : true,
-              "show" : true,
-              "required" : true,
-              "order" : 8
-              }
-            ],
-    "showFilter" : true,
-    "breakpoint" : 830
-  }' ,  visible = 0 where id = 21
+update document set  date = '2023-10-13 17:31:28' ,  nom_lng1 = 'Rami Baccoadresse_lng1 = 'route afrane km 4.5' ,  ville_lng1 = 'sfax' ,  reference_livreur = '372772821905' ,         url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134433' ,  region_lng1 = 'Sfax' ,  mobile1 = '+21620601909' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 36 ,  total_tva = 0 ,  total_ttc = 36 ,  id_user = 45 ,  id_user_commerciale = 45 where id = 44
+update document set  date = '2023-10-13 17:33:06' ,  nom_lng1 = 'salma' ,  adresse_lng1 = 'elain' ,                ville_lng1 = 'sfax' ,  reference_livreur = '372790822605' ,         url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134434' ,  region_lng1 = 'Sfax' ,  mobile1 = '21365888' ,     type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 45 ,  total_tva = 0 ,  total_ttc = 45 ,  id_user = 5 ,  id_user_commerciale = 45 where id = 45
+update document set  date = '2023-10-13 17:38:03' ,  nom_lng1 = 'lamis' ,  adresse_lng1 = 'rte cheker km 5' ,      ville_lng1 = 'sfax' ,  reference_livreur = '372784823205' ,         url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134435' ,  region_lng1 = 'Sfax' ,  mobile1 = '52 451 144' ,   type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 49 ,  total_tva = 0 ,  total_ttc = 49 ,  id_user = 45 ,  id_user_commerciale = 45 where id = 46
+update document set  date = '2023-10-13 18:26:04' ,  nom_lng1 = 'samir' ,  adresse_lng1 = 'gremda' ,               ville_lng1 = 'sfax' ,  reference_livreur = '3905-10-15 07:37:18' ,  url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134436' ,  region_lng1 = 'Sfax' ,  mobile1 = '30 145 265' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 50 ,  total_tva = 0 ,  total_ttc = 50 ,  id_user = 45 ,  id_user_commerciale = 45 where id = 47
+update document set  date = '2023-10-14 06:35:51' ,  nom_lng1 = 'salima' , adresse_lng1 = 'route mharza' ,         ville_lng1 = 'sfax' ,  reference_livreur = '4405-10-15 07:37:24' ,  url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134437' ,  region_lng1 = 'Sfax' ,  mobile1 = '24 153 957' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 45 ,  total_tva = 0 ,  total_ttc = 45 ,  id_user = 5 ,  id_user_commerciale = 61 where id = 48
+update document set  date = '1970-01-01 01:00:01' ,  nom_lng1 = 'Rami Baccour' ,  adresse_lng1 = 'route afrane km 4.5' ,  ville_lng1 = 'sfax' ,  reference_livreur = '372704928805' ,  url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134443' ,  region_lng1 = 'Sfax' ,  mobile1 = '+21620601909' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 36 ,  total_tva = 0 ,  total_ttc = 36 ,  id_user = 45 ,  id_user_commerciale = 45 where id = 44
+update document set  date = '1970-01-01 01:00:01' ,  nom_lng1 = 'salma' ,  adresse_lng1 = 'elain' ,  ville_lng1 = 'sfax' ,  reference_livreur = '372779929305' ,  url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134444' ,  region_lng1 = 'Sfax' ,  mobile1 = '21365888' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 45 ,  total_tva = 0 ,  total_ttc = 45 ,  id_user = 5 ,  id_user_commerciale = 45 where id = 45
+update document set  date = '1970-01-01 01:00:01' ,  nom_lng1 = 'lamis' ,  adresse_lng1 = 'rte cheker km 5' ,  ville_lng1 = 'sfax' ,  reference_livreur = '372714929905' ,  url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134445' ,  region_lng1 = 'Sfax' ,  mobile1 = '52 451 144' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 49 ,  total_tva = 0 ,  total_ttc = 49 ,  id_user = 45 ,  id_user_commerciale = 45 where id = 46
+update document set  date = '1970-01-01 01:00:01' ,  nom_lng1 = 'samir' ,  adresse_lng1 = 'gremda' ,  ville_lng1 = 'sfax' ,  reference_livreur = '372798930505' ,  url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134446' ,  region_lng1 = 'Sfax' ,  mobile1 = '30 145 265' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 50 ,  total_tva = 0 ,  total_ttc = 50 ,  id_user = 45 ,  id_user_commerciale = 45 where id = 47
+update document set  date = '1970-01-01 01:00:01' ,  nom_lng1 = 'salima' ,  adresse_lng1 = 'route mharza' ,  ville_lng1 = 'sfax' ,  reference_livreur = '372756931105' ,  url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134447' ,  region_lng1 = 'Sfax' ,  mobile1 = '24 153 957' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 45 ,  total_tva = 0 ,  total_ttc = 45 ,  id_user = 5 ,  id_user_commerciale = 61 where id = 48
+update document set  date = '1970-01-01 01:00:01' ,  nom_lng1 = 'mariem' ,  adresse_lng1 = 'route cheker km 5' ,  ville_lng1 = 'sfax' ,  reference_livreur = '372779931705' ,  url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134448' ,  region_lng1 = 'Sfax' ,  mobile1 = '1970-01-01 01:00:01' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 42 ,  total_tva = 0 ,  total_ttc = 42 ,  id_user = 5 ,  id_user_commerciale = 61 where id = 49
+update document set  date = '1970-01-01 01:00:01' ,  nom_lng1 = 'Rami Baccour' ,  adresse_lng1 = 'route afrane km 4.5' ,  ville_lng1 = 'sfax' ,  reference_livreur = '372706965606' ,  url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134450' ,  region_lng1 = 'Sfax' ,  mobile1 = '+21620601909' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 36 ,  total_tva = 0 ,  total_ttc = 36 ,  id_user = 45 ,  id_user_commerciale = 45 where id = 44
+update document set  date = '1970-01-01 01:00:01' ,  nom_lng1 = 'salma' ,  adresse_lng1 = 'elain' ,  ville_lng1 = 'sfax' ,  reference_livreur = NULL ,  url_livreur = NULL ,  region_lng1 = 'Sfax' ,  mobile1 = '21365888' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'en_cours_confirmation' ,  total_ht = 45 ,  total_tva = 0 ,  total_ttc = 45 ,  id_user = 5 ,  id_user_commerciale = 45 where id = 45
+update document set  date = '1970-01-01 01:00:01' ,  nom_lng1 = 'salma' ,  adresse_lng1 = 'elain' ,  ville_lng1 = 'sfax' ,  region_lng1 = 'Sfax' ,  mobile1 = '21365888' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'en_attente' ,  total_ht = 45 ,  total_tva = 0 ,  total_ttc = 45 ,  id_user = 5 ,  id_user_commerciale = 45 where id = 45
+update document set  date = '2023-10-05 12:12:12' ,  nom_lng1 = 'lamis' ,  adresse_lng1 = 'rte cheker km 5' ,  ville_lng1 = 'sfax' ,  reference_livreur = NULL ,  url_livreur = NULL ,  region_lng1 = 'Sfax' ,  mobile1 = '52 451 144' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'en_attente' ,  total_ht = 49 ,  total_tva = 0 ,  total_ttc = 49 ,  id_user = 45 ,  id_user_commerciale = 45 where id = 46
+update document set  date = '2023-10-05 12:12:12' ,  nom_lng1 = 'lamis' ,  adresse_lng1 = 'rte cheker km 5' ,  ville_lng1 = 'sfax' ,  region_lng1 = 'Sfax' ,  mobile1 = '52 451 144' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'en_attente' ,  total_ht = 49 ,  total_tva = 0 ,  total_ttc = 49 ,  id_user = 45 ,  id_user_commerciale = 45 where id = 46
+update document set  date = '2023-01-01 01:00:00' ,  nom_lng1 = 'salma' ,  adresse_lng1 = 'elain' ,  ville_lng1 = 'sfax' ,  region_lng1 = 'Sfax' ,  mobile1 = '21365888' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'en_attente' ,  total_ht = 45 ,  total_tva = 0 ,  total_ttc = 45 ,  id_user = 5 ,  id_user_commerciale = 45 where id = 45
+update document set  date = '2023-10-01 01:00:00' ,  nom_lng1 = 'Rami Baccour' ,  adresse_lng1 = 'route afrane km 4.5' ,  ville_lng1 = 'sfax' ,  reference_livreur = '372706965606' ,  url_livreur = 'https://www.best-delivery.net/expediteur/imprimer.php?id=3134450' ,  region_lng1 = 'Sfax' ,  mobile1 = '+21620601909' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'confirmer' ,  total_ht = 36 ,  total_tva = 0 ,  total_ttc = 36 ,  id_user = 45 ,  id_user_commerciale = 45 where id = 44
+update document set  date = '2023-11-02 02:12:12' ,  nom_lng1 = 'mariem' ,  adresse_lng1 = 'route cheker km 5' ,  ville_lng1 = 'sfax' ,  reference_livreur = NULL ,  url_livreur = NULL ,  region_lng1 = 'Sfax' ,  mobile1 = '20 158 625' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'en_attente' ,  total_ht = 42 ,  total_tva = 0 ,  total_ttc = 42 ,  id_user = 5 ,  id_user_commerciale = 61 where id = 49
+update document set  date = '2023-11-02 02:12:12' ,  nom_lng1 = 'mariem' ,  adresse_lng1 = 'route cheker km 5' ,  ville_lng1 = 'sfax' ,  region_lng1 = 'Sfax' ,  mobile1 = '20158625' ,  type_document = 'commande_client' ,  is_deleted = 0 ,  etat = 'en_attente' ,  total_ht = 42 ,  total_tva = 0 ,  total_ttc = 42 ,  id_user = 5 ,  id_user_commerciale = 61 where id = 49

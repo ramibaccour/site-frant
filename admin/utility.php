@@ -1,5 +1,8 @@
 <?php
     $myHoste = "https://localhost/site-frant";
+    $loginBestDrlivery = "Mirnabyghada";
+    $passwordBestDrlivery = "Ghadamirnabio1";
+    include_once "entity/Pickup.php";
     function find($liste, $property, $value)
     {
         $i = array_search($value, array_column($liste, $property));
@@ -10,8 +13,7 @@
         $returnListe = [];
         $myListe =  array_filter($liste, function ($object) use ($property, $value)
         {
-            $test = !empty($property) && $object[$property] == $value;
-            return $test;
+            return !empty($property) && $object[$property] == $value;
         });
         foreach($myListe as $lst)
         {
@@ -19,40 +21,40 @@
         }
         return $returnListe;
     }
-    function generateMenu($listeCategorie, $parentId = 0, $cetActive = false) 
+    function generateMenu($listeCategorie, $parentId = 0, $cetActive = false)
     {
-        usort($listeCategorie, function($a, $b) 
+        usort($listeCategorie, function($a, $b)
         {
             return $a['ordre'] - $b['ordre'];
         });
         $html = count(filter($listeCategorie, "id_parent",$parentId))>0 ? '<ul>' : "";
-        foreach ($listeCategorie as $categorie) 
+        foreach ($listeCategorie as $categorie)
         {
-            if ($categorie['id_parent'] == $parentId) 
+            if ($categorie['id_parent'] == $parentId)
             {
                 $html .= '<li';
                 // Vérifier si le menu a des sous-menus
                 $hasChildren = false;
                 foreach ($listeCategorie as $childItem) 
                 {
-                    if ($childItem['id_parent'] == $categorie['id']) 
+                    if ($childItem['id_parent'] == $categorie['id'])
                     {
                         $hasChildren = true;
                         break;
                     }
                 }
-                if ($hasChildren) 
+                if ($hasChildren)
                 {
                     $html .=  " class='dropdown ' ";
                 }
-                if(count($categorie["listeCategorieAccueil"])>0)
+                if(count($categorie["listeCategorieContenuWeb"])>0)
                     $html .= '><a ' . ($cetActive == true? " class=' active' " :"") . 'href="' . $GLOBALS['myHoste'] . '/index/categorie/' . $categorie['id'] . '/' . urlencode($categorie['name']) . '">' . $categorie['name'];
                 else if(count($categorie["listeArticleCategorie"])>0 || $hasChildren == false)
                     $html .= '><a ' . ($cetActive == true? " class=' active' " :"") . 'href="' . $GLOBALS['myHoste'] . '/liste/article/' . $categorie['id'] . '/' . urlencode($categorie['name']) . '">' . $categorie['name'];
                 else
                     $html .= '><a ' . ($cetActive == true? " class=' active' " :"") . 'href="' . $GLOBALS['myHoste'] . '/liste/categorie/' . $categorie['id'] . '/' . urlencode($categorie['name']) . '">' . $categorie['name'];
                 $cetActive = false;
-                if ($hasChildren) 
+                if ($hasChildren)
                 {
                     $html .= ' <i class="bi bi-chevron-down dropdown-indicator"></i>';
                 }
@@ -66,110 +68,110 @@
         $html .=  count(filter($listeCategorie, "id_parent",$parentId))>0 ? ($contact . '</ul>') : "";
         return $html;
     }
-    function getStaticAccueille($accueille)
+    function getStaticContenuWeb($ContenuWeb)
     {
-        $accueille["url"] = "#";
-        if(!empty($accueille["id_article"]))
+        $ContenuWeb["url"] = "#";
+        if(!empty($ContenuWeb["id_article"]))
         {
-            $accueille["name"] = $accueille["article"]["name"];
-            $accueille["text"] = $accueille["article"]["text"];
-            $accueille["name2"] = $accueille["article"]["name2"];
-            $accueille["text2"] = $accueille["article"]["text2"];
-            $accueille["date1"] = $accueille["article"]["date1"];
-            if($accueille["article"]["id_model_affichage"] == 3)
-                $accueille["url"] =  $GLOBALS['myHoste'] . "/blog/" . $accueille["article"]["id"] ."/" . urlencode($accueille["article"]["name"]);
-            if($accueille["article"]["id_model_affichage"] == 2)
-                $accueille["url"] =  $GLOBALS['myHoste'] . "/service/" . $accueille["article"]["id"] ."/" . urlencode($accueille["article"]["name"]);
-            if($accueille["article"]["id_model_affichage"] == 1)
-                $accueille["url"] =  $GLOBALS['myHoste'] . "/projet/" . $accueille["article"]["id"] ."/" . urlencode($accueille["article"]["name"]);
-            if(isset($accueille["article"]["listeImage"]) && count($accueille["article"]["listeImage"])>0)
+            $ContenuWeb["name"] = $ContenuWeb["article"]["name"];
+            $ContenuWeb["text"] = $ContenuWeb["article"]["text"];
+            $ContenuWeb["name2"] = $ContenuWeb["article"]["name2"];
+            $ContenuWeb["text2"] = $ContenuWeb["article"]["text2"];
+            $ContenuWeb["date1"] = $ContenuWeb["article"]["date1"];
+            if($ContenuWeb["article"]["id_model_affichage"] == 3)
+                $ContenuWeb["url"] =  $GLOBALS['myHoste'] . "/blog/" . $ContenuWeb["article"]["id"] ."/" . urlencode($ContenuWeb["article"]["name"]);
+            if($ContenuWeb["article"]["id_model_affichage"] == 2)
+                $ContenuWeb["url"] =  $GLOBALS['myHoste'] . "/service/" . $ContenuWeb["article"]["id"] ."/" . urlencode($ContenuWeb["article"]["name"]);
+            if($ContenuWeb["article"]["id_model_affichage"] == 1)
+                $ContenuWeb["url"] =  $GLOBALS['myHoste'] . "/projet/" . $ContenuWeb["article"]["id"] ."/" . urlencode($ContenuWeb["article"]["name"]);
+            if(isset($ContenuWeb["article"]["listeImage"]) && count($ContenuWeb["article"]["listeImage"])>0)
             {
-                $images = filter($accueille["article"]["listeImage"],"id_resolution", $accueille["accueilType"]["id_resolution"]);
+                $images = filter($ContenuWeb["article"]["listeImage"],"id_resolution", $ContenuWeb["ContenuWebType"]["id_resolution"]);
                 usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
                 if(count($image )>0)
-                    $accueille["image"] = $image[0]["name"];
+                    $ContenuWeb["image"] = $image[0]["name"];
             }
         }
-        else if(!empty($accueille["id_categorie"]))
+        else if(!empty($ContenuWeb["id_categorie"]))
         {
-            $accueille["name"] = $accueille["categorie"]["name"];
-            $accueille["text"] = $accueille["categorie"]["description"];
-            if(isset($accueille["categorie"]["listeCategorieAccueil"]) && count($accueille["categorie"]["listeCategorieAccueil"])>0)
-                $accueille["url"] = $GLOBALS['myHoste'] ."/categorie/" . $accueille["categorie"]["id"] ."/" . urlencode($accueille["categorie"]["name"]);
-            else if(isset($accueille["categorie"]["listeArticleCategorie"]))
-                $accueille["url"] = $GLOBALS['myHoste'] ."/liste/article/" . $accueille["categorie"]["id"] ."/" . urlencode($accueille["categorie"]["name"]);
+            $ContenuWeb["name"] = $ContenuWeb["categorie"]["name"];
+            $ContenuWeb["text"] = $ContenuWeb["categorie"]["description"];
+            if(isset($ContenuWeb["categorie"]["listeCategorieContenuWeb"]) && count($ContenuWeb["categorie"]["listeCategorieContenuWeb"])>0)
+                $ContenuWeb["url"] = $GLOBALS['myHoste'] ."/categorie/" . $ContenuWeb["categorie"]["id"] ."/" . urlencode($ContenuWeb["categorie"]["name"]);
+            else if(isset($ContenuWeb["categorie"]["listeArticleCategorie"]))
+                $ContenuWeb["url"] = $GLOBALS['myHoste'] ."/liste/article/" . $ContenuWeb["categorie"]["id"] ."/" . urlencode($ContenuWeb["categorie"]["name"]);
             else
-                $accueille["url"] = $GLOBALS['myHoste'] ."/liste/categorie/". $accueille["categorie"]["id"] ."/" . urlencode($accueille["categorie"]["name"]);
-            if(isset($accueille["categorie"]["listeImage"]) && count($accueille["categorie"]["listeImage"])>0)
+                $ContenuWeb["url"] = $GLOBALS['myHoste'] ."/liste/categorie/". $ContenuWeb["categorie"]["id"] ."/" . urlencode($ContenuWeb["categorie"]["name"]);
+            if(isset($ContenuWeb["categorie"]["listeImage"]) && count($ContenuWeb["categorie"]["listeImage"])>0)
             {
-                $images = filter($accueille["categorie"]["listeImage"],"id_resolution", $accueille["accueilType"]["id_resolution"]);
+                $images = filter($ContenuWeb["categorie"]["listeImage"],"id_resolution", $ContenuWeb["ContenuWebType"]["id_resolution"]);
                 usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
                 if(count($image )>0)
-                    $accueille["image"] = $image[0]["name"];
+                    $ContenuWeb["image"] = $image[0]["name"];
             }
         }
-        if(isset($accueille["listeLigneAccueil"]) && count($accueille["listeLigneAccueil"])>0)
+        if(isset($ContenuWeb["listeLigneContenuWeb"]) && count($ContenuWeb["listeLigneContenuWeb"])>0)
         {    
             $compte = 0;  
-            for($i=0; $i<count($accueille["listeLigneAccueil"]); $i++)
+            for($i=0; $i<count($ContenuWeb["listeLigneContenuWeb"]); $i++)
             {
-                if($compte >= (count($accueille["accueilType"]["listeResolution"])))
+                if($compte >= (count($ContenuWeb["ContenuWebType"]["listeResolution"])))
                     $compte = 0;
-                $ligneAccueil = $accueille["listeLigneAccueil"][$i];
-                $ligneAccueil["url"] = "#";
-                if(!empty($ligneAccueil["id_article"]))
+                $ligneContenuWeb = $ContenuWeb["listeLigneContenuWeb"][$i];
+                $ligneContenuWeb["url"] = "#";
+                if(!empty($ligneContenuWeb["id_article"]))
                 {
-                    $ligneAccueil["name"] = $ligneAccueil["article"]["name"];
-                    $ligneAccueil["text"] = $ligneAccueil["article"]["description"] ;
+                    $ligneContenuWeb["name"] = $ligneContenuWeb["article"]["name"];
+                    $ligneContenuWeb["text"] = $ligneContenuWeb["article"]["description"] ;
 
-                    $ligneAccueil["name2"] = $ligneAccueil["article"]["name2"];
-                    $ligneAccueil["text2"] = $ligneAccueil["article"]["full_description"];
-                    $ligneAccueil["date1"] = $ligneAccueil["article"]["date1"];
-                    if($ligneAccueil["article"]["id_model_affichage"] == 3)
-                        $ligneAccueil["url"] =  $GLOBALS['myHoste'] . "/blog/" . $ligneAccueil["article"]["id"] ."/" . urlencode($ligneAccueil["article"]["name"]);
-                    if($ligneAccueil["article"]["id_model_affichage"] == 2)
-                        $ligneAccueil["url"] =  $GLOBALS['myHoste'] . "/service/" . $ligneAccueil["article"]["id"] ."/" . urlencode($ligneAccueil["article"]["name"]);
-                    if($ligneAccueil["article"]["id_model_affichage"] == 1)
-                        $ligneAccueil["url"] =  $GLOBALS['myHoste'] . "/projet/" . $ligneAccueil["article"]["id"] ."/" . urlencode($ligneAccueil["article"]["name"]);
-                    if(isset($accueille["accueilType"]) && isset($accueille["accueilType"]["listeResolution"]))
+                    $ligneContenuWeb["name2"] = $ligneContenuWeb["article"]["name2"];
+                    $ligneContenuWeb["text2"] = $ligneContenuWeb["article"]["full_description"];
+                    $ligneContenuWeb["date1"] = $ligneContenuWeb["article"]["date1"];
+                    if($ligneContenuWeb["article"]["id_model_affichage"] == 3)
+                        $ligneContenuWeb["url"] =  $GLOBALS['myHoste'] . "/blog/" . $ligneContenuWeb["article"]["id"] ."/" . urlencode($ligneContenuWeb["article"]["name"]);
+                    if($ligneContenuWeb["article"]["id_model_affichage"] == 2)
+                        $ligneContenuWeb["url"] =  $GLOBALS['myHoste'] . "/service/" . $ligneContenuWeb["article"]["id"] ."/" . urlencode($ligneContenuWeb["article"]["name"]);
+                    if($ligneContenuWeb["article"]["id_model_affichage"] == 1)
+                        $ligneContenuWeb["url"] =  $GLOBALS['myHoste'] . "/projet/" . $ligneContenuWeb["article"]["id"] ."/" . urlencode($ligneContenuWeb["article"]["name"]);
+                    if(isset($ContenuWeb["ContenuWebType"]) && isset($ContenuWeb["ContenuWebType"]["listeResolution"]))
                     {
-                        if(count($accueille["accueilType"]["listeResolution"])>0)
+                        if(count($ContenuWeb["ContenuWebType"]["listeResolution"])>0)
                         {
-                            $id_resolution = $accueille["accueilType"]["listeResolution"][$compte]["id_resolution"];
-                            $images = filter($ligneAccueil["article"]["listeImage"],"id_resolution", $id_resolution);
+                            $id_resolution = $ContenuWeb["ContenuWebType"]["listeResolution"][$compte]["id_resolution"];
+                            $images = filter($ligneContenuWeb["article"]["listeImage"],"id_resolution", $id_resolution);
                             usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
                             if(count($images )>0)
-                                $ligneAccueil["image"] = $images[0]["name"];
+                                $ligneContenuWeb["image"] = $images[0]["name"];
                         }
                     }
                 }
-                else if(!empty($ligneAccueil["id_categorie"]))
+                else if(!empty($ligneContenuWeb["id_categorie"]))
                 {
-                    $ligneAccueil["name"] = $ligneAccueil["categorie"]["name"];
-                    $ligneAccueil["text"] = $ligneAccueil["categorie"]["description"];
-                    if(isset($accueille["accueilType"]) && isset($accueille["accueilType"]["listeResolution"]))
+                    $ligneContenuWeb["name"] = $ligneContenuWeb["categorie"]["name"];
+                    $ligneContenuWeb["text"] = $ligneContenuWeb["categorie"]["description"];
+                    if(isset($ContenuWeb["ContenuWebType"]) && isset($ContenuWeb["ContenuWebType"]["listeResolution"]))
                     {
-                        if(count($accueille["accueilType"]["listeResolution"])>0)
+                        if(count($ContenuWeb["ContenuWebType"]["listeResolution"])>0)
                         {
-                            $id_resolution = $accueille["accueilType"]["listeResolution"][$compte]["id_resolution"];
-                            $images = filter($ligneAccueil["categorie"]["listeImage"],"id_resolution", $id_resolution);
+                            $id_resolution = $ContenuWeb["ContenuWebType"]["listeResolution"][$compte]["id_resolution"];
+                            $images = filter($ligneContenuWeb["categorie"]["listeImage"],"id_resolution", $id_resolution);
                             usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
                             if(count($images )>0)
-                                $ligneAccueil["image"] = $images[0]["name"];
+                                $ligneContenuWeb["image"] = $images[0]["name"];
                         }
                     }
-                    if(isset($ligneAccueil["categorie"]["listeCategorieAccueil"]) && count($ligneAccueil["categorie"]["listeCategorieAccueil"])>0)
-                        $ligneAccueil["url"] = $GLOBALS['myHoste'] ."/categorie/" . $ligneAccueil["categorie"]["id"] ."/" . urlencode($ligneAccueil["categorie"]["name"]);
-                    else if(isset($ligneAccueil["categorie"]["listeArticleCategorie"]))
-                        $ligneAccueil["url"] = $GLOBALS['myHoste'] ."/liste/article/" . $ligneAccueil["categorie"]["id"] ."/" . urlencode($ligneAccueil["categorie"]["name"]);
+                    if(isset($ligneContenuWeb["categorie"]["listeCategorieContenuWeb"]) && count($ligneContenuWeb["categorie"]["listeCategorieContenuWeb"])>0)
+                        $ligneContenuWeb["url"] = $GLOBALS['myHoste'] ."/categorie/" . $ligneContenuWeb["categorie"]["id"] ."/" . urlencode($ligneContenuWeb["categorie"]["name"]);
+                    else if(isset($ligneContenuWeb["categorie"]["listeArticleCategorie"]))
+                        $ligneContenuWeb["url"] = $GLOBALS['myHoste'] ."/liste/article/" . $ligneContenuWeb["categorie"]["id"] ."/" . urlencode($ligneContenuWeb["categorie"]["name"]);
                     else
-                        $ligneAccueil["url"] = $GLOBALS['myHoste'] ."/liste/categorie/". $ligneAccueil["categorie"]["id"] ."/" . urlencode($ligneAccueil["categorie"]["name"]);
+                        $ligneContenuWeb["url"] = $GLOBALS['myHoste'] ."/liste/categorie/". $ligneContenuWeb["categorie"]["id"] ."/" . urlencode($ligneContenuWeb["categorie"]["name"]);
                 }
-                $accueille["listeLigneAccueil"][$i] = $ligneAccueil ;
+                $ContenuWeb["listeLigneContenuWeb"][$i] = $ligneContenuWeb ;
                 $compte +=1;
             }
         }
-        return $accueille;
+        return $ContenuWeb;
     }
 
 
@@ -186,19 +188,21 @@
 
         return $randomString;
     }
-    function convertKeys($array) 
+    function convertKeys($array)
     {
         $convertedArray = array();
-        
-        foreach ($array as $key => $value) 
+        if(gettype($array) == "object" || gettype($array) == "array")
         {
-            $newKey = str_replace('_', '', ucwords($key, '_'));
-            $newKey = lcfirst($newKey);
-            $convertedArray[$newKey] = $value;
+            foreach ($array as $key => $value)
+            {
+                $newKey = str_replace('_', '', ucwords($key, '_'));
+                $newKey = lcfirst($newKey);
+                $convertedArray[$newKey] = $value;
+            }
         }
         return $convertedArray;
     }
-    function convertKeysFormatSql($chaine) 
+    function convertKeysFormatSql($chaine)
     {
         // Remplacer la lettre majuscule par la lettre minuscule précédée par '_'
         $chaine = str_replace(range('A', 'Z'), array_map(function ($char) 
@@ -208,13 +212,13 @@
 
         return $chaine;
     }
-    function convertInstance($sourceInstance, $targetClass) 
+    function convertInstance($sourceInstance, $targetClass)
     {
         if(!empty($sourceInstance))
             $sourceInstance = (object) $sourceInstance;
         $myClass =  !class_exists($targetClass);
         $myObject = !is_object($sourceInstance);
-        if ( $myClass  || $myObject) 
+        if ( $myClass  || $myObject)
         {
             return null;
         }
@@ -289,4 +293,304 @@
         return $whereClause;
         
     }
+    function strContains($haystack, $needle)
+    {
+        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+    }
+    function createPickup($data)
+    {
+        $data = json_decode(json_encode($data), true);
+        $pickup = new Pickup();
+        $pickup->nom = $data["nomLng1"];
+        $pickup->gouvernerat = $data["regionLng1"];
+        $pickup->ville = $data["villeLng1"];
+        $pickup->adresse = $data["adresseLng1"];
+        $pickup->tel = $data["mobile1"];
+        $listeArticle = implode(', ', array_column($data["listDetailDocument"], 'nomArticle'));
+        $pickup->designation = $listeArticle;
+        $pickup->prix = $data["totalTtc"];
+        $pickup->msg = "";
+        $pickup->echange = "0";
+        $pickup->login = $GLOBALS['loginBestDrlivery'];
+        $pickup->pwd = $GLOBALS['passwordBestDrlivery'];
+        // initialize SOAP client and call web service function CreatePickup
+        $client = new SoapClient('https://api.best-delivery.net/serviceShipments.php?wsdl',
+                                ['trace'=>1,
+                                'cache_wsdl'=>WSDL_CACHE_NONE]);
+        $resp = $client->CreatePickup($pickup);
+        $data["referenceLivreur"] = $resp->CodeBarre;
+        $data["urlLivreur"] = $resp->Url;
+        return $data;
+    }
+    function getEtatPickup($codebBarre)
+    {
+        $pickup->login = $GLOBALS['loginBestDrlivery'];
+        $pickup->pwd = $GLOBALS['passwordBestDrlivery'];
+        $pickup->tracking_number = $codebBarre;
+        $client=new SoapClient('https://www.best-delivery.net/api/serviceShipments.php?wsdl',['trace'=>1,'cache_wsdl'=>WSDL_CACHE_NONE]);
+        $resp = $client->TrackShipmentStatus($pickup);
+    }
+    // enAttente = "",
+    // enCoursConfirmation = "",
+    // confirmer = "confirmer",
+    function checkRequiredDataForBestDelivery($data)
+    {
+        if( !empty($data["nomLng1"])&&
+        !empty($data["regionLng1"])&&
+        !empty($data["villeLng1"])&&
+        !empty($data["adresseLng1"])&&
+        !empty($data["mobile1"])&&
+        $data["etat"] == "confirmer")
+        {
+            return true;
+        }
+        return false;
+    }
+    function formatValue($value, $indent = 0) 
+    {
+        $formattedValue = '';
+    
+        if (is_array($value) || is_object($value)) 
+        {
+            foreach ($value as $key => $innerValue) 
+            {
+                $formattedValue .= str_repeat(' ', $indent * 4) . "$key: " . formatValue($innerValue, $indent + 1);
+            }
+        } 
+        else 
+        {
+            $formattedValue = $value. " type : " . gettype($value);
+        }
+    
+        return $formattedValue . "\n";
+    }
+    function write($txt)
+    {
+        $myfile = fopen("newfile.txt", "a") or die("Unable to open file!");
+        if(is_array($txt) || is_object($txt))
+        {
+            foreach ($txt as $key => $value) 
+            {
+              $formattedValue = formatValue($value);
+              fwrite($myfile, " $key : $formattedValue \n");
+            }
+        }
+        else
+            fwrite($myfile, $txt."\n");
+        fclose($myfile);
+    }
+    function getUpdateSql($data)
+    {
+        $sql = "";
+        $id = 0;
+        foreach ($data as $key => $value) 
+        {
+            $value= clean($value);
+            if($key != "id")
+            {
+                $key = convertKeysFormatSql($key);
+                if(!strContains($key, "id_") || (strContains($key, "id_") && $value != -1 ))
+                {
+                $date = false;
+                if (estDateValide($value))
+                {
+                    $date = strtotime($value);
+                }
+                if( (gettype($value) == "integer" ||
+                    gettype($value) == "double") &&
+                    (!empty($value) || $value == "0" || $value == "1"))
+                    {
+                    $sql .= " $key = $value , ";
+                    }
+            
+                elseif ($date !== false)
+                {
+                    $formattedDate = date("Y-m-d H:i:s", $date);
+                    $sql .= " $key = '$formattedDate' , ";
+                }
+                elseif (gettype($value) == "string" && !empty($value))
+                {
+                    $sql .= " $key = '$value' , ";
+                }
+                elseif (gettype($value) == "string" && empty($value))
+                {
+                    $sql .= " $key = NULL , ";
+                }
+                }
+                
+            }
+            else
+            {
+                $id =  $value;
+            }
+        }
+        $sql = rtrim($sql, " , ");
+        $sql .= " where id = $id";
+        return $sql;
+    }
+    function getInsertSql($data)
+    {
+        $sql = " ( ";
+        foreach ($data as $key => $value)
+        {
+            if($key != "id" )
+            {
+            $key = convertKeysFormatSql($key);
+            if( (gettype($value) == "string" ||
+            gettype($value) == "integer" ||
+            gettype($value) == "double") &&
+            (!empty($value) || $value == "0" ||  $value == "1") && 
+            (!strContains($key, "id_") || (strContains($key, "id_") && $value != -1 )))
+            {
+                $sql .= " $key , ";
+            }
+            
+            }
+        }
+        $sql = rtrim($sql, " , ");
+        $sql .= ") VALUES (";
+        foreach ($data as $key => $value)
+        {
+            $value= clean($value);
+            if($key != "id")
+            {
+            $key = convertKeysFormatSql($key);
+            if(!strContains($key, "id_") || (strContains($key, "id_") && $value != -1 ))
+            {
+                if( (gettype($value) == "integer" ||
+                gettype($value) == "double") &&
+                (!empty($value) || $value == "0" || $value == "1") )
+                {
+                $sql .= " $value , ";
+                }
+                elseif (!empty($value) && gettype($value) == "string")
+                {
+                $sql .= " '$value' , ";
+                }
+            }
+            
+            }
+        }
+        $sql = rtrim($sql, " , ");
+        $sql .= ")";
+        return $sql;
+    }
+    function getWhere($filter)
+    {
+        $whereClause = "";
+
+        if(!empty($filter))
+        {
+            foreach ($filter as $key => $value)
+            {
+            $key = convertKeysFormatSql($key);
+            $value = json_decode(json_encode($value), true);
+            if(!strContains($key, "id_") || (strContains($key, "id_") && $value != -1 ))
+            {
+                if(isset($value["value"]))
+                {
+                $value["value"] = clean($value["value"]);
+                if(!empty($value["value"]) && gettype($value["value"]) == "string")
+                {
+                    $value["value"] = str_replace(";", '', $value["value"]);
+                }
+                if(!empty($value["value"]) || $value["value"] == "0" || $value["value"] == "1")
+                {
+                    if((gettype($value["value"]) == "string" ||
+                        gettype($value["value"]) == "integer" ||
+                        gettype($value["value"]) == "double" ||
+                        gettype($value["value"]) == "boolean") &&
+                        (!isset($value["type"]) || $value["type"] !="date") )
+                    {
+                    if(gettype($value["value"]) == "string")
+                    {
+                        $whereClause .= (strlen($whereClause)>0? "  and " :" ") .
+                        $key . (($value["operator"] != '%' && $value["operator"] != '%%')? $value["operator"] : " LIKE ") .
+                        " '" . ($value["operator"] == '%%'? "%" : "") . ((string) $value["value"]) .
+                        ($value["operator"] == "%" || $value["operator"] == "%%"? "%" : "") . "' ";
+                    }
+                    else
+                    {
+                        if($value["operator"]  != "<= <=")
+                        {
+                        $whereClause .= (strlen($whereClause)>0? " and  " :" ") .
+                                        $key . $value["operator"] . ((string)$value["value"]);
+
+                        }
+                        else
+                        {
+                        if(isset($value["value2"]) && !empty($value["value2"]))
+                        {
+                            $whereClause .= (strlen($whereClause)>0? " and " :" ") .
+                                        $key . " >=  '" . $value["value"] . "'  and " .
+                                        $key . " <= '" . $value["value2"] . "' ";
+
+                        }
+                        }
+                    }
+                    }
+                    elseif( isset($value["value"]) &&
+                            !empty($value["value"]) &&
+                            isset($value["value2"]) &&
+                            !empty($value["value2"]))
+                    {
+                    $property = str_replace("Filter", "", $key);
+                    $whereClause .= (strlen($whereClause)>0? " and " :" ") .
+                                    $property . " >=  '" . $value["value"] . "'  and " .
+                                    $property . " <= '" . $value["value2"] . "' ";
+                    }
+                }
+                }
+                elseif(gettype($value) == "array" && !empty($value))
+                {
+                $property = strtolower(str_replace("list_", "", $key));
+                $string = implode(',', $value);
+                $whereClause .= (strlen($whereClause)>0? " AND " :"") .  "  $property in ( $string ) ";
+                }
+            }
+            }
+        }
+        return (strlen($whereClause)>0? " WHERE " : "") .$whereClause;
+    }
+    function checkData($idParametre, $sourceInstance)
+    {
+        $sourceInstance = json_decode(json_encode($sourceInstance), true);
+        $error = new stdClass();
+        $error->haveError = false;
+        $parametre = getParametre($idParametre);
+        if(!empty($parametre))
+        {
+            $listeConfigData = json_decode($parametre["value"]);
+            // Récupérer les propriétés publiques de l'instance source
+            $sourceProperties = get_object_vars(json_decode(json_encode($sourceInstance)));
+            // Parcourir les propriétés de l'instance cible
+            foreach ($sourceProperties as $propertyName => $propertyValue)
+            {
+                // recherche configuration dans listeConfigData
+                $configData = find($listeConfigData->fields, "name", $propertyName);
+                if( !empty($configData) &&
+                    $configData->required === true &&
+                    $configData->active === true &&
+                    empty($propertyValue) &&
+                    $propertyValue !=0  )
+                {
+                $error->{$propertyName} = $configData->messageLng1;
+                $error->haveError = true;
+                }
+            }
+        }
+        return array("error" => $error, "parametre" => $parametre );
+    }
+    function estDateValide($chaineDate) 
+    {
+        $timestamp = strtotime($chaineDate);
+        if ($timestamp === false) 
+        {
+            return false;
+        }
+        // Si la chaîne d'origine contient uniquement des chiffres ou des tirets,
+        // cela peut être une date valide, sinon, c'est invalide
+        return preg_match('/^[\d-]+$/', $chaineDate) === 1;
+    }
+    
 ?>

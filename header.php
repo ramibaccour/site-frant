@@ -7,7 +7,7 @@
     $id_categorie = "";
     $path = $_SERVER['REQUEST_URI'];
     // /site-frant/ 
-    // /site-frant/index/categorie/1/Accueil
+    // /site-frant/index/categorie/1/ContenuWeb
     // /site-frant/index
     $parts = explode("/", $path);
 
@@ -16,7 +16,7 @@
       $id_categorie = intval($parts[4]);
       $categorie = find($listeCategorie, "id" , $id_categorie);
     }
-    // en verifier si en à besoin de charger  accueille by categorie
+    // en verifier si en à besoin de charger  ContenuWeb by categorie
     else 
     {
       $minOrdre = PHP_INT_MAX;
@@ -27,9 +27,9 @@
       }
       $categorie = find($listeCategorie, "ordre" , $minOrdre);
     }
-    $listeAccueil = [];
+    $listeContenuWeb = [];
     if(isset($categorie["id"]))
-      $listeAccueil = getListeAccueilleByCategorie( $categorie["id"], true);
+      $listeContenuWeb = getListeContenuWebByCategorie( $categorie["id"], true);
     $menuHTML = generateMenu($listeCategorie, 0, true);
 ?>
   
