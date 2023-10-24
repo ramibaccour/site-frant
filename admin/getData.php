@@ -16,6 +16,7 @@ include_once "entity/ImageFilter.php";
 include_once "entity/CategorieContenuWebFilter.php";
 include_once "entity/ArticleFilter.php";
 include_once "entity/ArticleCategorieFilter.php";
+include_once "entity/DetailContenuWebFilter.php";
 
 define('DB_HOST', 'localhost:3306');
 define('DB_USER', 'root');
@@ -125,34 +126,35 @@ function deleteImage($id)
 }
 function getListeContenuWeb($data)
 {
-  $sql = "SELECT * FROM contenu_web " .  getWhere($data->filter) . " order by ordre";
-  return getData($sql,false);
+  $sql = "SELECT * FROM contenu_web " .  getWhere(convertInstance($data, "ContenuWebFilter")) . " order by ordre";
+  $data = getData($sql,false);
+  return array("listContenuWebResponse"=>$data, "pager"=>array("count"=>count($data)));
 }
 function getContenuWeb($id)
 {
   $sql = "SELECT * FROM contenu_web where id = $id";
   $data =  getData($sql,false)[0];
-  if($data["id_article"] > 0)
+  if($data["idArticle"] > 0)
   {
-    $data["article"] = getArticle($data['id_article']);
+    $data["article"] = getArticle($data['idArticle']);
   }
-  if($data["id_categorie"] > 0)
+  if($data["idCategorie"] > 0)
   {
-    $data["categorie"] = getCategorie( $data['id_categorie']);
+    $data["categorie"] = getCategorie( $data['idCategorie']);
   }
   if($data["idContenuWebType"] > 0)
   {
-    $ContenuWebType = getContenuWebType( $data['idContenuWebType']);
-    $data["ContenuWebType"] = $ContenuWebType;
+    $contenuWebType = getContenuWebType( $data['idContenuWebType']);
+    $data["contenuWebType"] = $contenuWebType;
   }
-  if(!empty($ContenuWebType["id_resolution"]))
-    {$ContenuWebType["resolution"] = getResolution( $ContenuWebType["id_resolution"]);}
+  if(!empty($contenuWebType["idResolution"]))
+    {$contenuWebType["resolution"] = getResolution( $contenuWebType["idResolution"]);}
   return $data;
 }
 function deleteContenuWeb($id)
 {
   $sql = "SELECT * FROM contenu_web where id = $id";
-  $value = getData($sql,false)[0]["is_deleted"];
+  $value = getData($sql,false)[0]["isDeleted"];
   $value = ($value == 1? 0 : 1);
   $sql = "UPDATE contenu_web SET is_deleted = $value where id = $id";
   return getData($sql,false);
@@ -187,8 +189,8 @@ function getListeContenuWebByCategorie($id_categorie,$getLigneAcceuille = false)
           "order by ordre";
   $listeContenuWeb = getData($sql,false);
   usort($listeContenuWeb, function($a, $b) {return $a['ordre'] - $b['ordre'];});
-  $idArticle_uniques = (array_column($listeContenuWeb, 'idArticle'));
-  $idCategorie_uniques = (array_column($listeContenuWeb, 'idCategorie'));
+  $idArticleUniques = (array_column($listeContenuWeb, 'idArticle'));
+  $idCategorieUniques = (array_column($listeContenuWeb, 'idCategorie'));
   // remplissage des ligneAcceuille
   if($getLigneAcceuille === true)
   {
@@ -197,58 +199,58 @@ function getListeContenuWebByCategorie($id_categorie,$getLigneAcceuille = false)
     // recherche liste ContenuWeb Type Resolutio
     $listeContenuWebTypeResolution = getContenuWebTypeResolution();
 
-    $idContenuWeb_uniques = array_unique(array_column($listeContenuWeb, 'id'));
-    $idContenuWeb_uniques =  array_filter($idContenuWeb_uniques, function ($value) {return !is_null($value); });
+    $idContenuWebUniques = array_unique(array_column($listeContenuWeb, 'id'));
+    $idContenuWebUniques =  array_filter($idContenuWebUniques, function ($value) {return !is_null($value); });
     // remplissage  liste ContenuWeb Type
     if(count($listeContenuWebType)>0)
     {
       for ($i = 0; $i < count($listeContenuWeb); $i++) 
       {
-        $ContenuWebType = find($listeContenuWebType, "id", $listeContenuWeb[$i]["idContenuWebType"]);
-        if(!empty($ContenuWebType))
+        $contenuWebType = find($listeContenuWebType, "id", $listeContenuWeb[$i]["idContenuWebType"]);
+        if(!empty($contenuWebType))
         {
-          $listeResolution = filter($listeContenuWebTypeResolution, "idContenuWebType", $ContenuWebType["id"]);
+          $listeResolution = filter($listeContenuWebTypeResolution, "idContenuWebType", $contenuWebType["id"]);
           usort($listeResolution, function($a, $b) {return $a['ordre'] - $b['ordre'];});
-          $ContenuWebType["listeResolution"] = $listeResolution;
+          $contenuWebType["listeResolution"] = $listeResolution;
         }
-        $listeContenuWeb[$i]["contenuWebType"] = $ContenuWebType;
+        $listeContenuWeb[$i]["contenuWebType"] = $contenuWebType;
       }
     }
     // recherche liste Ligne ContenuWeb 
-    if(count($idContenuWeb_uniques)>0)
+    if(count($idContenuWebUniques)>0)
     {
-      $idContenuWeb_concatenes = implode(',', $idContenuWeb_uniques);
-      $listeLigneContenuWeb = getData("select * from ligne_contenu_web ".
+      $idContenuWeb_concatenes = implode(',', $idContenuWebUniques);
+      $listeLigneContenuWeb = getData("select * from detail_contenu_web ".
                                     "where id_contenu_web in ( $idContenuWeb_concatenes ) and".
                                     " is_deleted = 0   order by ordre",false);
-      $idArticle_uniques = array_merge($idArticle_uniques, array_column($listeLigneContenuWeb, 'id_article'));
-      $idCategorie_uniques = array_merge($idCategorie_uniques, array_column($listeLigneContenuWeb, 'id_categorie'));
+      $idArticleUniques = array_merge($idArticleUniques, array_column($listeLigneContenuWeb, 'id_article'));
+      $idCategorieUniques = array_merge($idCategorieUniques, array_column($listeLigneContenuWeb, 'id_categorie'));
       for ($i = 0; $i < count($listeContenuWeb); $i++) 
       {
-        $lst = filter($listeLigneContenuWeb, "id_contenu_web", $listeContenuWeb[$i]["id"]);
+        $lst = filter($listeLigneContenuWeb, "idContenuWeb", $listeContenuWeb[$i]["id"]);
         usort($lst, function($a, $b){return $a['ordre'] - $b['ordre'];});
         $listeContenuWeb[$i]["listeLigneContenuWeb"] = $lst;
       }
     }
     // remplissage des article au ContenuWeb et ligne ContenuWeb et les image
-    $idArticle_uniques = array_unique($idArticle_uniques);
-    $idArticle_uniques =  array_filter($idArticle_uniques, function ($value) {return !is_null($value); });
+    $idArticleUniques = array_unique($idArticleUniques);
+    $idArticleUniques =  array_filter($idArticleUniques, function ($value) {return !is_null($value); });
     $lsiteCategorieArticle = [];
-    if(count($idArticle_uniques)>0)
+    if(count($idArticleUniques)>0)
     {
-      $idArticle_concatenes = implode(',', $idArticle_uniques);
+      $idArticleConcatenes = implode(',', $idArticleUniques);
       // rechreche categorie article
       $lsiteCategorieArticle = getData("select * from article_categorie ".
-                                        "where id_article in ( $idArticle_concatenes )",false);
-      $listeArticle = getData("select * from article where id in ( $idArticle_concatenes )",false);
+                                        "where id_article in ( $idArticleConcatenes )",false);
+      $listeArticle = getData("select * from article where id in ( $idArticleConcatenes )",false);
       // rechreche des images
-      $listeImage = getData("select * from image where id_article in ( $idArticle_concatenes ) order by ordre",false);
+      $listeImage = getData("select * from image where id_article in ( $idArticleConcatenes ) order by ordre",false);
 
       for ($i = 0; $i < count($listeContenuWeb); $i++) 
       {
-        $art = find($listeArticle, "id", $listeContenuWeb[$i]["id_article"]);
+        $art = find($listeArticle, "id", $listeContenuWeb[$i]["idArticle"]);
         if(!empty($art))
-        {$art["listeImage"] = filter($listeImage, "id_article",$art["id"]);}
+        {$art["listeImage"] = filter($listeImage, "idArticle",$art["id"]);}
         $listeContenuWeb[$i]["article"] = $art;
         if(isset($listeContenuWeb[$i]["listeLigneContenuWeb"]) && count($listeContenuWeb[$i]["listeLigneContenuWeb"])>0)
         {
@@ -256,13 +258,13 @@ function getListeContenuWebByCategorie($id_categorie,$getLigneAcceuille = false)
           // remplissage des ligne ContenuWeb
           for($j=0; $j<count($listeLigneContenuWeb); $j++)
           {
-            if(!empty($listeLigneContenuWeb[$j]["id_article"]))
+            if(!empty($listeLigneContenuWeb[$j]["idArticle"]))
             {
-              $listeLigneContenuWeb[$j]["article"] =  find($listeArticle, "id", $listeLigneContenuWeb[$j]["id_article"]);
+              $listeLigneContenuWeb[$j]["article"] =  find($listeArticle, "id", $listeLigneContenuWeb[$j]["idArticle"]);
               // remplissage des image
               $listeLigneContenuWeb[$j]["article"]["listeImage"] =
                                                               filter($listeImage,
-                                                              "id_article",
+                                                              "idArticle",
                                                               $listeLigneContenuWeb[$j]["article"]["id"]);
             }
           }
@@ -271,45 +273,45 @@ function getListeContenuWebByCategorie($id_categorie,$getLigneAcceuille = false)
       }
     }
     
-    $idCategorie_uniques = array_merge($idCategorie_uniques, array_column($lsiteCategorieArticle, 'id_categorie'));
+    $idCategorieUniques = array_merge($idCategorieUniques, array_column($lsiteCategorieArticle, 'id_categorie'));
     // remplissage des categorie au ContenuWeb et ligne ContenuWeb
-    $idCategorie_uniques = array_unique($idCategorie_uniques);
-    $idCategorie_uniques =  array_filter($idCategorie_uniques, function ($value) {return !is_null($value); });
-    if(count($idCategorie_uniques)>0)
+    $idCategorieUniques = array_unique($idCategorieUniques);
+    $idCategorieUniques =  array_filter($idCategorieUniques, function ($value) {return !is_null($value); });
+    if(count($idCategorieUniques)>0)
     {
-      $idCategorie_concatenes = implode(',', $idCategorie_uniques);
+      $idCategorieConcatenes = implode(',', $idCategorieUniques);
       $listeCategorie = getData("select * from categorie where id in
-                                ( $idCategorie_concatenes )  order by ordre",false);
+                                ( $idCategorieConcatenes )  order by ordre",false);
       // recherche les article pour les categorie
       $listeArticleCategorie = getData("select * from article_categorie where id_categorie in
-                                      ( $idCategorie_concatenes )",false);
+                                      ( $idCategorieConcatenes )",false);
 
       // recherche ContenuWeb par categorie
       $listeCategorieContenuWeb = getData("select * from categorie_contenu_web where id_categorie in
-                                      ( $idCategorie_concatenes )",false);
+                                      ( $idCategorieConcatenes )",false);
       // rechreche des images
       $listeImage = getData("select * from image where id_categorie in
-                          ( $idCategorie_concatenes ) order by ordre",false);
+                          ( $idCategorieConcatenes ) order by ordre",false);
 
       for ($i = 0; $i < count($listeContenuWeb); $i++)
       {
-        $cat = find($listeCategorie, "id", $listeContenuWeb[$i]["id_categorie"]);
+        $cat = find($listeCategorie, "id", $listeContenuWeb[$i]["idCategorie"]);
         if(!empty($cat))
         {
-          $cat["listeImage"] = filter($listeImage, "id_categorie",$cat["id"]);
-          $cat["listeCategorieContenuWeb"] = filter($listeCategorieContenuWeb, "id_categorie",$cat["id"]);
-          $cat["listeArticleCategorie"] = filter($listeArticleCategorie, "id_categorie",$cat["id"]);
+          $cat["listeImage"] = filter($listeImage, "idCategorie",$cat["id"]);
+          $cat["listeCategorieContenuWeb"] = filter($listeCategorieContenuWeb, "idCategorie",$cat["id"]);
+          $cat["listeArticleCategorie"] = filter($listeArticleCategorie, "idCategorie",$cat["id"]);
         }
         $listeContenuWeb[$i]["categorie"] = $cat;
         // remplissage  categorie article pour listeContenuWeb
         if(isset($listeContenuWeb[$i]["article"]))
         {
           $listeContenuWeb[$i]["article"]["listeCategorie"] = [];
-          $listeCategorieFiltred = filter($lsiteCategorieArticle, "id_article", $listeContenuWeb[$i]["article"]["id"]);
+          $listeCategorieFiltred = filter($lsiteCategorieArticle, "idArticle", $listeContenuWeb[$i]["article"]["id"]);
           foreach($listeCategorieFiltred as $catart)
           {
             array_push( $listeContenuWeb[$i]["article"]["listeCategorie"],
-                        find($listeCategorie, "id", $catart["id_categorie"]));
+                        find($listeCategorie, "id", $catart["idCategorie"]));
           }
         }
         if(isset($listeContenuWeb[$i]["listeLigneContenuWeb"]) && count($listeContenuWeb[$i]["listeLigneContenuWeb"])>0)
@@ -318,26 +320,26 @@ function getListeContenuWebByCategorie($id_categorie,$getLigneAcceuille = false)
           // remplissage des ligne ContenuWeb
           for($j=0; $j<count($listeLigneContenuWeb); $j++)
           {
-            if(!empty($listeLigneContenuWeb[$j]["id_categorie"]))
+            if(!empty($listeLigneContenuWeb[$j]["idCategorie"]))
             {
               $listeLigneContenuWeb[$j]["categorie"] =  find(
                                                           $listeCategorie,
                                                           "id",
-                                                          $listeLigneContenuWeb[$j]["id_categorie"]);
+                                                          $listeLigneContenuWeb[$j]["idCategorie"]);
               // remplissage des image
               $listeLigneContenuWeb[$j]["categorie"]["listeImage"] = filter(
                                                                           $listeImage,
-                                                                          "id_categorie",
+                                                                          "idCategorie",
                                                                           $listeLigneContenuWeb[$j]["categorie"]["id"]);
               // remplissage ContenuWeb par categorie
               $listeLigneContenuWeb[$j]["categorie"]["listeCategorieContenuWeb"] = filter(
                                                                             $listeCategorieContenuWeb,
-                                                                            "id_categorie",
+                                                                            "idCategorie",
                                                                             $listeLigneContenuWeb[$j]["categorie"]["id"]);
               
               $listeLigneContenuWeb[$j]["categorie"]["listeArticleCategorie"] = filter(
                                                                             $listeArticleCategorie,
-                                                                            "id_categorie",
+                                                                            "idCategorie",
                                                                             $listeLigneContenuWeb[$j]["categorie"]["id"]);
             }
             // remplissage  categorie article pour listeLigneContenuWeb
@@ -345,13 +347,13 @@ function getListeContenuWebByCategorie($id_categorie,$getLigneAcceuille = false)
             {
                 $listeLigneContenuWeb[$j]["article"]["listeCategorie"] = [];
                 $listeCategorieFiltred = filter($lsiteCategorieArticle,
-                                                "id_article",
+                                                "idArticle",
                                                 $listeLigneContenuWeb[$j]["article"]["id"]);
                 foreach($listeCategorieFiltred as $catart)
                 {
                   array_push($listeLigneContenuWeb[$j]["article"]["listeCategorie"],
                             find($listeCategorie, 
-                            "id", $catart["id_categorie"]));
+                            "id", $catart["idCategorie"]));
                 }
             }
           }
@@ -381,65 +383,65 @@ function getResolution($id)
 }
 function getListeLigneContenuWeb($data)
 {
-  $sql = "SELECT * FROM ligne_contenu_web " .  getWhere($data->filter) . " order by ordre";
+  $sql = "SELECT * FROM detail_contenu_web " .  getWhere(convertInstance($data,"DetailContenuWebFilter")) . " order by ordre";
   $listeArt = getData($sql,false);
-  $idArticle_uniques = array_unique(array_column($listeArt, 'id_article'));
-  $idArticle_uniques =  array_filter($idArticle_uniques, function ($value) {return !is_null($value); });
-  if(count($idArticle_uniques)>0)
+  $idArticleUniques = array_unique(array_column($listeArt, 'idArticle'));
+  $idArticleUniques =  array_filter($idArticleUniques, function ($value) {return !is_null($value); });
+  if(count($idArticleUniques)>0)
   {
-    $idArticle_concatenes = implode(',', $idArticle_uniques);
-    $listeArticle = getData("select * from article where id in ( $idArticle_concatenes )",false);
+    $idArticleConcatenes = implode(',', $idArticleUniques);
+    $listeArticle = getData("select * from article where id in ( $idArticleConcatenes )",false);
     for ($i = 0; $i < count($listeArt); $i++)
     {
       foreach ($listeArticle as $article)
       {
-        if ($article['id'] == $listeArt[$i]["id_article"])
+        if ($article['id'] == $listeArt[$i]["idArticle"])
         {
           $listeArt[$i]["article"] = $article;
         }
       }
     }
   }
-  $idCategorie_uniques = array_unique(array_column($listeArt, 'id_categorie'));
-  $idCategorie_uniques =  array_filter($idCategorie_uniques, function ($value) {return !is_null($value); });
-  if(count($idCategorie_uniques)>0)
+  $idCategorieUniques = array_unique(array_column($listeArt, 'idCategorie'));
+  $idCategorieUniques =  array_filter($idCategorieUniques, function ($value) {return !is_null($value); });
+  if(count($idCategorieUniques)>0)
   {
-    $idCategorie_concatenes = implode(',', $idCategorie_uniques);
-    $listeCategorie = getData("select * from categorie where id in ( $idCategorie_concatenes )  order by ordre",false);
+    $idCategorieConcatenes = implode(',', $idCategorieUniques);
+    $listeCategorie = getData("select * from categorie where id in ( $idCategorieConcatenes )  order by ordre",false);
     for ($i = 0; $i < count($listeArt); $i++)
     {
       foreach ($listeCategorie as $categorie)
       {
-        if ($categorie['id'] == $listeArt[$i]["id_categorie"])
+        if ($categorie['id'] == $listeArt[$i]["idCategorie"])
         {
           $listeArt[$i]["categorie"] = $categorie;
         }
       }
     }
   }
-  return $listeArt;
+  return array("listDetailContenuWebResponse"=>$listeArt, "pager"=>array("count"=>count($listeArt)));
 }
 function getLigneContenuWeb($id)
 {
-  $sql = "SELECT * FROM ligne_contenu_web where id = $id"; 
+  $sql = "SELECT * FROM detail_contenu_web where id = $id"; 
   $data =  getData($sql,false)[0];
-  if($data["id_article"] != null && $data["id_article"] !="")
+  if($data["idArticle"] != null && $data["idArticle"] !="")
   {
-    $data["article"] = getArticle($data["id_article"]);
+    $data["article"] = getArticle($data["idArticle"]);
   }
-  if($data["id_categorie"] != null && $data["id_categorie"] !="")
+  if($data["idCategorie"] != null && $data["idCategorie"] !="")
   {
-    $data["categorie"] = getCategorie($data["id_categorie"]);
+    $data["categorie"] = getCategorie($data["idCategorie"]);
   }
   return data;
 }
 function deleteLigneContenuWeb($data)
 {
-  $sql = "SELECT * FROM ligne_contenu_web "; 
+  $sql = "SELECT * FROM detail_contenu_web "; 
   $sql.= getWhere($data);
-  $value = getData($sql,false)[0]["is_deleted"];
+  $value = getData($sql,false)[0]["isDeleted"];
   $value = ($value == 1? 0 : 1);
-  $sql = "UPDATE ligne_contenu_web SET is_deleted = $value ";
+  $sql = "UPDATE detail_contenu_web SET is_deleted = $value ";
   $sql.= getWhere($data);
   $rows = getData($sql,false);
   return $rows;
@@ -453,14 +455,14 @@ function saveLigneContenuWeb($data)
   // mode update
   if(isset($data["id"]) && $data["id"]>0)
   {
-    $sql = "update ligne_contenu_web set " . getUpdateSql($data);
+    $sql = "update detail_contenu_web set " . getUpdateSql($data);
     getData($sql,false);
     return getLigneContenuWeb($data["id"]);
   }
   // mode add
   else
   {
-    $sql = "insert into ligne_contenu_web " . getInsertSql($data);
+    $sql = "insert into detail_contenu_web " . getInsertSql($data);
     $data = getData($sql,true);
     return getLigneContenuWeb($data["id"]);
   }
@@ -528,7 +530,7 @@ function getArticleByCategorie($id_categorie)
   $lstImg = getData($sql,false);
   for($i=0;$i<count($listeArt);$i++)
   {
-    $lst_Img = filter($lstImg,"id_article",$listeArt[$i]["id"]);
+    $lst_Img = filter($lstImg,"idArticle",$listeArt[$i]["id"]);
     usort($lst_Img, function($a, $b) {return $a['ordre'] - $b['ordre'];});
     $listeArt[$i]["listeImage"] = $lst_Img;
   }
@@ -568,7 +570,7 @@ function getListeResolutionByTypeContent($type_content)
 function deleteArticle($id)
 {
   $sql = "SELECT * FROM article where id = $id";
-  $value = getData($sql,false)[0]["is_deleted"];
+  $value = getData($sql,false)[0]["isDeleted"];
   $value = ($value == 1? 0 : 1);
   $sql = "UPDATE article SET is_deleted = $value where id = $id";
   return getData($sql,false);
@@ -584,7 +586,7 @@ function getLastBlog($id_model_affichage = 3)
   $lstImg = getData($sql,false);
   for($i=0;$i<count($listeArt);$i++)
   {
-    $listeArt[$i]["listeImage"] = filter($lstImg,"id_article",$listeArt[$i]["id"]);
+    $listeArt[$i]["listeImage"] = filter($lstImg,"idArticle",$listeArt[$i]["id"]);
   }
   return $listeArt;
 }
@@ -801,9 +803,9 @@ function getDocument($id)
   else
   {
     $data = $data[0];
-    if(isset($data["id_user_commerciale"]) && !empty($data["id_user_commerciale"]))
+    if(isset($data["idUserCommerciale"]) && !empty($data["idUserCommerciale"]))
     {
-      $data["userCommerciale"] = getUser($data["id_user_commerciale"]);
+      $data["userCommerciale"] = getUser($data["idUserCommerciale"]);
     }
     $res = $data;
     $sql = "SELECT * FROM detail_document where id_document = $id";
@@ -1184,7 +1186,7 @@ function savePassword($data)
 function deleteUser($id)
 {
   $sql = "SELECT * FROM user where id = $id"; 
-  $value = getData($sql,false)[0]["is_deleted"];
+  $value = getData($sql,false)[0]["isDeleted"];
   $value = ($value == 1? 0 : 1);
   $sql = "UPDATE user SET is_deleted = $value where id = $id"; 
   return getData($sql,false);
@@ -1297,8 +1299,8 @@ function getListeCategorie($data, $getArticleCategorie=false)
     
     for($i=0;$i< count($data);$i++)
     {
-      $data[$i]["listeArticleCategorie"]= filter($listeArticleCategorie,"id_categorie", $data[$i]["id"]);
-      $data[$i]["listeCategorieContenuWeb"]= filter($listeCategorieContenuWeb,"id_categorie", $data[$i]["id"]);
+      $data[$i]["listeArticleCategorie"]= filter($listeArticleCategorie,"idCategorie", $data[$i]["id"]);
+      $data[$i]["listeCategorieContenuWeb"]= filter($listeCategorieContenuWeb,"idCategorie", $data[$i]["id"]);
     }
   }
   return array("listCategorieResponse"=> $data, "pager"=> array("count" => count($data)) ) ;

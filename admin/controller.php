@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
     $id = intval($matches[1]);
     echo json_encode(getResolutionByIdContenuWebType($id));
   }
-  if (preg_match('/\/find-ContenuWeb\/(\d+)/', $path, $matches))
+  if (preg_match('/\/contenuWeb\/findById\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getContenuWeb($id));
@@ -121,11 +121,11 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
       echo json_encode(getListeArticle($data));
     }
-    if($path === '/liste-ContenuWeb')
+    if($path === '/contenuWeb/findByFilter')
     {
       echo json_encode(getListeContenuWeb($data));
     }
-    if($path === '/liste-ligne-ContenuWeb')
+    if($path === '/detailContenuWeb/findByFilter')
     {
       echo json_encode(getListeLigneContenuWeb($data));
     }
