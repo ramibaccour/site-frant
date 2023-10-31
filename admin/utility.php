@@ -391,31 +391,31 @@
                 $key = convertKeysFormatSql($key);
                 if(!strContains($key, "id_") || (strContains($key, "id_") && $value != -1 ))
                 {
-                $date = false;
-                if (estDateValide($value))
-                {
-                    $date = strtotime($value);
-                }
-                if( (gettype($value) == "integer" ||
-                    gettype($value) == "double") &&
-                    (!empty($value) || $value == "0" || $value == "1"))
+                    $date = false;
+                    if (estDateValide($value))
                     {
-                    $sql .= " $key = $value , ";
+                        $date = strtotime($value);
                     }
-            
-                elseif ($date !== false)
-                {
-                    $formattedDate = date("Y-m-d H:i:s", $date);
-                    $sql .= " $key = '$formattedDate' , ";
-                }
-                elseif (gettype($value) == "string" && !empty($value))
-                {
-                    $sql .= " $key = '$value' , ";
-                }
-                elseif (gettype($value) == "string" && empty($value))
-                {
-                    $sql .= " $key = NULL , ";
-                }
+                    if( (gettype($value) == "integer" ||
+                        gettype($value) == "double") &&
+                        (!empty($value) || $value == "0" || $value == "1"))
+                        {
+                        $sql .= " $key = $value , ";
+                        }
+                
+                    elseif ($date !== false)
+                    {
+                        $formattedDate = date("Y-m-d H:i:s", $date);
+                        $sql .= " $key = '$formattedDate' , ";
+                    }
+                    elseif (gettype($value) == "string" && !empty($value))
+                    {
+                        $sql .= " $key = '$value' , ";
+                    }
+                    elseif (gettype($value) == "string" && empty($value))
+                    {
+                        $sql .= " $key = NULL , ";
+                    }
                 }
                 
             }
@@ -435,15 +435,15 @@
         {
             if($key != "id" )
             {
-            $key = convertKeysFormatSql($key);
-            if( (gettype($value) == "string" ||
-            gettype($value) == "integer" ||
-            gettype($value) == "double") &&
-            (!empty($value) || $value == "0" ||  $value == "1") && 
-            (!strContains($key, "id_") || (strContains($key, "id_") && $value != -1 )))
-            {
-                $sql .= " $key , ";
-            }
+                $key = convertKeysFormatSql($key);
+                if( (gettype($value) == "string" ||
+                    gettype($value) == "integer" ||
+                    gettype($value) == "double") &&
+                    (!empty($value) || $value == "0" ||  $value == "1") && 
+                    (!strContains($key, "id_") || (strContains($key, "id_") && $value != -1 )))
+                {
+                    $sql .= " $key , ";
+                }
             
             }
         }

@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
     $type_content = $matches[1];
     echo json_encode(getListeResolutionByTypeContent($type_content));
   }
-  if (preg_match('/\/resolution\/get-by-id-ContenuWeb-type\/(\d+)/', $path, $matches))
+  if (preg_match('/\/resolution\/get-by-id-contenuWeb-type\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getResolutionByIdContenuWebType($id));
@@ -121,75 +121,75 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
       echo json_encode(getListeArticle($data));
     }
-    if($path === '/contenuWeb/findByFilter')
+    elseif($path === '/contenuWeb/findByFilter')
     {
       echo json_encode(getListeContenuWeb($data));
     }
-    if($path === '/detailContenuWeb/findByFilter')
+    elseif($path === '/detailContenuWeb/findByFilter')
     {
       echo json_encode(getListeLigneContenuWeb($data));
     }
-    if($path === '/parametre/findByFilter')
+    elseif($path === '/parametre/findByFilter')
     {
       echo json_encode(getListeParametre($data));
     }
-    if($path === '/region/findByFilter')
+    elseif($path === '/region/findByFilter')
     {
       echo json_encode(getListeRegion($data));
     }
-    if($path === '/commissionCommercialle/findByFilter')
+    elseif($path === '/commissionCommercialle/findByFilter')
     {
       echo json_encode(getListeCommissionCommercialle($data));
     }
-    if($path === '/commissionCommercialle/saveAllCommission')
+    elseif($path === '/commissionCommercialle/saveAllCommission')
     {
       echo json_encode(saveAllCommission($data));
     }
-    if($path === '/parametre/findByListId')
+    elseif($path === '/parametre/findByListId')
     {
       echo json_encode(getListeParametreByListeId($data));
     }
-    if($path === '/liste-parametre-by-liste-id')
+    elseif($path === '/liste-parametre-by-liste-id')
     {
       echo json_encode(getListeParametreByListeId($data));
     }
-    if($path === '/categorie/findByFilter')
+    elseif($path === '/categorie/findByFilter')
     {
       echo json_encode(getListeCategorie($data));
     }
-    if($path === '/delete-categorie')
+    elseif($path === '/categorie/delete')
     {
       echo json_encode(deleteCategorie($data));
     }
-    if ( $path === "/delete-ligne-ContenuWeb")
+    elseif ( $path === "/delete-ligne-ContenuWeb")
     {
       echo json_encode(deleteLigneContenuWeb($data));
     }
-    if($path === '/user/signin')
+    elseif($path === '/user/signin')
     {
       echo json_encode(getSignin($data));
     }
-    if($path === '/user/findByFilter')
+    elseif($path === '/user/findByFilter')
     {
       echo json_encode(getListeUser($data));
     }
-    if($path === '/typeUser/findByFilter')
+    elseif($path === '/typeUser/findByFilter')
     {
       echo json_encode(getListeTypeUser($data));
     }
-    if($path === '/document/findByFilter')
+    elseif($path === '/document/findByFilter')
     {
       echo json_encode(getListeDocument($data));
     }
-    if($path === '/document/findByFilterAll')
+    elseif($path === '/document/findByFilterAll')
     {
       echo json_encode(getListeDocument($data, false));
     }
-    if($path === '/articleCategorie/delete-liste')
+    elseif($path === '/articleCategorie/delete-liste')
     {
       echo json_encode(deleteListeArticleCategorie($data));
     }
-    if($path === '/categorieContenuWeb/delete-liste')
+    elseif($path === '/categorieContenuWeb/delete-liste')
     {
       echo json_encode(deleteListeCategorieContenuWeb($data));
     }
@@ -197,26 +197,26 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
 }
 elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")
 {
-  if (preg_match('/\/delete-article\/(\d+)/', $path, $matches)) 
+  if (preg_match('/\/article\/delete\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
     echo json_encode(deleteArticle($id));
-  }  
-  if (preg_match('/\/delete-ContenuWeb\/(\d+)/', $path, $matches)) 
+  }
+  elseif (preg_match('/\/delete-ContenuWeb\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
     echo json_encode(deleteContenuWeb($id));
-  }    
-  if (preg_match('/\/delete-image\/(\d+)/', $path, $matches)) 
+  }
+  elseif (preg_match('/\/delete-image\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
     echo json_encode(deleteImage($id));
-  }     
-  if (preg_match('/\/user\/delete\/(\d+)/', $path, $matches)) 
+  }
+  elseif (preg_match('/\/user\/delete\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
     echo json_encode(deleteUser($id));
-  } 
+  }
 }
 elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
 {
@@ -226,49 +226,48 @@ elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
   {
     echo json_encode(saveImage($data));
   }
-  if($path === '/parametre/save')
+  elseif($path === '/parametre/save')
   {
     echo json_encode(saveParametre($data));
   }
-  if($path === '/user/save')
+  elseif($path === '/user/save')
   {
     echo json_encode(saveUser($data));
   }
-  if($path === '/commissionCommercialle/save')
+  elseif($path === '/commissionCommercialle/save')
   {
     echo json_encode(saveCommissionCommercialle($data));
   }
-  if($path === '/document/save')
+  elseif($path === '/document/save')
   {
     echo json_encode(saveDocument($data));
   }
-  if($path === '/user/savePassword')
+  elseif($path === '/user/savePassword')
   {
     echo json_encode(savePassword($data));
   }
-  if($path === '/article/save')
+  elseif($path === '/article/save')
   {
     echo json_encode(saveArticle($data));
   }
-  if($path === '/save-ContenuWeb')
+  elseif($path === '/contenuWeb/save')
   {
     echo json_encode(saveContenuWeb($data));
   }
-  if($path === '/save-ligne-ContenuWeb')
+  elseif($path === '/save-ligne-ContenuWeb')
   {
     echo json_encode(saveLigneContenuWeb($data));
   }
-  if($path === '/categorie/save')
+  elseif($path === '/categorie/save')
   {
     echo json_encode(saveCategorie($data));
   }
-  if($path === '/articleCategorie/save-liste')
+  elseif($path === '/articleCategorie/save-liste')
   {
     echo json_encode(saveListeArticleCategorie($data));
   }
-  if($path === '/categorieContenuWeb/save-liste')
+  elseif($path === '/categorieContenuWeb/save-liste')
   {
     echo json_encode(saveListeCategorieContenuWeb($data));
   }
 }
-?>

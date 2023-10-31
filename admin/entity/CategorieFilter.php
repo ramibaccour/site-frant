@@ -12,5 +12,6 @@
         public $idUser;
         public $titleSeo;
         public $descriptionSeo;
+        public $listId;
     }
 ?>
