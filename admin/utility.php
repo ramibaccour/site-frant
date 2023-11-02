@@ -68,56 +68,85 @@
         $html .=  count(filter($listeCategorie, "id_parent",$parentId))>0 ? ($contact . '</ul>') : "";
         return $html;
     }
-    function getStaticContenuWeb($ContenuWeb)
+    function getStaticContenuWeb($contenuWeb)
     {
-        $ContenuWeb["url"] = "#";
-        if(!empty($ContenuWeb["id_article"]))
+        $contenuWeb["url"] = "#";
+        if(!empty($contenuWeb["id_article"]))
         {
-            $ContenuWeb["name"] = $ContenuWeb["article"]["name"];
-            $ContenuWeb["text"] = $ContenuWeb["article"]["text"];
-            $ContenuWeb["name2"] = $ContenuWeb["article"]["name2"];
-            $ContenuWeb["text2"] = $ContenuWeb["article"]["text2"];
-            $ContenuWeb["date1"] = $ContenuWeb["article"]["date1"];
-            if($ContenuWeb["article"]["id_model_affichage"] == 3)
-                $ContenuWeb["url"] =  $GLOBALS['myHoste'] . "/blog/" . $ContenuWeb["article"]["id"] ."/" . urlencode($ContenuWeb["article"]["name"]);
-            if($ContenuWeb["article"]["id_model_affichage"] == 2)
-                $ContenuWeb["url"] =  $GLOBALS['myHoste'] . "/service/" . $ContenuWeb["article"]["id"] ."/" . urlencode($ContenuWeb["article"]["name"]);
-            if($ContenuWeb["article"]["id_model_affichage"] == 1)
-                $ContenuWeb["url"] =  $GLOBALS['myHoste'] . "/projet/" . $ContenuWeb["article"]["id"] ."/" . urlencode($ContenuWeb["article"]["name"]);
-            if(isset($ContenuWeb["article"]["listeImage"]) && count($ContenuWeb["article"]["listeImage"])>0)
+            $contenuWeb["name"] = $contenuWeb["article"]["name"];
+            $contenuWeb["text"] = $contenuWeb["article"]["text"];
+            $contenuWeb["name2"] = $contenuWeb["article"]["name2"];
+            $contenuWeb["text2"] = $contenuWeb["article"]["text2"];
+            $contenuWeb["date1"] = $contenuWeb["article"]["date1"];
+            if($contenuWeb["article"]["id_model_affichage"] == 3)
+                $contenuWeb["url"] =  $GLOBALS['myHoste'] .
+                                    "/blog/" . $contenuWeb["article"]["id"] .
+                                    "/" . urlencode($contenuWeb["article"]["name"]);
+            if($contenuWeb["article"]["id_model_affichage"] == 2)
+                $contenuWeb["url"] =    $GLOBALS['myHoste'] .
+                                        "/service/" . $contenuWeb["article"]["id"] ."/" .
+                                        urlencode($contenuWeb["article"]["name"]);
+            if($contenuWeb["article"]["id_model_affichage"] == 1)
+                $contenuWeb["url"] =    $GLOBALS['myHoste'] .
+                                        "/projet/" . $contenuWeb["article"]["id"] ."/" .
+                                        urlencode($contenuWeb["article"]["name"]);
+            if(isset($contenuWeb["article"]["listeImage"]) && count($contenuWeb["article"]["listeImage"])>0)
             {
-                $images = filter($ContenuWeb["article"]["listeImage"],"id_resolution", $ContenuWeb["ContenuWebType"]["id_resolution"]);
+                $images = filter(   $contenuWeb["article"]["listeImage"],
+                                    "id_resolution",
+                                    $contenuWeb["ContenuWebType"]["id_resolution"]);
                 usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
-                if(count($image )>0)
-                    $ContenuWeb["image"] = $image[0]["name"];
+                if(!empty($image))
+                {
+                    $contenuWeb["image"] = $image[0]["name"];
+                }
             }
         }
-        else if(!empty($ContenuWeb["id_categorie"]))
+        elseif(!empty($contenuWeb["id_categorie"]))
         {
-            $ContenuWeb["name"] = $ContenuWeb["categorie"]["name"];
-            $ContenuWeb["text"] = $ContenuWeb["categorie"]["description"];
-            if(isset($ContenuWeb["categorie"]["listeCategorieContenuWeb"]) && count($ContenuWeb["categorie"]["listeCategorieContenuWeb"])>0)
-                $ContenuWeb["url"] = $GLOBALS['myHoste'] ."/categorie/" . $ContenuWeb["categorie"]["id"] ."/" . urlencode($ContenuWeb["categorie"]["name"]);
-            else if(isset($ContenuWeb["categorie"]["listeArticleCategorie"]))
-                $ContenuWeb["url"] = $GLOBALS['myHoste'] ."/liste/article/" . $ContenuWeb["categorie"]["id"] ."/" . urlencode($ContenuWeb["categorie"]["name"]);
+            $contenuWeb["name"] = $contenuWeb["categorie"]["name"];
+            $contenuWeb["text"] = $contenuWeb["categorie"]["description"];
+            if(isset(  $contenuWeb["categorie"]["listeCategorieContenuWeb"]) &&
+                       count($contenuWeb["categorie"]["listeCategorieContenuWeb"])>0)
+            {
+                $contenuWeb["url"] = $GLOBALS['myHoste'] ."/categorie/" .
+                                    $contenuWeb["categorie"]["id"] ."/" .
+                                    urlencode($contenuWeb["categorie"]["name"]);
+            }
+            elseif(isset($contenuWeb["categorie"]["listeArticleCategorie"]))
+            {
+                $contenuWeb["url"] = $GLOBALS['myHoste'] .
+                                    "/liste/article/" . $contenuWeb["categorie"]["id"] ."/" .
+                                    urlencode($contenuWeb["categorie"]["name"]);
+            }
             else
-                $ContenuWeb["url"] = $GLOBALS['myHoste'] ."/liste/categorie/". $ContenuWeb["categorie"]["id"] ."/" . urlencode($ContenuWeb["categorie"]["name"]);
-            if(isset($ContenuWeb["categorie"]["listeImage"]) && count($ContenuWeb["categorie"]["listeImage"])>0)
             {
-                $images = filter($ContenuWeb["categorie"]["listeImage"],"id_resolution", $ContenuWeb["ContenuWebType"]["id_resolution"]);
+                $contenuWeb["url"] = $GLOBALS['myHoste'] ."/liste/categorie/".
+                                    $contenuWeb["categorie"]["id"] ."/" .
+                                    urlencode($contenuWeb["categorie"]["name"]);
+            }
+            if(isset($contenuWeb["categorie"]["listeImage"]) && count($contenuWeb["categorie"]["listeImage"])>0)
+            {
+                $images = filter($contenuWeb["categorie"]["listeImage"],
+                                "id_resolution",
+                                $contenuWeb["ContenuWebType"]["id_resolution"]);
                 usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
-                if(count($image )>0)
-                    $ContenuWeb["image"] = $image[0]["name"];
+                if(!empty($image))
+                {
+                    $contenuWeb["image"] = $image[0]["name"];
+                }
             }
         }
-        if(isset($ContenuWeb["listeLigneContenuWeb"]) && count($ContenuWeb["listeLigneContenuWeb"])>0)
-        {    
-            $compte = 0;  
-            for($i=0; $i<count($ContenuWeb["listeLigneContenuWeb"]); $i++)
+        if(isset($contenuWeb["listeLigneContenuWeb"]) && count($contenuWeb["listeLigneContenuWeb"])>0)
+        {
+            $compte = 0;
+            for($i=0; $i<count($contenuWeb["listeLigneContenuWeb"]); $i++)
             {
-                if($compte >= (count($ContenuWeb["ContenuWebType"]["listeResolution"])))
+                if($compte >= (count($contenuWeb["ContenuWebType"]["listeResolution"])))
+                {
                     $compte = 0;
-                $ligneContenuWeb = $ContenuWeb["listeLigneContenuWeb"][$i];
+                }
+                $ligneContenuWeb = $contenuWeb["listeLigneContenuWeb"][$i];
                 $ligneContenuWeb["url"] = "#";
                 if(!empty($ligneContenuWeb["id_article"]))
                 {
@@ -128,50 +157,81 @@
                     $ligneContenuWeb["text2"] = $ligneContenuWeb["article"]["full_description"];
                     $ligneContenuWeb["date1"] = $ligneContenuWeb["article"]["date1"];
                     if($ligneContenuWeb["article"]["id_model_affichage"] == 3)
-                        $ligneContenuWeb["url"] =  $GLOBALS['myHoste'] . "/blog/" . $ligneContenuWeb["article"]["id"] ."/" . urlencode($ligneContenuWeb["article"]["name"]);
-                    if($ligneContenuWeb["article"]["id_model_affichage"] == 2)
-                        $ligneContenuWeb["url"] =  $GLOBALS['myHoste'] . "/service/" . $ligneContenuWeb["article"]["id"] ."/" . urlencode($ligneContenuWeb["article"]["name"]);
-                    if($ligneContenuWeb["article"]["id_model_affichage"] == 1)
-                        $ligneContenuWeb["url"] =  $GLOBALS['myHoste'] . "/projet/" . $ligneContenuWeb["article"]["id"] ."/" . urlencode($ligneContenuWeb["article"]["name"]);
-                    if(isset($ContenuWeb["ContenuWebType"]) && isset($ContenuWeb["ContenuWebType"]["listeResolution"]))
                     {
-                        if(count($ContenuWeb["ContenuWebType"]["listeResolution"])>0)
+                        $ligneContenuWeb["url"] =  $GLOBALS['myHoste'] .
+                                                "/blog/" . $ligneContenuWeb["article"]["id"] ."/" .
+                                                urlencode($ligneContenuWeb["article"]["name"]);
+                    }
+                    if($ligneContenuWeb["article"]["id_model_affichage"] == 2)
+                    {
+                        $ligneContenuWeb["url"] =  $GLOBALS['myHoste'] .
+                                                "/service/" . $ligneContenuWeb["article"]["id"] ."/" .
+                                                urlencode($ligneContenuWeb["article"]["name"]);
+                    }
+                    if($ligneContenuWeb["article"]["id_model_affichage"] == 1)
+                    {
+                        $ligneContenuWeb["url"] =  $GLOBALS['myHoste'] .
+                                                "/projet/" . $ligneContenuWeb["article"]["id"] ."/" .
+                                                urlencode($ligneContenuWeb["article"]["name"]);
+                    }
+                    if( isset($contenuWeb["ContenuWebType"]) &&
+                        isset($contenuWeb["ContenuWebType"]["listeResolution"]) &&
+                        count($contenuWeb["ContenuWebType"]["listeResolution"])>0)
+                    {
+                        $id_resolution = $contenuWeb["ContenuWebType"]["listeResolution"][$compte]["id_resolution"];
+                        $images = filter($ligneContenuWeb["article"]["listeImage"],"id_resolution", $id_resolution);
+                        usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
+                        if(!empty($images))
                         {
-                            $id_resolution = $ContenuWeb["ContenuWebType"]["listeResolution"][$compte]["id_resolution"];
-                            $images = filter($ligneContenuWeb["article"]["listeImage"],"id_resolution", $id_resolution);
-                            usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
-                            if(count($images )>0)
-                                $ligneContenuWeb["image"] = $images[0]["name"];
+                            $ligneContenuWeb["image"] = $images[0]["name"];
                         }
+                        
                     }
                 }
-                else if(!empty($ligneContenuWeb["id_categorie"]))
+                elseif(!empty($ligneContenuWeb["id_categorie"]))
                 {
                     $ligneContenuWeb["name"] = $ligneContenuWeb["categorie"]["name"];
                     $ligneContenuWeb["text"] = $ligneContenuWeb["categorie"]["description"];
-                    if(isset($ContenuWeb["ContenuWebType"]) && isset($ContenuWeb["ContenuWebType"]["listeResolution"]))
+                    if(isset($contenuWeb["ContenuWebType"]) && isset($contenuWeb["ContenuWebType"]["listeResolution"]))
                     {
-                        if(count($ContenuWeb["ContenuWebType"]["listeResolution"])>0)
+                        if(count($contenuWeb["ContenuWebType"]["listeResolution"])>0)
                         {
-                            $id_resolution = $ContenuWeb["ContenuWebType"]["listeResolution"][$compte]["id_resolution"];
-                            $images = filter($ligneContenuWeb["categorie"]["listeImage"],"id_resolution", $id_resolution);
+                            $id_resolution = $contenuWeb["ContenuWebType"]["listeResolution"][$compte]["id_resolution"];
+                            $images = filter($ligneContenuWeb["categorie"]["listeImage"],
+                                            "id_resolution",
+                                            $id_resolution);
                             usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
-                            if(count($images )>0)
+                            if(!empty($image))
+                            {
                                 $ligneContenuWeb["image"] = $images[0]["name"];
+                            }
                         }
                     }
-                    if(isset($ligneContenuWeb["categorie"]["listeCategorieContenuWeb"]) && count($ligneContenuWeb["categorie"]["listeCategorieContenuWeb"])>0)
-                        $ligneContenuWeb["url"] = $GLOBALS['myHoste'] ."/categorie/" . $ligneContenuWeb["categorie"]["id"] ."/" . urlencode($ligneContenuWeb["categorie"]["name"]);
-                    else if(isset($ligneContenuWeb["categorie"]["listeArticleCategorie"]))
-                        $ligneContenuWeb["url"] = $GLOBALS['myHoste'] ."/liste/article/" . $ligneContenuWeb["categorie"]["id"] ."/" . urlencode($ligneContenuWeb["categorie"]["name"]);
+                    if( isset($ligneContenuWeb["categorie"]["listeCategorieContenuWeb"]) &&
+                        count($ligneContenuWeb["categorie"]["listeCategorieContenuWeb"])>0)
+                    {
+                        $ligneContenuWeb["url"] =   $GLOBALS['myHoste'] ."/categorie/" .
+                                                    $ligneContenuWeb["categorie"]["id"] ."/" .
+                                                    urlencode($ligneContenuWeb["categorie"]["name"]);
+                    }
+                    elseif(isset($ligneContenuWeb["categorie"]["listeArticleCategorie"]))
+                    {
+                        $ligneContenuWeb["url"] =   $GLOBALS['myHoste'] ."/liste/article/" .
+                                                    $ligneContenuWeb["categorie"]["id"] ."/" .
+                                                    urlencode($ligneContenuWeb["categorie"]["name"]);
+                    }
                     else
-                        $ligneContenuWeb["url"] = $GLOBALS['myHoste'] ."/liste/categorie/". $ligneContenuWeb["categorie"]["id"] ."/" . urlencode($ligneContenuWeb["categorie"]["name"]);
+                    {
+                        $ligneContenuWeb["url"] =   $GLOBALS['myHoste'] ."/liste/categorie/".
+                                                    $ligneContenuWeb["categorie"]["id"] ."/" .
+                                                    urlencode($ligneContenuWeb["categorie"]["name"]);
+                    }
                 }
-                $ContenuWeb["listeLigneContenuWeb"][$i] = $ligneContenuWeb ;
+                $contenuWeb["listeLigneContenuWeb"][$i] = $ligneContenuWeb ;
                 $compte +=1;
             }
         }
-        return $ContenuWeb;
+        return $contenuWeb;
     }
 
 
@@ -249,8 +309,10 @@
     function verificationUserConnecter()
     {
         return true;
-        if(isset($_COOKIE['idUserConnected'])) 
+        if(isset($_COOKIE['idUserConnected']))
+        {
             return true;
+        }
         return false;
     }
     function clean($value)

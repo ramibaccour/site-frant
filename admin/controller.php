@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
     $id = intval($matches[1]);
     echo json_encode(getListeContenuWebByCategorie($id));
   }
-  if (preg_match('/\/find-ligne-ContenuWeb\/(\d+)/', $path, $matches))
+  if (preg_match('/\/detailContenuWeb\/findById\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getLigneContenuWeb($id));
@@ -161,7 +161,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
       echo json_encode(deleteCategorie($data));
     }
-    elseif ( $path === "/delete-ligne-ContenuWeb")
+    elseif ( $path === "/detailContenuWeb/delete")
     {
       echo json_encode(deleteLigneContenuWeb($data));
     }
@@ -254,7 +254,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
   {
     echo json_encode(saveContenuWeb($data));
   }
-  elseif($path === '/save-ligne-ContenuWeb')
+  elseif($path === '/detailContenuWeb/save')
   {
     echo json_encode(saveLigneContenuWeb($data));
   }

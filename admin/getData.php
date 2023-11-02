@@ -369,7 +369,8 @@ function getResolutionByIdContenuWebType($id)
 {
   $sql = "select * from resolution where id in
           (SELECT id_resolution FROM contenu_web_type_resolution where id_contenu_web_type =  $id)";
-  return getData($sql,false);
+  $data =  getData($sql,false);
+  return array("listResolutionResponse" => $data);
 }
 function getContenuWebTypeResolution()
 {
@@ -425,7 +426,7 @@ function getListeLigneContenuWeb($data)
 }
 function getLigneContenuWeb($id)
 {
-  $sql = "SELECT * FROM detail_contenu_web where id = $id"; 
+  $sql = "SELECT * FROM detail_contenu_web where id = $id";
   $data =  getData($sql,false)[0];
   if($data["idArticle"] != null && $data["idArticle"] !="")
   {
@@ -435,17 +436,18 @@ function getLigneContenuWeb($id)
   {
     $data["categorie"] = getCategorie($data["idCategorie"]);
   }
-  return data;
+  return $data;
 }
 function deleteLigneContenuWeb($data)
 {
-  $sql = "SELECT * FROM detail_contenu_web "; 
-  $sql.= getWhere($data);
+  $sql = "SELECT * FROM detail_contenu_web ";
+  $sql.= getWhere(convertInstance($data,"DetailContenuWebFilter"));
   $value = getData($sql,false)[0]["isDeleted"];
   $value = ($value == 1? 0 : 1);
   $sql = "UPDATE detail_contenu_web SET is_deleted = $value ";
-  $sql.= getWhere($data);
-  return getData($sql,false);
+  $sql.= getWhere(convertInstance($data,"DetailContenuWebFilter"));
+  getData($sql,false);
+  return $data;
 }
 function getHeadLigneContenuWeb()
 {
@@ -456,17 +458,16 @@ function saveLigneContenuWeb($data)
   // mode update
   if(isset($data["id"]) && $data["id"]>0)
   {
-    $sql = "update detail_contenu_web set " . getUpdateSql($data);
+    $sql = "update detail_contenu_web set " . getUpdateSql(convertInstance($data,"DetailContenuWebFilter"));
     getData($sql,false);
-    return getLigneContenuWeb($data["id"]);
   }
   // mode add
   else
   {
-    $sql = "insert into detail_contenu_web " . getInsertSql($data);
-    $data = getData($sql,true);
-    return getLigneContenuWeb($data["id"]);
+    $sql = "insert into detail_contenu_web " . getInsertSql(convertInstance($data,"DetailContenuWebFilter"));
+    $data["id"] = getData($sql,true)["id"];
   }
+  return array("detailContenuWebResponse" => $data);
 }
 
 function getListeContenuWebType()
