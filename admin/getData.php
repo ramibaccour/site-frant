@@ -1287,7 +1287,6 @@ function getListeCategorie($data, $getArticleCategorie=false)
   $filter = convertInstance($data,"CategorieFilter");
   $sql = "select * from categorie " . getWhere($filter) . "   order by ordre";
   $data = getData($sql,false);
-  
   if($getArticleCategorie === true)
   {
     $sql = "select * from article_categorie" ;

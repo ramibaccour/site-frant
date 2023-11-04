@@ -27,36 +27,41 @@
         {
             return $a['ordre'] - $b['ordre'];
         });
-        $html = count(filter($listeCategorie, "id_parent",$parentId))>0 ? '<ul>' : "";
+        $html = count(filter($listeCategorie, "idParent",$parentId))>0 ? '<ul class="megamenu-3-column">' : "";
         foreach ($listeCategorie as $categorie)
         {
-            if ($categorie['id_parent'] == $parentId)
+            if ($categorie['idParent'] == $parentId)
             {
                 $html .= '<li';
                 // Vérifier si le menu a des sous-menus
                 $hasChildren = false;
-                foreach ($listeCategorie as $childItem) 
+                foreach ($listeCategorie as $childItem)
                 {
-                    if ($childItem['id_parent'] == $categorie['id'])
+                    if ($childItem['idParent'] == $categorie['id'])
                     {
                         $hasChildren = true;
                         break;
                     }
                 }
-                if ($hasChildren)
-                {
-                    $html .=  " class='dropdown ' ";
-                }
+                $html .= '><a href="' . $GLOBALS['myHoste'];
                 if(count($categorie["listeCategorieContenuWeb"])>0)
-                    $html .= '><a ' . ($cetActive == true? " class=' active' " :"") . 'href="' . $GLOBALS['myHoste'] . '/index/categorie/' . $categorie['id'] . '/' . urlencode($categorie['name']) . '">' . $categorie['name'];
-                else if(count($categorie["listeArticleCategorie"])>0 || $hasChildren == false)
-                    $html .= '><a ' . ($cetActive == true? " class=' active' " :"") . 'href="' . $GLOBALS['myHoste'] . '/liste/article/' . $categorie['id'] . '/' . urlencode($categorie['name']) . '">' . $categorie['name'];
+                {
+                    $html .=  '/index/categorie/' . $categorie['id'] . '/' ;
+                }
+                elseif(count($categorie["listeArticleCategorie"])>0 || $hasChildren === false)
+                {
+                    $html .= '/liste/article/' . $categorie['id'] . '/' ;
+                }
                 else
-                    $html .= '><a ' . ($cetActive == true? " class=' active' " :"") . 'href="' . $GLOBALS['myHoste'] . '/liste/categorie/' . $categorie['id'] . '/' . urlencode($categorie['name']) . '">' . $categorie['name'];
+                {
+                    $html .= '/liste/categorie/' . $categorie['id'] . '/' ;
+                }
+                
+                $html .= urlencode($categorie["nomLng1"]) . '">' . $categorie["nomLng1"];
                 $cetActive = false;
                 if ($hasChildren)
                 {
-                    $html .= ' <i class="bi bi-chevron-down dropdown-indicator"></i>';
+                    $html .= ' <i class="fa fa-angle-down"></i>';
                 }
                 $html .= '</a>';
                 // Appel récursif pour générer les sous-menus
@@ -65,7 +70,70 @@
             }
         }
         $contact = '<li><a href="' . $GLOBALS['myHoste'] . '/contact.php">Contact</a></li>';
-        $html .=  count(filter($listeCategorie, "id_parent",$parentId))>0 ? ($contact . '</ul>') : "";
+        $html .=  count(filter($listeCategorie, "idParent",$parentId))>0 ? ($contact . '</ul>') : "";
+        return $html;
+    }
+    function lastLevel($data,$children)
+    {
+        foreach ($children as $c)
+        {
+            $thj = find($data, "idParent", $c["id"]);
+            if($thj != null)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    function generateNestedList($data, $parentId = 0)
+    {
+        usort($data, function($a, $b)
+        {
+            return $a['ordre'] - $b['ordre'];
+        });
+
+        $children = array_filter($data, function ($item) use ($parentId)
+        {
+            return $item['idParent'] == $parentId;
+        });
+
+        $html = lastLevel($data,$children)? "<ul>"  :"<ul class=\"megamenu-3-column\">";
+    
+        foreach ($children as $child)
+        {
+            $hasChildren = false;
+            foreach ($data as $childItem)
+            {
+                if ($childItem['idParent'] == $child['id'])
+                {
+                    $hasChildren = true;
+                    break;
+                }
+            }
+            $html .= '<li><a href="' . $GLOBALS['myHoste'];
+            if(count($child["listeCategorieContenuWeb"])>0)
+            {
+                $html .=  '/index/categorie/' . $child['id'] . '/' ;
+            }
+            elseif(count($child["listeArticleCategorie"])>0 || $hasChildren === false)
+            {
+                $html .= '/liste/article/' . $child['id'] . '/' ;
+            }
+            else
+            {
+                $html .= '/liste/categorie/' . $child['id'] . '/' ;
+            }
+            $html .= urlencode($child["nomLng1"]) . '">' . $child["nomLng1"] ."</a>";
+            $subChildren = generateNestedList($data, $child['id']);
+    
+            if ($hasChildren === true)
+            {
+                $html .= $subChildren;
+            }
+            $html .= '</a></li>';
+        }
+    
+        $html .= '</ul>';
         return $html;
     }
     function getStaticContenuWeb($contenuWeb)

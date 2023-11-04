@@ -1,28 +1,36 @@
+
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title><?php echo $societeName["value"]; ?></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon"
+          href="<?php echo $myHoste ; ?>/assets/images/favicon.webp">
+    <!-- CSS
+	============================================ -->
 
-  <title><?php echo($titre["value"]); ?></title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+    <!-- Icon Font CSS -->
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/ionicons.min.css">
 
-  <!-- Favicons -->
-  <link href="<?php echo($myHoste); ?>/assets/img/favicon.png" rel="icon">
-  <link href="<?php echo($myHoste); ?>/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/css-plugins/animate.min.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/css-plugins/easyzoom.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/css-plugins/jquery-ui.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/css-plugins/magnific-popup.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/css-plugins/nice-select.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/css-plugins/nivo-slider.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/css-plugins/owl.carousel.min.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/css-plugins/slick.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/css-plugins/slick-theme.css">
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Roboto:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
-  <link href="<?php echo($myHoste); ?>/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="<?php echo($myHoste); ?>/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="<?php echo($myHoste); ?>/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="<?php echo($myHoste); ?>/assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="<?php echo($myHoste); ?>/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="<?php echo($myHoste); ?>/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
-  <!-- Template Main CSS File -->
-  <link href="<?php echo($myHoste); ?>/assets/css/main.css" rel="stylesheet">
+    <!-- Main Style CSS -->
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/bundle.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/main.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/responsive.css">
+    <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/colors.css">
 </head>
