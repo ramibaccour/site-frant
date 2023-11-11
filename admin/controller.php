@@ -127,7 +127,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     }
     elseif($path === '/detailContenuWeb/findByFilter')
     {
-      echo json_encode(getListeLigneContenuWeb($data));
+      echo json_encode(getListDetailContenuWeb($data));
     }
     elseif($path === '/parametre/findByFilter')
     {
@@ -202,7 +202,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
     echo json_encode(deleteArticle($id));
   }
-  elseif (preg_match('/\/delete-ContenuWeb\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/contenuWeb\/delete\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
     echo json_encode(deleteContenuWeb($id));

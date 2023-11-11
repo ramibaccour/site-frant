@@ -31,2038 +31,475 @@
         <?php
             include("header.php");
         ?>
+        <?php
+            foreach($listeContenuWeb as $ContenuWeb)
+            {
+                $ContenuWeb = getStaticContenuWeb($ContenuWeb);
+                // ------------------------------------ Slider area (Bannière) ---------------------------------
+                if( $ContenuWeb["idContenuWebType"] == 1 &&
+                    isset($ContenuWeb["listDetailContenuWeb"]) && count($ContenuWeb["listDetailContenuWeb"])>0)
+                {
+        ?>
+                        <!-- Slider area -->
+                        <div class="slider-area">
+                            <!-- slider start -->
+                            <div class="slider-inner">
+                                <div id="mainSlider" class="mainSlider nivoSlider nevo-slider">
+                                    <?php
+                                        foreach($ContenuWeb["listDetailContenuWeb"] as $detailContenuWeb)
+                                        {
+                                    ?>
+                                            <img src="<?php echo    $myHoste .
+                                                                    "/assets/images_upload/" .
+                                                                    $detailContenuWeb["image"]; ?>"
+                                            
+                                            alt="main slider"
+                                            title="#<?php echo $detailContenuWeb["id"]."_image_slide"?>"/>
+                                    <?php
+                                        }
+                                    ?>
+                                </div>
+                                <?php
+                                        foreach($ContenuWeb["listDetailContenuWeb"] as $detailContenuWeb)
+                                        {
+                                ?>
+                                            <div    id="<?php echo $detailContenuWeb["id"]."_image_slide"?>"
+                                                    class="nivo-html-caption slider-caption">
+                                                <div class="slider-progress"></div>
+                                                <div class="container">
+                                                    <div class="slider-content slider-content-1 slider-animated-1 text-end">
+                                                        <p class="hp1"><?php echo $detailContenuWeb["nomLng1"] ; ?></p>
+                                                        <h1 class="hone"><?php echo $detailContenuWeb["nom2Lng1"] ; ?></h1>
+                                                        <h2 class="htwo"><?php echo $detailContenuWeb["textLng1"] ; ?></h2>
+                                                        <div class="button-1 hover-btn-2">
+                                                            <a href="#">Voire</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                <?php
+                                        }
+                                ?>
+                            </div>
+                            <!-- slider end -->
+                        </div>
+                        <!-- Slider area end -->
+                    <?php
+                }
+        ?>
+        <!-- ------------------Policy area  ------------------ -->
+                <?php
+                    if( $ContenuWeb["idContenuWebType"] == 2 &&
+                        isset($ContenuWeb["listDetailContenuWeb"]) && count($ContenuWeb["listDetailContenuWeb"])>0)
+                    {
+                ?>
+                        <div class="policy-area">
+                            <div class="container">
+                                <div class="policy-area-inner">
+                                    <div class="row">
+                                        <?php
+                                            foreach($ContenuWeb["listDetailContenuWeb"] as $detailContenuWeb)
+                                            {
+                                        ?>
+                                                <div class="col-sm-6 col-lg-3">
+                                                    <div class="single-policy">
+                                                        <div class="icon">
+                                                            <i class="fa">
+                                                                <img width="28px" src="<?php echo    $myHoste .
+                                                                                        "/assets/images_upload/" .
+                                                                                        $detailContenuWeb["image"]; ?>" alt="">
+                                                            </i>
+                                                        </div>
+                                                        <div class="txt_cms">
+                                                            <h2><?php echo $detailContenuWeb["nomLng1"] ; ?></h2>
+                                                            <p><?php echo $detailContenuWeb["nom2Lng1"] ; ?></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        <?php
+                                            }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                <?php
+                    }
+                ?>
+            <!-- ------------------Policy area  ------------------ -->
 
-        <!-- Slider area -->
-        <div class="slider-area">
-            <!-- slider start -->
-            <div class="slider-inner">
-                <div id="mainSlider" class="nivoSlider nevo-slider">
-                    <img src="assets/images/slider/1.webp" alt="main slider" title="#htmlcaption1"/>
-                    <img src="assets/images/slider/2.webp" alt="main slider" title="#htmlcaption2"/>
-                </div>
-                <div id="htmlcaption1" class="nivo-html-caption slider-caption">
-                    <div class="slider-progress"></div>
-                    <div class="container">
-                        <div class="slider-content slider-content-1 slider-animated-1 text-end">
-                            <p class="hp1">It has finally started...</p>
-                            <h1 class="hone">Huge sale up to</h1>
-                            <h2 class="htwo">40% off</h2> 
-                            <div class="button-1 hover-btn-2">
-                                <a href="#">SHOP NOW</a>
+                <!-- --------------poslistcategories -------------- -->
+                <?php
+                    if( $ContenuWeb["idContenuWebType"] == 3 &&
+                        isset($ContenuWeb["listDetailContenuWeb"]) && count($ContenuWeb["listDetailContenuWeb"])>0)
+                    {
+                ?>
+                    <div class="poslistcategories">
+                        <div class="container">
+                            <div class="pos_title_categories">
+                                <h2><?php echo $ContenuWeb["nomLng1"]; ?></h2>
+                                <p><?php echo $ContenuWeb["textLng1"]; ?></p>
                             </div>
-                        </div>                        
-                    </div>
-                </div>
-                <div id="htmlcaption2" class="nivo-html-caption slider-caption">
-                    <div class="slider-progress"></div>
-                    <div class="container">
-                        <div class="slider-content slider-content-2 slider-animated-2 pull-left">
-                            <p class="hp1">It has finally started...</p>
-                            <h1 class="hone">Huge sale up to</h1>
-                            <h2 class="htwo">40% off</h2> 
-                            <div class="button-1 hover-btn-2">
-                                <a href="#">SHOP NOW</a>
-                            </div>
-                        </div>					
-                    </div>					
-                </div>	
-            </div>
-            <!-- slider end -->
-        </div>
-        <!-- Slider area end -->
 
-        <!-- Policy area -->
-        <div class="policy-area">
-            <div class="container">
-                <div class="policy-area-inner">
-                    <div class="row">
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="single-policy">
-                                <div class="icon"><i class=" fa fa-truck"></i></div>
-                                <div class="txt_cms">
-                                    <h2>Free Shipping</h2>
-                                    <p>Free shipping on all order</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="single-policy">
-                                <div class="icon"><i class=" fa fa-credit-card"></i></div>
-                                <div class="txt_cms">
-                                    <h2>Money Guarantee</h2>
-                                    <p>30 days money back</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="single-policy">
-                                <div class="icon"><i class=" fa fa-question-circle"></i></div>
-                                <div class="txt_cms">
-                                    <h2>Online Support</h2>
-                                    <p>online 24/24 on day</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="single-policy">
-                                <div class="icon"><i class=" fa fa-sun-o"></i></div>
-                                <div class="txt_cms">
-                                    <h2>Secure Payment</h2>
-                                    <p>100% secure payment</p>
+                            <div class="row pos_content">
+                                <div class="block_content owl-carousel">
+                                    <!-- single item -->
+                                    <?php
+                                        foreach($ContenuWeb["listDetailContenuWeb"] as $detailContenuWeb)
+                                        {
+                                    ?>
+                                            <div class="list-categories">
+                                                <div class="box-inner">
+                                                    <div class="thumb-category">
+                                                        <a href="single-product.html">
+                                                        <img src="<?php echo    $myHoste .
+                                                                                "/assets/images_upload/" .
+                                                                                $detailContenuWeb["image"]; ?>" alt="">
+                                                        </a>
+                                                    </div>
+                                                    <div class="desc-listcategoreis">
+                                                        <h3 class="name_categories">
+                                                            <a href="single-product.html">
+                                                                <?php echo $detailContenuWeb["nomLng1"] ;?>
+                                                            </a>
+                                                        </h3>
+                                                        <p class="description-list">
+                                                            <?php echo $detailContenuWeb["textLng1"] ;?>
+                                                        </p>
+                                                        <div class="listcate_shop_now">
+                                                            <a href="cart.html">Voire</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    <?php
+                                        }
+                                    ?>
+                                    <!-- single item end -->
+                                
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>   
-        <!-- Policy area end -->
+                <?php
+                    }
+                ?>
+                <!-- --------------poslistcategories end ---------------->
+                <?php
+                    if( $ContenuWeb["idContenuWebType"] == 4 &&
+                        isset($ContenuWeb["listDetailContenuWeb"]) && count($ContenuWeb["listDetailContenuWeb"])>0)
+                    {
+                ?>
+                <!-- --------------product tabs container slider-------------- -->
+                        <div class="product-tabs-container-slider product_block_container">
+                            <div class="container-fluid">
+                                <div class="pos_tab">
+                                    <div class="pos_title_cate"><h2><?php echo $ContenuWeb["nomLng1"]; ?></h2></div>
+                                    <div class="pos_desc"><p><?php echo $ContenuWeb["textLng1"]; ?></p>
+                                    </div>
+                                </div>
+                                
+                                <ul class="nav tabs_slider">
+                                    <?php
+                                        $count =0;
+                                        $listeGroupeDetailContenuWeb = filter(  $ContenuWeb["listDetailContenuWeb"],
+                                                                                "idParent",
+                                                                                null);
+                                        foreach($listeGroupeDetailContenuWeb as $detailGroupeContenuWeb)
+                                        {
+                                            $count +=1;
+                                    ?>
+                                            <li>
+                                                <a  href="#newarrival<?php echo $count ?>"
+                                                    data-bs-toggle="tab"
+                                                    class="<?php echo ($count==1? "active" : "");?>">
+                                                    <?php echo $detailGroupeContenuWeb["nomLng1"] ;?>
+                                                </a>
+                                            </li>
+                                    <?php
+                                        }
+                                    ?>
+                                </ul>
 
-        <!-- poslistcategories -->
-        <div class="poslistcategories">
-            <div class="container">
-                <div class="pos_title_categories">
-                    <h2>Hot <span>Categories</span> on Today</h2>
-                    <p>Praesent volutpat ut nisl in hendrerit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Etiam porttitor, lacus in luctus molestie</p>
-                </div>
+                                <div class="tab-content pos_content">
+                                    <?php
+                                        $count =0;
+                                        foreach($listeGroupeDetailContenuWeb as $detailGroupeContenuWeb)
+                                        {
+                                            $count +=1;
+                                            $listeDetailContenuWeb = filter( $ContenuWeb["listDetailContenuWeb"],
+                                                                             "idParent", $detailGroupeContenuWeb["id"]);
+                                    ?>
+                                            <div    class="tab-pane fade <?php echo ($count==1?  " active" : "");?>"
+                                                    id="newarrival<?php echo $count ?>">
+                                                <div class="productTabContent1 owl-carousel">
+                                                    <!-- ----------------single product------------- -->
+                                                    <?php
+                                                        foreach($listeDetailContenuWeb as $detailContenuWeb)
+                                                        {
+                                                    ?>
+                                                            <div class="item-product">
+                                                                <div class="product-miniature js-product-miniature">
+                                                                    <div class="img_block">
+                                                                        <a  href="single-product.html"
+                                                                            class="thumbnail product-thumbnail">
+                                                                            <img
+                                                                            src="<?php echo    $myHoste .
+                                                                                    "/assets/images_upload/" .
+                                                                                    $detailContenuWeb["image"]; ?>"
+                                                                                    alt="harosa product">
+                                                                        </a>
+                                                                        <ul class="product-flag">
+                                                                            <li class="new">
+                                                                                <span>
+                                                                            <?php echo $detailContenuWeb["badge"] ;?>
+                                                                                </span>
+                                                                            </li>
+                                                                        </ul>
+                                                                        <div class="quick-view">
+                                                                            <a href="#" data-bs-toggle="modal"
+                                                                                data-bs-target="#product_modal"
+                                                                                data-original-title="Quick View"
+                                                                                class="quick_view">
+                                                                                <i class="fa fa-search"></i>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="hook-reviews">
+                                                                            <div class="comments_note">
+                                                                                <i class="fa fa-star"></i>
+                                                                                <i class="fa fa-star"></i>
+                                                                                <i class="fa fa-star"></i>
+                                                                                <i class="fa fa-star"></i>
+                                                                                <i class="fa fa-star"></i>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="product_desc">
+                                                                        <div class="manufacturer">
+                                                                            <a href="shop.html">
+                                                                            <?php echo $detailContenuWeb["nom2Lng1"] ;?>
+                                                                            </a>
+                                                                        </div>
+                                                                        <h1>
+                                                                            <a  href="single-product.html"
+                                                                                class="product_name"
+                                                                                title="Hummingbird printed t-shirt">
+                                                                            <?php echo $detailContenuWeb["nomLng1"] ;?>
+                                                                            </a></h1>
+                                                                        <div class="product-price-and-shipping">
+                                                                            <span class="regular-price">
+                                                                            <?php echo $detailContenuWeb["price"] ;?>
+                                                                            </span>
+                                                                            <span class="price price-sale">
+                                                                            <?php echo $detailContenuWeb["newPrice"] ;?>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="cart">
+                                                                            <div class="product-add-to-cart">
+                                                                            <a href="cart.html">Ajouter au panier</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                    <?php
+                                                        }
+                                                    ?>
+                                                    <!-- -------------single product end------------- -->
+                                                </div>
+                                            </div>
+                                    <?php
+                                        }
+                                    ?>
+                                </div>
 
-                <div class="row pos_content">
-                    <div class="block_content owl-carousel">
-                        <!-- single item -->
-                        <div class="list-categories">
-                            <div class="box-inner">
-                                <div class="thumb-category">
-                                    <a href="single-product.html">
-                                        <img src="assets/images/product/round/thumb-1.webp" alt="">
-                                    </a>
-                                </div>
-                                <div class="desc-listcategoreis">
-                                    <h3 class="name_categories"><a href="single-product.html">Women</a></h3>
-                                    <p class="description-list">Praesent volutpat ut nisl in hendrerit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia</p>
-                                    <div class="listcate_shop_now">
-                                        <a href="cart.html">Shop Now</a>
+                            </div>
+                        </div>
+                <!-- --------------product tabs container slider end-------------- -->
+                <?php
+                    }
+                    if( $ContenuWeb["idContenuWebType"] == 5 &&
+                        isset($ContenuWeb["listDetailContenuWeb"]) && count($ContenuWeb["listDetailContenuWeb"])>0)
+                    {
+                        $firstElemnt = find($ContenuWeb["listDetailContenuWeb"],"ordre",1);
+                        $segondElemnt = find($ContenuWeb["listDetailContenuWeb"],"ordre",2);
+                        $thirdElemnt = find($ContenuWeb["listDetailContenuWeb"],"ordre",3);
+                ?>
+                        <!-- cms info  -->
+                        <div class="cms_info">
+                            <img src="<?php echo    $myHoste .
+                                                    "/assets/images_upload/" .
+                                                    $firstElemnt["image"]; ?>" alt="" class="img-responsive">
+                            <div class="cms_container">
+                                <div class="container">
+                                    <div class="info_content">
+                                        <p class="txt1"><?php echo $firstElemnt["nom2Lng1"] ;?></p>
+                                        <h2><?php echo $firstElemnt["nomLng1"] ;?></h2>
+                                        <p class="txt2"><?php echo $firstElemnt["textLng1"] ;?></p>
+                                        <a href="#">Voir</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- single item end -->
-                        <!-- single item -->
-                        <div class="list-categories">
-                            <div class="box-inner">
-                                <div class="thumb-category">
-                                    <a href="single-product.html">
-                                        <img src="assets/images/product/round/thumb-2.webp" alt="">
-                                    </a>
-                                </div>
-                                <div class="desc-listcategoreis">
-                                    <h3 class="name_categories"><a href="single-product.html">Men</a></h3>
-                                    <p class="description-list">Praesent volutpat ut nisl in hendrerit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia</p>
-                                    <div class="listcate_shop_now">
-                                        <a href="cart.html">Shop Now</a>
+                        <!-- cms info end -->
+                        <?php
+                            if(!empty($segondElemnt) || !empty($thirdElemnt))
+                            {
+                        ?>
+                                <!-- home banner -->
+                                <div class="home-banner">
+                                    <div class="container-fluid p-0">
+                                        <div class="row g-0">
+                                        <?php
+                                            if(!empty($segondElemnt))
+                                            {
+                                        ?>
+                                                <div class="col-md-6">
+                                                    <div class="banner-box m-0">
+                                                        <a href="shop.html">
+                                                            <img src="<?php echo    $myHoste .
+                                                            "/assets/images_upload/" .
+                                                            $segondElemnt["image"]; ?>" alt="harosa">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                        <?php
+                                            }
+                                            if(!empty($thirdElemnt))
+                                            {
+                                        ?>
+                                                <div class="col-md-6">
+                                                    <div class="banner-box m-0">
+                                                        <a href="shop.html">
+                                                            <img src="<?php echo    $myHoste .
+                                                            "/assets/images_upload/" .
+                                                            $thirdElemnt["image"]; ?>" alt="harosa">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            <?php
+                                                }
+                                            ?>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <!-- single item end -->
-                        <!-- single item -->
-                        <div class="list-categories">
-                            <div class="box-inner">
-                                <div class="thumb-category">
-                                    <a href="single-product.html">
-                                        <img src="assets/images/product/round/thumb-3.webp" alt="">
-                                    </a>
-                                </div>
-                                <div class="desc-listcategoreis">
-                                    <h3 class="name_categories"><a href="single-product.html">Health & Beauty</a></h3>
-                                    <p class="description-list">Praesent volutpat ut nisl in hendrerit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia</p>
-                                    <div class="listcate_shop_now">
-                                        <a href="cart.html">Shop Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- single item end -->
-                        <!-- single item -->
-                        <div class="list-categories">
-                            <div class="box-inner">
-                                <div class="thumb-category">
-                                    <a href="single-product.html">
-                                        <img src="assets/images/product/round/thumb-1.webp" alt="">
-                                    </a>
-                                </div>
-                                <div class="desc-listcategoreis">
-                                    <h3 class="name_categories"><a href="single-product.html">Women</a></h3>
-                                    <p class="description-list">Praesent volutpat ut nisl in hendrerit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia</p>
-                                    <div class="listcate_shop_now">
-                                        <a href="cart.html">Shop Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- single item end -->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- poslistcategories end -->
+                                <!-- home banner end -->
+                        <?php
+                            }
+                        ?>
+                <?php
+                    }
+                ?>
+                <?php
+                    if( $ContenuWeb["idContenuWebType"] == 6 &&
+                        isset($ContenuWeb["listDetailContenuWeb"]) && count($ContenuWeb["listDetailContenuWeb"])>0)
+                    {
+                ?>
+                        <!-- categori mini product area -->
+                        <div class="categori-mini-product-area">
+                            <div class="container">
+                                <div class="row">
+                                    <?php
+                                        $count =0;
+                                        $listeGroupeDetailContenuWeb = filter(  $ContenuWeb["listDetailContenuWeb"],
+                                                                                "idParent",
+                                                                                null);
+                                        foreach($listeGroupeDetailContenuWeb as $detailGroupeContenuWeb)
+                                        {
+                                            $count +=1;
+                                            
+                                            $listeDetailContenuWeb = filter( $ContenuWeb["listDetailContenuWeb"],
+                                                                             "idParent", $detailGroupeContenuWeb["id"]);
+                                            $matrice = array_chunk($listeDetailContenuWeb, 3);
 
-        <!-- product tabs container slider -->
-        <div class="product-tabs-container-slider product_block_container">
-            <div class="container-fluid">
-                <div class="pos_tab">
-                    <div class="pos_title_cate"><h2>Our Products</h2></div>
-                    <div class="pos_desc"><p>Praesent volutpat ut nisl in hendrerit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Etiam porttitor, lacus in luctus molestie</p>
-                    </div>
-                </div>
-                
-                <ul class="nav tabs_slider">
-                    <li><a href="#newarrival" data-bs-toggle="tab" class="active">New Arrival</a></li>
-                    <li><a href="#bestseller" data-bs-toggle="tab">Bestseller</a></li>
-                    <li><a href="#featuredproducts" data-bs-toggle="tab">Featured Products</a></li>
-                </ul>
-
-                <div class="tab-content pos_content">
-                    <div class="tab-pane fade active" id="newarrival">
-                        <div class="productTabContent1 owl-carousel">
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/1.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <div class="product-price-and-shipping_top">
-                                            <span class="discount-percentage discount-product">-8%</span>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/2.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/3.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/4.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/5.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/9.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/10.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="bestseller">
-                        <div class="productTabContent1 owl-carousel">
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/1.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <div class="product-price-and-shipping_top">
-                                            <span class="discount-percentage discount-product">-8%</span>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/2.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/3.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/4.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/9.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/10.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="featuredproducts">
-                        <div class="productTabContent1 owl-carousel">
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/1.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <div class="product-price-and-shipping_top">
-                                            <span class="discount-percentage discount-product">-8%</span>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/2.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/3.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/4.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/9.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                            <!-- single product -->
-                            <div class="item-product">
-                                <div class="product-miniature js-product-miniature">
-                                    <div class="img_block">
-                                        <a href="single-product.html" class="thumbnail product-thumbnail">
-                                            <img src="assets/images/product/10.webp" alt="harosa product">
-                                        </a>
-                                        <ul class="product-flag">
-                                            <li class="new"><span>New</span></li>
-                                        </ul>
-                                        <div class="quick-view">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#product_modal"  data-original-title="Quick View" class="quick_view"><i class="fa fa-search"></i></a>
-                                        </div>
-                                        <div class="hook-reviews">
-                                            <div class="comments_note">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product_desc">
-                                        <div class="manufacturer">
-                                            <a href="shop.html">Studio Design</a>
-                                        </div>
-                                        <h1> <a href="single-product.html" class="product_name" title="Hummingbird printed t-shirt">Hummingbird printed t-shirt</a></h1>
-                                        <div class="product-price-and-shipping">
-                                            <span class="regular-price">$23.90</span>
-                                            <span class="price price-sale">$21.99</span>
-                                        </div>
-                                        <div class="cart">
-                                            <div class="product-add-to-cart">
-                                                <a href="cart.html">Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- single product end -->
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <!-- product tabs container slider end -->
-
-        <!-- cms info  -->
-        <div class="cms_info">
-            <img src="assets/images/bg/1_2.webp" alt="" class="img-responsive">
-            <div class="cms_container">
-                <div class="container">
-                    <div class="info_content">
-                        <p class="txt1">Something mystic, Something magical...</p>
-                        <h2>Natural Spa</h2>
-                        <p class="phone">(+08) 123 456 7890</p>
-                        <p class="txt2">Praesent volutpat ut nisl in hendrerit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Etiam porttitor, lacus in luctus molestie</p>
-                        <a href="#">Shop Collection in new year</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- cms info end -->
-
-        <!-- home banner -->
-        <div class="home-banner">
-            <div class="container-fluid p-0">
-                <div class="row g-0">
-                    <div class="col-md-6">
-                        <div class="banner-box m-0">
-                            <a href="shop.html"><img src="assets/images/banner/1_1.webp" alt="harosa"></a>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="banner-box m-0">
-                            <a href="shop.html"><img src="assets/images/banner/2_1.webp" alt="harosa"></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- home banner end -->
-
-        <!-- categori mini product area -->
-        <div class="categori-mini-product-area">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="pos-featured-products  product_block_container">
-                            <div class="pos_title"><h2>featured</h2></div>
-                        </div>
-                        <div class=" pos_content row">
-                            <div class="feature-item owl-carousel">
-                                <div class="item-product">
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/1.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
+                                    ?>
+                                            <div class="col-lg-4">
+                                                <div class="pos-featured-products  product_block_container">
+                                                    <div class="pos_title">
+                                                        <h2><?php echo $detailGroupeContenuWeb["nomLng1"] ?></h2>
+                                                    </div>
+                                                </div>
+                                                <div class=" pos_content row">
+                                                    <div class="feature-item owl-carousel">
+                                                        <?php
+                                                            foreach($matrice as $elementMatrice)
+                                                            {
+                                                        ?>
+                                                                <div class="item-product">
+                                                                <?php
+                                                                    foreach($elementMatrice as $m)
+                                                                    {
+                                                                ?>
+                                                                    <!-- mini product -->
+                                                                    <div class="product-miniature js-product-miniature">
+                                                                        <div class="img_block">
+                                                                            <a  href=""
+                                                                                class="thumbnail product-thumbnail">
+                                                                                <img src="<?php echo    $myHoste .
+                                                                                            "/assets/images_upload/" .
+                                                                                            $m["image"]; ?>" alt="">
+                                                                            </a>
+                                                                            <div class="quick-view">
+                                                                                <a href="" class="quick_view">
+                                                                                    <i class="fa fa-search"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                            <div class="hook-reviews">
+                                                                                <div class="comments_note">
+                                                                                    <i class="fa fa-star"></i>
+                                                                                    <i class="fa fa-star"></i>
+                                                                                    <i class="fa fa-star"></i>
+                                                                                    <i class="fa fa-star"></i>
+                                                                                    <i class="fa fa-star"></i>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="product_desc">
+                                                                            <div class="manufacturer">
+                                                                                <a href="#">
+                                                                                    <?php echo $m["nom2Lng1"]; ?>
+                                                                                </a>
+                                                                            </div>
+                                                                            <h1>
+                                                                                <a href="single-product.html">
+                                                                                <?php echo $m["nomLng1"]; ?></a>
+                                                                            </h1>
+                                                                            <div class="product-price-and-shipping">
+                                                                                <span class="price ">
+                                                                                    <?php echo $m["price"]; ?>
+                                                                                </span>
+                                                                            </div>
+                                                                            <div class="cart">
+                                                                                <div class="product-add-to-cart">
+                                                                            <a href="cart.html">Ajouter au panier</a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- mini product end -->
+                                                                    <?php
+                                                                        }
+                                                                    ?>
+                                                                </div>
+                                                        <?php
+                                                            }
+                                                        ?>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/2.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/3.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                </div>
-                                <div class="item-product">
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/4.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/5.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/6.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                </div>
-                                <div class="item-product">
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/7.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/8.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/9.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
+                                    <?php
+                                        }
+                                    ?>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="pos-featured-products  product_block_container">
-                            <div class="pos_title"><h2>bestsellers</h2></div>
-                        </div>
-                        <div class=" pos_content row">
-                            <div class="feature-item owl-carousel">
-                                <div class="item-product">
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/4.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/5.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/6.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                </div>
-                                <div class="item-product">
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/1.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/2.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/3.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                </div>
-                                <div class="item-product">
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/7.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/8.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/9.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="pos-featured-products  product_block_container">
-                            <div class="pos_title"><h2>recommended</h2></div>
-                        </div>
-                        <div class=" pos_content row">
-                            <div class="feature-item owl-carousel">
-                                <div class="item-product">
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/7.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/8.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/9.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                </div>
-                                <div class="item-product">
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/1.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/2.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/3.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                </div>
-                                <div class="item-product">
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/4.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/5.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                    <!-- mini product -->
-                                    <div class="product-miniature js-product-miniature">
-                                        <div class="img_block">
-                                            <a href="" class="thumbnail product-thumbnail">
-                                                <img src="assets/images/product/mini/6.webp" alt="">
-                                            </a>
-                                            <div class="quick-view">
-                                                <a href="" class="quick_view">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-                                            </div>
-                                            <div class="hook-reviews">
-                                                <div class="comments_note">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product_desc">
-                                            <div class="manufacturer">
-                                                <a href="#">Graphic Corner</a>
-                                            </div>
-                                            <h1><a href="single-product.html">Mountain fox - Vector graphics</a></h1>
-                                            <div class="product-price-and-shipping">
-                                                <span class="price ">$9.00</span>
-                                            </div>
-                                            <div class="cart">
-                                                <div class="product-add-to-cart"><a href="cart.html">Add to cart</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- mini product end -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>     
-                </div>
-            </div>        
-        </div>
-        <!-- categori mini product area end -->
-
+                        <!-- categori mini product area end -->
+                <?php
+                    }
+                ?>
+        <?php
+            }
+        ?>
         <!-- testimonials container -->
         <div class="testimonials_container">
             <div class="container">

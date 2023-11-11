@@ -13,4 +13,5 @@ public $isDeleted;
 public $idContenuWebType;
 public $idArticle;
 public $idCategorie;
+public $idParametre;
 }
