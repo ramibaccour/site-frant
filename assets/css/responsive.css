@@ -921,7 +921,7 @@ section.service-item-area {
     padding: 20px 60px;
     padding-bottom: 40px;
 }
-#funfact-area {
+.funfact-area {
   margin-top: 80px;
 }
 .abou_skrill__area {
@@ -2042,7 +2042,7 @@ section.service-item-area {
     padding-left: 20px;
     padding-bottom: 30px;
 }
-#funfact-area {
+.funfact-area {
   margin-top: 60px;
 }
 .abou_skrill__area {

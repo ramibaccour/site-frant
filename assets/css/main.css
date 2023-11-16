@@ -2129,7 +2129,7 @@ Version: 1.0.0
 .testimonials_container {
   position: relative;
   padding: 120px 0 350px 0;
-  background: url(../images/bg/bg_testimonial.webp) no-repeat center center fixed;
+
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -5856,7 +5856,7 @@ nav.woocommerce-pagination ul.page-numbers li span {
   padding-top: 9px;
 }
 
-#funfact-area {
+.funfact-area {
   margin-top: 120px;
 }
 
@@ -8059,7 +8059,7 @@ a.ideas-btn {
 
 a.ideas-btn:hover {
   background-color: #2A2A2A;
-  border-color: ##2A2A2A;
+  border-color: #2A2A2A;
   color: #fff;
 }
 

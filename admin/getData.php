@@ -191,31 +191,30 @@ function getListeContenuWebByCategorie($idCategorie, $getLigneAcceuille = false)
   usort($listeContenuWeb, function($a, $b) {return $a["ordre"] - $b["ordre"];});
   $idArticleUniques = (array_column($listeContenuWeb, 'idArticle'));
   $idCategorieUniques = (array_column($listeContenuWeb, 'idCategorie'));
+  // recherche liste ContenuWeb Type
+  $listeContenuWebType = getListeContenuWebType();
+  // recherche liste ContenuWeb Type Resolutio
+  $listeContenuWebTypeResolution = getContenuWebTypeResolution();
+  // remplissage  liste ContenuWeb Type
+  if(count($listeContenuWebType)>0)
+  {
+    for ($i = 0; $i < count($listeContenuWeb); $i++)
+    {
+      $contenuWebType = find($listeContenuWebType, "id", $listeContenuWeb[$i]["idContenuWebType"]);
+      if(!empty($contenuWebType))
+      {
+        $listeResolution = filter($listeContenuWebTypeResolution, "idContenuWebType", $contenuWebType["id"]);
+        usort($listeResolution, function($a, $b) {return $a["ordre"] - $b["ordre"];});
+        $contenuWebType["listeResolution"] = $listeResolution;
+      }
+      $listeContenuWeb[$i]["contenuWebType"] = $contenuWebType;
+    }
+  }
   // remplissage des ligneAcceuille
   if($getLigneAcceuille === true)
   {
-    // recherche liste ContenuWeb Type
-    $listeContenuWebType = getListeContenuWebType();
-    // recherche liste ContenuWeb Type Resolutio
-    $listeContenuWebTypeResolution = getContenuWebTypeResolution();
-
     $idContenuWebUniques = array_unique(array_column($listeContenuWeb, 'id'));
     $idContenuWebUniques =  array_filter($idContenuWebUniques, function ($value) {return !is_null($value); });
-    // remplissage  liste ContenuWeb Type
-    if(count($listeContenuWebType)>0)
-    {
-      for ($i = 0; $i < count($listeContenuWeb); $i++)
-      {
-        $contenuWebType = find($listeContenuWebType, "id", $listeContenuWeb[$i]["idContenuWebType"]);
-        if(!empty($contenuWebType))
-        {
-          $listeResolution = filter($listeContenuWebTypeResolution, "idContenuWebType", $contenuWebType["id"]);
-          usort($listeResolution, function($a, $b) {return $a["ordre"] - $b["ordre"];});
-          $contenuWebType["listeResolution"] = $listeResolution;
-        }
-        $listeContenuWeb[$i]["contenuWebType"] = $contenuWebType;
-      }
-    }
     // recherche liste Ligne ContenuWeb
     if(count($idContenuWebUniques)>0)
     {
@@ -689,10 +688,17 @@ function getParametre($id)
 {
   $sql = "SELECT * FROM parametre where id = $id";
   $data =  getData($sql,false);
+  
   if(empty($data))
     {return  array(  'id' => null );}
   else
-    {return $data[0] ;}
+  {
+    if(!empty($data[0]["idResolution"]))
+    {
+      $data[0]["resolution"] = getResolution($data[0]["idResolution"])[0];
+    }
+    return $data[0] ;
+  }
 }
 // get liste parametre
 function getListeParametre($data)
@@ -721,7 +727,7 @@ function getListeParametre($data)
 }
 function saveParametre($data)
 {
-  $sql = "update parametre set " . getUpdateSql($data);
+  $sql = "update parametre set " . getUpdateSql(convertInstance($data,"ParametreFilter"));
   getData($sql,false);
   return getParametre($data["id"]);
 }
@@ -816,7 +822,7 @@ function getListeParametreType()
 }
 function getListeParametreByListeId($data)
 {
-  $sql = "SELECT * FROM parametre " . getWhere($data);
+  $sql = "SELECT * FROM parametre " .  getWhere(convertInstance($data,"ParametreFilter"));
   $listeArt = getData($sql,false);
   if (!empty($listeArt))
   {

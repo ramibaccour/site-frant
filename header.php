@@ -85,7 +85,9 @@
               <div class="header-bottom-wrapper">
 
                   <div class="header-logo">
-                      <a href="index.html"><img src="assets/images/logo/logo.webp" alt="harosa"></a>
+                      <a href="index.html">
+                        <img src="<?php echo $myHoste ."/assets/images_upload/" .$societeLogo["value"] ; ?>" alt="">
+                    </a>
                   </div>
 
                   <!-- main-menu -->
@@ -165,11 +167,9 @@
 
           <div class="social_follow">
               <ul>
-                  <li class="facebook"><a href="#"></a></li>
-                  <li class="twitter"><a href="#"></a></li>
-                  <li class="youtube"><a href="#"></a></li>
-                  <li class="googleplus"><a href="#"></a></li>
-                  <li class="instagram"><a href="#"></a></li>
+                <li class="facebook"><a href="<?php echo $societeFacebook["value"] ; ?>"></a></li>
+                <li class="youtube"><a href="<?php echo $societeYoutube["value"] ; ?>"></a></li>
+                <li class="instagram"><a href="<?php echo $societeInstagrame["value"] ; ?>"></a></li>
               </ul>
           </div>
           

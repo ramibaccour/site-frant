@@ -163,6 +163,7 @@
         $contenuWeb["badge"] = "";
         $contenuWeb["newPrice"] = "";
         $contenuWeb["price"] = "";
+        $contenuWeb["finPromo"] = "";
         if(!empty($contenuWeb["idArticle"]))
         {
             if( empty($contenuWeb["nomLng1"]) &&
@@ -179,6 +180,7 @@
                 $contenuWeb["date1"] = $contenuWeb["article"]["date1"];
                 $contenuWeb["newPrice"] = $contenuWeb["article"]["newPrice"];
                 $contenuWeb["price"] = $contenuWeb["article"]["price"];
+                $contenuWeb["finPromo"] = $contenuWeb["article"]["finPromo"];
                 if(isset($contenuWeb["article"]["listeImage"]) && count($contenuWeb["article"]["listeImage"])>0)
                 {
                     $images = filter(   $contenuWeb["article"]["listeImage"],
@@ -280,6 +282,7 @@
                         $ligneContenuWeb["date1"] = $ligneContenuWeb["article"]["date1"];
                         $ligneContenuWeb["newPrice"] = $ligneContenuWeb["article"]["newPrice"];
                         $ligneContenuWeb["price"] = $ligneContenuWeb["article"]["price"];
+                        $ligneContenuWeb["finPromo"] = $ligneContenuWeb["article"]["finPromo"];
                         if( isset($contenuWeb["contenuWebType"]) &&
                         isset($contenuWeb["contenuWebType"]["listeResolution"]) &&
                         count($contenuWeb["contenuWebType"]["listeResolution"])>0)
@@ -697,7 +700,9 @@
                     if(gettype($value["value"]) == "string")
                     {
                         $whereClause .= (strlen($whereClause)>0? "  and " :" ") .
-                        $key . (($value["operator"] != '%' && $value["operator"] != '%%')? $value["operator"] : " LIKE ") .
+                        $key . ((   $value["operator"] != '%' &&
+                                    $value["operator"] != '%%')? (" ".$value["operator"]) : " LIKE ") .
+
                         " '" . ($value["operator"] == '%%'? "%" : "") . ((string) $value["value"]) .
                         ($value["operator"] == "%" || $value["operator"] == "%%"? "%" : "") . "' ";
                     }

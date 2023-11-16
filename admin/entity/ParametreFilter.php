@@ -9,4 +9,5 @@ public $subType;
 public $typeContent;
 public $ordre;
 public $visible;
+public $idResolution;
 }
