@@ -36,7 +36,9 @@
     }
 ?>
 
-
+    <?php
+        require_once "addProductToCart.php" ;
+    ?>
   <!-- HEADER AREA START -->
   <header class="header-area">
 
@@ -85,7 +87,7 @@
               <div class="header-bottom-wrapper">
 
                   <div class="header-logo">
-                      <a href="index.html">
+                      <a href="<?php echo $myHoste ; ?>">
                         <img src="<?php echo $myHoste ."/assets/images_upload/" .$societeLogo["value"] ; ?>" alt="">
                     </a>
                   </div>

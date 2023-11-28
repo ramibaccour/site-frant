@@ -548,5 +548,40 @@
         animation: 'fade'
     });
 
-
+    $(".add-product-to-cart").on("click", function() 
+    {
+        var btn = $(this);
+        var idArticle = btn.data("product");
+        $("#artToAdd").val(idArticle);
+        var image = btn.data("image");
+        $("#imageToAdd").val(image);
+        var qte = $("#quantity").val();
+        if(!qte ||  qte<=0)   
+            qte = 1;
+        $("#qteToAdd").val(qte);
+        $("#form-cart").submit();
+        // myHoste declarer dans head.php
+        // $.ajax(
+        // {
+        //     url: myHoste +"/addProductToCart.php",
+        //     data  : {idArticle : idArticle, image: image, qte : qte},
+        //     success: function(result)
+        //     {
+        //     }
+        // });
+    });
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) 
+    {
+      form.addEventListener('submit', function(event) 
+      {
+        if (form.checkValidity() === false) 
+        {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
 })(jQuery);

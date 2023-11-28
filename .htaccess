@@ -1,9 +1,11 @@
+DirectoryIndex index.php index.html
 RewriteCond %{HTTPS} off
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE,QSA]
 RewriteEngine On
 RewriteRule ^index index.php [NC,L]
 RewriteRule ^index/categorie/([0-9]+)/([A-Za-z0-9_-]+) index.php?id_categorie=$1&name=$2 [NC,L]
-RewriteRule ^projet/([0-9]+)/([A-Za-z0-9_-]+) projet.php?id_article=$1&name=$2 [NC,L]
+RewriteRule ^detail/article/([0-9]+)/([A-Za-z0-9_-]+) article.php?id_article=$1&name=$2 [NC,L]
+RewriteRule ^checkout/([0-9]+) checkout.php?id_article=$1 [NC,L]
 RewriteRule ^service/([0-9]+)/([A-Za-z0-9_-]+) service.php?id_article=$1&name=$2 [NC,L]
 RewriteRule ^blog/([0-9]+)/([A-Za-z0-9_-]+) blog.php?id_article=$1&name=$2 [NC,L]
 RewriteRule ^liste/article/([0-9]+)/([A-Za-z0-9_-]+) listeArticle.php?id_categorie=$1&name=$2 [NC,L]

@@ -1,7 +1,5 @@
 <?php
-    $myHoste = "https://localhost/site-frant";
-    $loginBestDrlivery = "Mirnabyghada";
-    $passwordBestDrlivery = "Ghadamirnabio1";
+
     include_once "entity/Pickup.php";
     function find($liste, $property, $value)
     {
@@ -157,13 +155,29 @@
         $html .= '</ul>';
         return $html;
     }
+    function havePromo($article)
+    {
+        if(!empty($article["debutPromo"]) && !empty($article["finPromo"]))
+        {
+            $debutPromo = strtotime($article["debutPromo"]);
+            $finPromo = strtotime($article["finPromo"]);
+            $now = time();
+            if($finPromo > $debutPromo && $now <= $finPromo &&  $debutPromo <= $now )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     function getStaticContenuWeb($contenuWeb)
     {
         $contenuWeb["url"] = "#";
+        $contenuWeb["checkout"] = "#";
         $contenuWeb["badge"] = "";
         $contenuWeb["newPrice"] = "";
         $contenuWeb["price"] = "";
         $contenuWeb["finPromo"] = "";
+        $contenuWeb["havePromo"] = false;
         if(!empty($contenuWeb["idArticle"]))
         {
             if( empty($contenuWeb["nomLng1"]) &&
@@ -181,6 +195,7 @@
                 $contenuWeb["newPrice"] = $contenuWeb["article"]["newPrice"];
                 $contenuWeb["price"] = $contenuWeb["article"]["price"];
                 $contenuWeb["finPromo"] = $contenuWeb["article"]["finPromo"];
+                $contenuWeb["havePromo"] = havePromo($contenuWeb["article"]);
                 if(isset($contenuWeb["article"]["listeImage"]) && count($contenuWeb["article"]["listeImage"])>0)
                 {
                     $images = filter(   $contenuWeb["article"]["listeImage"],
@@ -193,22 +208,11 @@
                     }
                 }
             }
-            if($contenuWeb["article"]["idModelAffichage"] == 3)
-            {
-                $contenuWeb["url"] =  $GLOBALS['myHoste'] .
-                                "/blog/" . $contenuWeb["article"]["id"] .
+            $contenuWeb["url"] =  $GLOBALS['myHoste'] .
+                                "/detail/article/" . $contenuWeb["article"]["id"] .
                                 "/" . urlencode($contenuWeb["article"]["nomLng1"]);
-            }
-            if($contenuWeb["article"]["idModelAffichage"] == 2)
-            {
-                $contenuWeb["url"] =    $GLOBALS['myHoste'] .
-                                    "/service/" . $contenuWeb["article"]["id"] ."/" .
-                                    urlencode($contenuWeb["article"]["nomLng1"]);
-            }
-            if($contenuWeb["article"]["idModelAffichage"] == 1)
-                $contenuWeb["url"] =    $GLOBALS['myHoste'] .
-                                        "/projet/" . $contenuWeb["article"]["id"] ."/" .
-                                        urlencode($contenuWeb["article"]["nomLng1"]);
+            $contenuWeb["checkout"] =  $GLOBALS['myHoste'] .
+                                "/checkout/" . $contenuWeb["article"]["id"];
         }
         elseif(!empty($contenuWeb["idCategorie"]))
         {
@@ -263,9 +267,12 @@
                 }
                 $ligneContenuWeb = $contenuWeb["listDetailContenuWeb"][$i];
                 $ligneContenuWeb["url"] = "#";
+                $ligneContenuWeb["checkout"] = "#";
                 $ligneContenuWeb["badge"] = "";
                 $ligneContenuWeb["newPrice"] = "";
                 $ligneContenuWeb["price"] = "";
+                $ligneContenuWeb["finPromo"] = "";
+                $ligneContenuWeb["havePromo"] = false;
                 if(!empty($ligneContenuWeb["idArticle"]))
                 {
                     if( empty($ligneContenuWeb["nomLng1"]) &&
@@ -283,6 +290,7 @@
                         $ligneContenuWeb["newPrice"] = $ligneContenuWeb["article"]["newPrice"];
                         $ligneContenuWeb["price"] = $ligneContenuWeb["article"]["price"];
                         $ligneContenuWeb["finPromo"] = $ligneContenuWeb["article"]["finPromo"];
+                        $ligneContenuWeb["havePromo"] = havePromo($ligneContenuWeb["article"]);
                         if( isset($contenuWeb["contenuWebType"]) &&
                         isset($contenuWeb["contenuWebType"]["listeResolution"]) &&
                         count($contenuWeb["contenuWebType"]["listeResolution"])>0)
@@ -297,24 +305,12 @@
                             
                         }
                     }
-                    if($ligneContenuWeb["article"]["idModelAffichage"] == 3)
-                    {
-                        $ligneContenuWeb["url"] =  $GLOBALS['myHoste'] .
-                                                "/blog/" . $ligneContenuWeb["article"]["id"] ."/" .
+                    $ligneContenuWeb["url"] =   $GLOBALS['myHoste'] .
+                                                "/detail/article/" . $ligneContenuWeb["article"]["id"] ."/" .
                                                 urlencode($ligneContenuWeb["article"]["nomLng1"]);
-                    }
-                    if($ligneContenuWeb["article"]["idModelAffichage"] == 2)
-                    {
-                        $ligneContenuWeb["url"] =  $GLOBALS['myHoste'] .
-                                                "/service/" . $ligneContenuWeb["article"]["id"] ."/" .
-                                                urlencode($ligneContenuWeb["article"]["nomLng1"]);
-                    }
-                    if($ligneContenuWeb["article"]["idModelAffichage"] == 1)
-                    {
-                        $ligneContenuWeb["url"] =  $GLOBALS['myHoste'] .
-                                                "/projet/" . $ligneContenuWeb["article"]["id"] ."/" .
-                                                urlencode($ligneContenuWeb["article"]["nomLng1"]);
-                    }
+                    $ligneContenuWeb["checkout"] =   $GLOBALS['myHoste'] .
+                                                "/checkout/" . $ligneContenuWeb["article"]["id"] ;
+                    
                 }
                 elseif(!empty($ligneContenuWeb["idCategorie"]))
                 {
@@ -324,19 +320,17 @@
                         $ligneContenuWeb["nomLng1"] = $ligneContenuWeb["categorie"]["nomLng1"];
                         $ligneContenuWeb["textLng1"] = $ligneContenuWeb["categorie"]["descriptionLng1"];
                         if( isset($contenuWeb["contenuWebType"]) &&
-                            isset($contenuWeb["contenuWebType"]["listeResolution"]))
+                            isset($contenuWeb["contenuWebType"]["listeResolution"]) &&
+                            count($contenuWeb["contenuWebType"]["listeResolution"])>0)
                         {
-                            if(count($contenuWeb["contenuWebType"]["listeResolution"])>0)
+                            $idResolution = $contenuWeb["contenuWebType"]["listeResolution"][$compte]["idResolution"];
+                            $images = filter($ligneContenuWeb["categorie"]["listeImage"],
+                                            "idResolution",
+                                            $idResolution);
+                            usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
+                            if(!empty($image))
                             {
-                                $idResolution = $contenuWeb["contenuWebType"]["listeResolution"][$compte]["idResolution"];
-                                $images = filter($ligneContenuWeb["categorie"]["listeImage"],
-                                                "idResolution",
-                                                $idResolution);
-                                usort($images,function($a, $b){return $a['ordre'] - $b['ordre'];});
-                                if(!empty($image))
-                                {
-                                    $ligneContenuWeb["image"] = $images[0]["nom"];
-                                }
+                                $ligneContenuWeb["image"] = $images[0]["nom"];
                             }
                         }
                     }
@@ -541,13 +535,13 @@
         }
         return false;
     }
-    function formatValue($value, $indent = 0) 
+    function formatValue($value, $indent = 0)
     {
         $formattedValue = '';
     
-        if (is_array($value) || is_object($value)) 
+        if (is_array($value) || is_object($value))
         {
-            foreach ($value as $key => $innerValue) 
+            foreach ($value as $key => $innerValue)
             {
                 $formattedValue .= str_repeat(' ', $indent * 4) . "$key: " . formatValue($innerValue, $indent + 1);
             }
@@ -571,14 +565,14 @@
             }
         }
         else
-            fwrite($myfile, $txt."\n");
+        {fwrite($myfile, $txt."\n");}
         fclose($myfile);
     }
     function getUpdateSql($data)
     {
         $sql = "";
         $id = 0;
-        foreach ($data as $key => $value) 
+        foreach ($data as $key => $value)
         {
             $value= clean($value);
             if($key != "id")
@@ -634,7 +628,6 @@
                 if( (gettype($value) == "string" ||
                     gettype($value) == "integer" ||
                     gettype($value) == "double") &&
-                    (!empty($value) || $value == "0" ||  $value == "1") && 
                     (!strContains($key, "id_") || (strContains($key, "id_") && $value != -1 )))
                 {
                     $sql .= " $key , ";
@@ -656,11 +649,15 @@
                 gettype($value) == "double") &&
                 (!empty($value) || $value == "0" || $value == "1") )
                 {
-                $sql .= " $value , ";
+                    $sql .= " $value , ";
                 }
                 elseif (!empty($value) && gettype($value) == "string")
                 {
-                $sql .= " '$value' , ";
+                    $sql .= " '$value' , ";
+                }
+                elseif (empty($value) && gettype($value) == "string")
+                {
+                    $sql .= " NULL , ";
                 }
             }
             

@@ -4,6 +4,7 @@ header ("Access-Control-Expose-Headers: Content-Length, X-JSON");
 header ("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
 header ("Access-Control-Allow-Headers: *");
 
+require_once "init.php" ;
 include_once "utility.php";
 include_once "entity/UserFilter.php";
 include_once "entity/ParametreFilter.php";
@@ -18,16 +19,9 @@ include_once "entity/ArticleFilter.php";
 include_once "entity/ArticleCategorieFilter.php";
 include_once "entity/DetailContenuWebFilter.php";
 include_once "entity/ContenuWebFilter.php";
+include_once "entity/ArticleRelationFilter.php";
 
-define('DB_HOST', 'localhost:3306');
-define('DB_USER', 'root');
-define('DB_PASS', 'root');
-define('DB_NAME', 'big_open');
 
-// define('DB_HOST', 'localhost:3306');
-// define('DB_USER', 'qjufmdrw_rami');
-// define('DB_PASS', '8zz*x[H7iP?a');
-// define('DB_NAME', 'qjufmdrw_big_open');
 
 
 $rows = array();
@@ -124,6 +118,73 @@ function deleteImage($id)
 {
   $sql = "delete from image where id = $id";
   getData($sql,true);
+}
+
+function getArticleRelation($id)
+{
+  $sql = "SELECT * FROM article_relation where id = $id";
+  $data =  getData($sql,false)[0];
+  if($data["idArticleRelation"] > 0)
+  {
+    $data["articleRelation"] = getArticle($data['idArticle']);
+  }
+  return $data;
+}
+function getListeArticleRelation($data, $setImage = false)
+{
+  $sql = "SELECT *
+          FROM article_relation " .
+          getWhere(convertInstance($data, "ArticleRelationFilter")) . " order by ordre ";
+  $data = getData($sql,false);
+  $idArticleRelation = array_column($data,"idArticleRelation");
+  // remplissage des categorie au ContenuWeb et ligne ContenuWeb
+  $idArticleRelation = array_unique($idArticleRelation);
+  $idArticleRelation =  array_filter($idArticleRelation, function ($value) {return !is_null($value); });
+  if(count($idArticleRelation)>0)
+  {
+    $idArticleConcatenes = implode(',', $idArticleRelation);
+    $sql = "SELECT * FROM article where id in (" . $idArticleConcatenes . ")" ;
+    $listeArticle = getData($sql,false);
+    // recherche image article
+    if($setImage === true)
+    {
+      $listeImage = getData("select * from image where id_article in ( $idArticleConcatenes ) order by ordre",false);
+    }
+    for($i=0; $i<count($data); $i++)
+    {
+      $data[$i]["articleRelation"] = find($listeArticle, "id", $data[$i]["idArticleRelation"]);
+      if($setImage === true && !empty($data[$i]["articleRelation"]))
+      {
+        $data[$i]["articleRelation"]["listeImage"] = filter($listeImage,
+                                                            "idArticle",
+                                                            $data[$i]["articleRelation"]["id"]);
+      }
+    }
+  }
+  return array("listArticleRelationResponse"=>$data, "pager"=>array("count"=>count($data)));
+}
+function saveArticleRelation($data)
+{
+  // mode update
+  if(isset($data["id"]) && $data["id"]>0)
+  {
+    $sql = "update article_relation set " . getUpdateSql(convertInstance($data,"ArticleRelationFilter"));
+    getData($sql,false);
+  }
+  // mode add
+  else
+  {
+    $sql = "insert into article_relation " . getInsertSql(convertInstance($data,"ArticleRelationFilter"));
+    $data["id"] = getData($sql,true)["id"];
+  }
+  return array("articleRelationResponse"=>$data, "articleRelationResponseError"=> null);
+}
+
+function deleteArticleRelation($id)
+{
+  $sql = "delete FROM article_relation where id = $id";
+  getData($sql,false);
+  return $id;
 }
 function getListeContenuWeb($data)
 {
@@ -984,7 +1045,7 @@ function saveDocument($data)
   {
     if(empty($data["referenceLivreur"]) && checkRequiredDataForBestDelivery($data))
     {
-      $data = createPickup($data);
+      //$data = createPickup($data);
     }
     // mode update
     if( isset($data["id"]) && $data["id"]>0)
@@ -1328,7 +1389,7 @@ function getCategorieByModelAffichage($id_model_affichage=3)
   }
   return $rows;
 }
-function getListeCategorie($data, $getArticleCategorie=false)
+function getListeCategorie($data, $getArticleCategorie=false, $getImage = false)
 {
   $filter = convertInstance($data,"CategorieFilter");
   $sql = "select * from categorie " . getWhere($filter) . "   order by ordre";
@@ -1345,6 +1406,22 @@ function getListeCategorie($data, $getArticleCategorie=false)
     {
       $data[$i]["listeArticleCategorie"]= filter($listeArticleCategorie,"idCategorie", $data[$i]["id"]);
       $data[$i]["listeCategorieContenuWeb"]= filter($listeCategorieContenuWeb,"idCategorie", $data[$i]["id"]);
+    }
+  }
+  // rechreche des images
+  if($getImage === true && !empty($data))
+  {
+    $idCategorieUniques = array_unique(array_column($data, 'id'));
+    $idCategorieUniques =  array_filter($idCategorieUniques, function ($value) {return !is_null($value); });
+  
+    $idCategorieConcatenes = implode(',', $idCategorieUniques);
+    
+    $listeImage = getData("select * from image where id_categorie in
+                        ( $idCategorieConcatenes ) order by ordre",false);
+    for($i=0;$i<count($data) ; $i++)
+    {
+      $img = filter($listeImage,"idCategorie", $data[$i]["id"]);
+      $data[$i]["listImage"] = $img;
     }
   }
   return array("listCategorieResponse"=> $data, "pager"=> array("count" => count($data)) ) ;
@@ -1418,5 +1495,3 @@ function deleteListeCategorieContenuWeb($data)
     getData($sql,true);
   }
 }
-// verification admin connecter (existance de session)
-// fin verification admin connecter

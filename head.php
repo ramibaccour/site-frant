@@ -1,4 +1,29 @@
+<?php
+    session_start();
+    require_once "backend/utility.php" ;
+    require_once "backend/getData.php" ;
+    require_once "backend/init.php" ;
 
+    
+
+
+    $array =  [
+                "id" => [6,7,14,15,16,17,18,19,29,44,45]
+                ];
+    $listeParametre = getListeParametreByListeId($array);
+    $parametre = $listeParametre["listParametreResponse"];
+    $societeName = find($parametre,"id", 6);
+    $societeAdresse = find($parametre,"id", 14);
+    $societePhone = find($parametre,"id", 15);
+    $societeMail = find($parametre,"id", 16);
+    $societeHoraire = find($parametre,"id", 45);
+    $societeLogo = find($parametre,"id", 44);
+    $societeInstagrame = find($parametre,"id", 17);
+    $societeFacebook = find($parametre,"id", 18);
+    $societeLinkedin = find($parametre,"id", 19);
+    $societeYoutube = find($parametre,"id", 29);
+    $titre = find($parametre,"id", 7);
+?>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -33,4 +58,7 @@
     <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/main.css">
     <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/responsive.css">
     <link rel="stylesheet" href="<?php echo $myHoste ; ?>/assets/css/colors.css">
+    <script type="text/javascript">
+        <?php echo "var myHoste='" . $myHoste ."';";?>
+    </script>
 </head>

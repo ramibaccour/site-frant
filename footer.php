@@ -120,3 +120,21 @@
     <!-- footer copyright area end -->
 </footer>
 <!-- footer end -->
+
+
+   <!-- JS
+    ============================================ -->
+
+    <!-- Modernizer & jQuery JS -->
+    <script src="<?php echo $myHoste ; ?>/assets/js/vendor/modernizr-3.11.2.min.js"></script>
+    <script src="<?php echo $myHoste ; ?>/assets/js/vendor/jquery-3.5.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="<?php echo $myHoste ; ?>/assets/js/bootstrap.min.js"></script>
+
+    <!-- Plugins JS -->
+    <script src="<?php echo $myHoste ; ?>/assets/js/jquery.nivo.slider.pack.js"></script>
+    <script src="<?php echo $myHoste ; ?>/assets/js/plugins.js"></script>
+
+    <!-- Main JS -->
+    <script src="<?php echo $myHoste ; ?>/assets/js/main.js"></script>

@@ -30,6 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
     $id = intval($matches[1]);
     echo json_encode(getContenuWeb($id));
   }
+  if (preg_match('/\/articleRelation\/findById\/(\d+)/', $path, $matches))
+  {
+    $id = intval($matches[1]);
+    echo json_encode(getArticleRelation($id));
+  }
   if (preg_match('/\/contenuWeb\/get-liste-by-categorie\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
@@ -81,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
     $id = intval($matches[1]);
     echo json_encode(getDocument($id));
   }
-  if($path === '/parametre/liste-type/')
+  if($path === '/parametre/liste-type')
   {
     echo json_encode(getListeParametreType());
   }
@@ -120,6 +125,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     if($path === '/article/findByFilter')
     {
       echo json_encode(getListeArticle($data));
+    }
+    if($path === '/articleRelation/findByFilter')
+    {
+      echo json_encode(getListeArticleRelation($data));
     }
     elseif($path === '/contenuWeb/findByFilter')
     {
@@ -202,6 +211,11 @@ elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
     echo json_encode(deleteArticle($id));
   }
+  elseif (preg_match('/\/articleRelation\/delete\/(\d+)/', $path, $matches))
+  {
+    $id = intval($matches[1]); 
+    echo json_encode(deleteArticleRelation($id));
+  }
   elseif (preg_match('/\/contenuWeb\/delete\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
@@ -222,6 +236,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
 {
   $data = json_decode(file_get_contents('php://input'), true);
   
+  if($path === '/articleRelation/save')
+  {
+    echo json_encode(saveArticleRelation($data));
+  }
   if($path === '/image/save')
   {
     echo json_encode(saveImage($data));
