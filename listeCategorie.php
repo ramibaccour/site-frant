@@ -1,4 +1,4 @@
-
+<?php  session_start(); ?>
 <!doctype html>
 <html class="no-js" lang="en">
     <?php
@@ -65,6 +65,7 @@
                             }
                     ?>
                             <div class="co-isotop-item-1 isotop-item branding web col-lg-4 col-sm-6">
+                            <a href="<?php echo $url; ?>">
                                 <div class="portfolio___single">
                                         <img src="<?php echo    $myHoste .
                                                                 "/assets/images_upload/" .
@@ -83,6 +84,7 @@
                                             <div class="title"><?php echo $categorieChildren["nomLng1"]; ?></div>
                                         </div>
                                 </div>
+                            </a>
                             </div>
                     <?php
                         }

@@ -9,10 +9,10 @@ define('DB_NAME', 'big_open');
 // define('DB_PASS', '8zz*x[H7iP?a');
 // define('DB_NAME', 'qjufmdrw_big_open');
 
-// $baseHose = "https://mirna.bio/";
-// $myHoste = $baseHose;
-$baseHose = "https://localhost/";
-$myHoste = $baseHose. "site-frant";
+//  $baseHose = "https://mirna.bio";
+//  $myHoste = $baseHose;
+$baseHose = "https://localhost";
+$myHoste = $baseHose. "/site-frant";
 
 $loginBestDrlivery = "Mirnabyghada";
 $passwordBestDrlivery = "Ghadamirnabio1";

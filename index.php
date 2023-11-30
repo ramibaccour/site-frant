@@ -1,4 +1,4 @@
-
+<?php  session_start(); ?>
 <!doctype html>
 <html class="no-js" lang="en">
     <?php
@@ -55,9 +55,16 @@
                                             <div class="button-1 hover-btn-2">
                                                 <a href="<?php echo $detailContenuWeb["url"] ; ?>">Voire</a>
                                             </div>
-                                            <div class="button-1 hover-btn-2 pt-2">
-                                                <a href="<?php echo $detailContenuWeb["checkout"] ; ?>">Acheter</a>
-                                            </div>
+                                            <?php
+                                                if(isset($detailContenuWeb["article"]))
+                                                {
+                                            ?>
+                                                    <div class="button-1 hover-btn-2 pt-2">
+                                                        <a href="<?php echo $detailContenuWeb["checkout"] ; ?>">Acheter</a>
+                                                    </div>
+                                            <?php
+                                                }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>
@@ -153,9 +160,17 @@
                                                         <div class="listcate_shop_now">
                                                             <a href="<?php echo $detailContenuWeb["url"] ; ?>">Voire</a>
                                                         </div>
-                                                        <div class="listcate_shop_now pt-2">
-                                                            <a href="<?php echo $detailContenuWeb["checkout"] ; ?>">Acheter</a>
-                                                        </div>
+                                                        <?php
+                                                            if(isset($detailContenuWeb["article"]))
+                                                            {
+                                                        ?>
+                                                                <div class="listcate_shop_now pt-2">
+                                                                    <a href="<?php echo $detailContenuWeb["checkout"] ; ?>">Acheter</a>
+                                                                </div>                                                        
+                                                        <?php
+                                                            }
+                                                        ?>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -289,23 +304,22 @@
                                                                             ?>
                                                                         </div>
                                                                         <?php
-                                                                        if( !empty($detailContenuWeb["price"]) &&
-                                                                            $detailContenuWeb["price"]>0)
-                                                                        {
+                                                                            if(isset($detailContenuWeb["article"]))
+                                                                            {
                                                                         ?>
-                                                                            <div class="cart">
-                                                                                <div class="product-add-to-cart">
-                                                                                <a  class=" add-product-to-cart"
-                                                                                    href="#"
-                                                                                    data-image="<?php echo $detailContenuWeb["image"];?>"
-                                                                                    data-product="<?php echo $detailContenuWeb["article"]["id"];?>">
-                                                                                    + Au panier
-                                                                                </a><br><br>
-                                                                                <a href="<?php echo $detailContenuWeb["checkout"] ;?>">Acheter</a>
-                                                                            </div>
+                                                                                <div class="cart">
+                                                                                    <div class="product-add-to-cart">
+                                                                                    <a  class=" add-product-to-cart"
+                                                                                        href="#"
+                                                                                        data-image="<?php echo $detailContenuWeb["image"];?>"
+                                                                                        data-product="<?php echo $detailContenuWeb["article"]["id"];?>">
+                                                                                        + Au panier
+                                                                                    </a><br><br>
+                                                                                    <a href="<?php echo $detailContenuWeb["checkout"] ;?>">Acheter</a>
+                                                                                </div>
                                                                         </div>
                                                                         <?php
-                                                                        }
+                                                                            }
                                                                         ?>
                                                                         
                                                                     </div>
@@ -346,7 +360,14 @@
                                         <h2><?php echo $firstElemnt["nomLng1"] ;?></h2>
                                         <p class="txt2"><?php echo $firstElemnt["textLng1"] ;?></p>
                                         <a href="<?php echo $firstElemnt["url"] ;?>">Voir</a><br>
-                                        <a href="<?php echo $firstElemnt["checkout"] ;?>">Acheter</a>
+                                        <?php
+                                            if(isset($detailContenuWeb["article"]))
+                                            {
+                                        ?>
+                                            <a href="<?php echo $firstElemnt["checkout"] ;?>">Acheter</a>
+                                        <?php
+                                            }
+                                        ?>
                                     </div>
                                 </div>
                             </div>
@@ -490,10 +511,9 @@
                                                                                 </span>
                                                                             </div>
                                                                             <?php
-                                                                                if( !empty($m["price"]) &&
-                                                                                    $m["price"]>0)
+                                                                                if(isset($m["article"]))
                                                                                 {
-                                                                            ?>
+                                                                            ?>                                           
                                                                                     <div class="cart">
                                                                                         <div class="product-add-to-cart">
                                                                                             <a class=" add-product-to-cart"
@@ -655,19 +675,18 @@
                                                                 </span>
                                                             </div>
                                                             <?php
-                                                                if( !empty($detailContenuWeb["price"]) &&
-                                                                    $detailContenuWeb["price"]>0)
+                                                                if(isset($detailContenuWeb["article"]))
                                                                 {
                                                             ?>
-                                                            <div class="cart">
-                                                                <div class="product-add-to-cart">
-                                                                    <a  class=" add-product-to-cart"
-                                                                    href="#"
-                                                                    data-image="<?php echo $detailContenuWeb["image"];?>"
-                                                                    data-product="<?php echo $detailContenuWeb["article"]["id"];?>">+ Au panier</a><br><br>
-                                                                    <a href="<?php echo $detailContenuWeb["checkout"] ;?>">Acheter</a>
-                                                                </div>
-                                                            </div>
+                                                                    <div class="cart">
+                                                                        <div class="product-add-to-cart">
+                                                                            <a  class=" add-product-to-cart"
+                                                                            href="#"
+                                                                            data-image="<?php echo $detailContenuWeb["image"];?>"
+                                                                            data-product="<?php echo $detailContenuWeb["article"]["id"];?>">+ Au panier</a><br><br>
+                                                                            <a href="<?php echo $detailContenuWeb["checkout"] ;?>">Acheter</a>
+                                                                        </div>
+                                                                    </div>
                                                             <?php
                                                                 }
                                                             ?>

@@ -1,19 +1,22 @@
-
+<?php  session_start(); ?>
 <!doctype html>
 <html class="no-js" lang="en">
     <?php
+        $saved = "d-none";
+        $verifData = "d-none";
+        $noProduct = "d-none";
         include("head.php");
-        $cart = array();
+        $myCart = array();
         $article = array();
         if(isset($_GET["id_article"]))
         {
             $idArticle = $_GET["id_article"];
             $article = getArticle($idArticle);
-            array_push($cart, $article);
+            array_push($myCart, $article);
         }
         elseif(isset($_SESSION["cart"]))
         {
-            $cart = $_SESSION["cart"];
+            $myCart = $_SESSION["cart"];
         }
         if (!empty($_POST["submit"]))
         {
@@ -23,7 +26,7 @@
                 !empty($_POST["regionLng1"]) &&
                 !empty($_POST["villeLng1"]))
             {
-                if(!empty($cart))
+                if(!empty($myCart))
                 {
                     $totalHt = 0;
                     $date = date('Y-m-d H:i:s');
@@ -41,7 +44,7 @@
                     $commande["idParametre2"] = 27 ;
                     $commande["totalTva"] = 0 ;
                     $detailDocument = array();
-                    foreach($cart as $articleCart)
+                    foreach($myCart as $articleCart)
                     {
                         $detail = array();
                         $havePromo = havePromo($articleCart);
@@ -51,7 +54,7 @@
                         $detail["articlePrix"] = ($havePromo===true? $articleCart["newPrice"] : $articleCart["price"]);
                         $detail["totalHt"] = $detail["articlePrix"];
                         array_push($detailDocument, $detail);
-                        $totalHt +=  ($havePromo===true? $articleCart["newPrice"] : $articleCart["price"]);
+                        $totalHt +=  ($havePromo===true? $articleCart["newPrice"] : $articleCart["price"]) *  $articleCart["qte"];
                     }
                     $commande["totalHt"] = $totalHt ;
                     $commande["totalTtc"] = $totalHt ;
@@ -59,17 +62,19 @@
                     $commande["listDetailDocument"] =$detailDocument ;
                     $commande = json_decode (json_encode ($commande), false);
                     saveDocument($commande);
+                    $_SESSION["cart"] = array();
                     session_destroy();
-                    $cart = array();
+                    $myCart = array();
+                    $saved = "";
                 }
                 else
-                {
-                    // to do no product in cart
+                {                    
+                    $noProduct = "";
                 }
             }
             else
             {
-                // to do  panier non valide
+                $verifData = "";
             }
         }
         
@@ -190,12 +195,12 @@
                                                 <tbody>
                                                     <?php
                                                         $somme = 0;
-                                                        foreach($cart as $article)
+                                                        foreach($myCart as $article)
                                                         {
                                                             $havePromo = havePromo($article);
-                                                            $somme += $havePromo===true?
+                                                            $somme += ($havePromo===true?
                                                                 $article["newPrice"] :
-                                                                $article["price"];
+                                                                $article["price"]) * $article["qte"];
                                                     ?>
                                                             <tr class="cart_item">
                                                                 <td class="product-name">
@@ -224,7 +229,10 @@
                                             <div class="payment-accordion">
                                                 <div class="order-button-payment">
                                                     <input type="submit" name="submit" value="Place order">
-                                                </div>
+                                                </div>                                                
+                                                <p class="<?php echo $saved; ?> mt-1 alert alert-success">Enregistrer</p>
+                                                <p class="<?php echo $verifData; ?> mt-1 alert alert-danger">Veuillez saisir vos coordonnées</p>
+                                                <p class="<?php echo $noProduct; ?> mt-1 alert alert-danger">Aucun produit dans le panier</p>
                                             </div>
                                         </div>
                                     </div>

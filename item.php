@@ -59,7 +59,7 @@
                 ?>
             </div>
             
-           
+          
             <div class="cart">
                 <div class="product-add-to-cart">
                     <a  class="add-product-to-cart"
@@ -69,6 +69,7 @@
                     <a href="<?php echo $GLOBALS['myHoste'] ."/checkout/".$article["id"] ?>">Acheter</a>
                 </div>
             </div>
+           
           
         </div>
     </div>

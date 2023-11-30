@@ -3,33 +3,33 @@ if( isset($_POST["artToAdd"]) &&
     isset($_POST["imageToAdd"]) &&
     isset($_POST["qteToAdd"]))
 {
-    $cart = array();
+    $addToCart = array();
     if(isset($_SESSION["cart"]))
     {
-        $cart = $_SESSION["cart"];
+        $addToCart = $_SESSION["cart"];
     }
     $idArtToAdd = $_POST["artToAdd"];
     if(!empty($idArtToAdd))
     {
         $artToAdd = getArticle($idArtToAdd);
-        $findArticle = find( $cart, "id", $idArtToAdd );
+        $findArticle = find( $addToCart, "id", $idArtToAdd );
         if(empty($findArticle))
         {
             $artToAdd["image"] = $_POST["imageToAdd"];
             $artToAdd["qte"] = $_POST["qteToAdd"];
-            array_push($cart, $artToAdd);
+            array_push($addToCart, $artToAdd);
         }
         else
         {
-            for($i=0;$i<count($cart);$i++)
+            for($i=0;$i<count($addToCart);$i++)
             {
-                if($cart[$i]["id"] == $idArtToAdd)
+                if($addToCart[$i]["id"] == $idArtToAdd)
                 {
-                    $cart[$i]["qte"] += $_POST["qteToAdd"];
+                    $addToCart[$i]["qte"] += $_POST["qteToAdd"];
                 }
             }
         }
-        $_SESSION["cart"] = $cart;
+        $_SESSION["cart"] = $addToCart;
     }
 
 }

@@ -1,5 +1,4 @@
 <?php
-    session_start();
     require_once "backend/utility.php" ;
     require_once "backend/getData.php" ;
     require_once "backend/init.php" ;
@@ -24,6 +23,7 @@
     $societeYoutube = find($parametre,"id", 29);
     $titre = find($parametre,"id", 7);
 ?>
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">

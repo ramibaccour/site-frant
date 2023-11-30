@@ -8,7 +8,7 @@
     foreach($cart as $myArticleCart)
     {
         $havePromo = havePromo($myArticleCart);
-        $somme += $havePromo===true? $myArticleCart["newPrice"] : $myArticleCart["price"];
+        $somme += ($havePromo===true? $myArticleCart["newPrice"] : $myArticleCart["price"]) * $myArticleCart["qte"];
     }
 ?>
 <div class="dropdown">
