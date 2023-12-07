@@ -7,7 +7,7 @@
 
 
     $array =  [
-                "id" => [6,7,14,15,16,17,18,19,29,44,45]
+                "id" => [6,7,14,15,16,17,18,19,20,29,44,45]
                 ];
     $listeParametre = getListeParametreByListeId($array);
     $parametre = $listeParametre["listParametreResponse"];
@@ -21,6 +21,14 @@
     $societeFacebook = find($parametre,"id", 18);
     $societeLinkedin = find($parametre,"id", 19);
     $societeYoutube = find($parametre,"id", 29);
+    $societeGoogleMaps = explode(",", find($parametre,"id", 20)["value"]);
+    $longitude = 0;
+    $latitude = 0;
+    if( !empty($societeGoogleMaps))
+    {
+        $longitude = floatval($societeGoogleMaps[0]);
+        $latitude = floatval($societeGoogleMaps[1]);
+    }
     $titre = find($parametre,"id", 7);
 ?>
 

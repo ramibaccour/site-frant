@@ -513,11 +513,14 @@
     }
     function getEtatPickup($codebBarre)
     {
+        $pickup = new Pickup();
         $pickup->login = $GLOBALS['loginBestDrlivery'];
         $pickup->pwd = $GLOBALS['passwordBestDrlivery'];
         $pickup->tracking_number = $codebBarre;
-        $client=new SoapClient('https://www.best-delivery.net/api/serviceShipments.php?wsdl',['trace'=>1,'cache_wsdl'=>WSDL_CACHE_NONE]);
-        $resp = $client->TrackShipmentStatus($pickup);
+        
+        $client=  new SoapClient('https://api.best-delivery.net/serviceShipments.php?wsdl',['trace'=>1,'cache_wsdl'=>WSDL_CACHE_NONE]);
+        return $client->TrackShipment($pickup);
+
     }
     // enAttente = "",
     // enCoursConfirmation = "",
@@ -528,8 +531,7 @@
         !empty($data["regionLng1"])&&
         !empty($data["villeLng1"])&&
         !empty($data["adresseLng1"])&&
-        !empty($data["mobile1"])&&
-        $data["etat"] == "confirmer")
+        !empty($data["mobile1"]))
         {
             return true;
         }

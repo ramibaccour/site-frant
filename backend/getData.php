@@ -20,6 +20,8 @@ include_once "entity/ArticleCategorieFilter.php";
 include_once "entity/DetailContenuWebFilter.php";
 include_once "entity/ContenuWebFilter.php";
 include_once "entity/ArticleRelationFilter.php";
+include_once "entity/EtatDocumentFilter.php";
+include_once "entity/PersonneFilter.php";
 
 
 
@@ -85,8 +87,8 @@ function saveImageFile($image,$name, $idImage)
     // suppression de l'encienne image
     unlink($targetDirectory . $image["nom"]);
     // modification name image par la nouvelle image
-    $image["nom"] = $name;
-    saveImage($image);
+    // $image["nom"] = $name;
+    // saveImage($image);
   }
 }
 function saveImage($data)
@@ -792,6 +794,20 @@ function saveParametre($data)
   getData($sql,false);
   return getParametre($data["id"]);
 }
+
+function getEtatDocument($id)
+{
+  $sql = "SELECT * FROM etat_document where id = $id";
+  return  getData($sql,false)[0];
+}
+function getListeEtatDocument($data)
+{
+  $sql = "SELECT * FROM etat_document ";
+  $whereClause = getWhere(convertInstance($data,"EtatDocumentFilter"));
+  $sql .= $whereClause ;
+  $listeArt = getData($sql,false);
+  return array(  'listEtatDocumentResponse' => $listeArt );
+}
 function getListeRegion($data)
 {
   $sql = "SELECT * FROM region ";
@@ -836,6 +852,25 @@ function getListeCommissionCommercialle($data)
   }
   
 }
+function commissionCommercialleDeleteByFilter($data)
+{
+  $tab = json_decode(json_encode($data), true);
+  $sql = "delete FROM commission_commercialle ";
+  $str = convertInstance($tab,"CommissionCommercialleFilter");
+  $whereClause = getWhere($str);
+  $sql .= $whereClause;
+  try
+  {
+    getData($sql,false);
+    return array( "commissionCommercialleResponse" => $data,
+                  "commissionCommercialleResponseError" =>array("haveError" => false));
+  }
+  catch(Exception $e)
+  {
+    return array( "commissionCommercialleResponse" => null,
+                  "commissionCommercialleResponseError" =>array("haveError" => true));
+  }
+}
 function saveAllCommission($data)
 {
   $respance = array( "commissionCommercialleResponse" => array(),
@@ -864,7 +899,11 @@ function saveCommissionCommercialle($data)
     $sql = "insert into commission_commercialle  " . getInsertSql($data);
     $com = getData($sql,false);
     $document = getDocument($data["idDocument"]);
-    $sql = "update document set  etat ='livrer_payer' where id = ". $document['id'] ;
+    $param = getParametre(52);
+    $etatDoc = getEtatDocument($param["value"]);
+    $sql = "update document set  etat ='" . $etatDoc["nomLng1"] . "', ".
+            "id_etat_document=" . $etatDoc["id"] .
+            " where id = ". $document['id'] ;
     getData($sql,false);
     return array( "commissionCommercialleResponse" => $com,
                   "commissionCommercialleResponseError" =>array("haveError" => false));
@@ -924,8 +963,105 @@ function getDocument($id)
     return $res;
   }
 }
+function fillEtat()
+{
+
+  $sql = "SELECT * FROM document ";
+  $data = getData($sql,false);
+  // recherche etat doc
+  $listeEtatDoc = getData("select *  from etat_document_livreur",false);
+
+  $max = 1;
+  foreach($data as $doc)
+  {
+    if(!empty($doc["referenceLivreur"]))
+    {
+      $etatDocBest = getEtatPickup($doc["referenceLivreur"]);
+      if(gettype($etatDocBest->status->Struct) == "array")
+      {
+        foreach($etatDocBest->status->Struct as $etat)
+        {
+          if(find($listeEtatDoc,"nomLng1", $etat->message) == null)
+          {
+            $max+=1;
+            $n = $etat->message;
+            $qq = "insert into etat_document_livreur values($max , '$n' , $max ,1)";
+            getData($qq,false);
+            $listeEtatDoc = getData("select  * from etat_document_livreur ",false);
+          }
+        }
+      }
+      else
+      {
+        if(find($listeEtatDoc,"nomLng1", $etatDocBest->status->Struct->message) == null)
+        {
+          $max+=1;
+          $n = $etatDocBest->status->Struct->message;
+          $qq = "insert into etat_document_livreur values($max , '$n' , $max ,1)";
+          getData($qq,false);
+          $listeEtatDoc = getData("select * from etat_document_livreur  " ,false);
+        }
+      }
+    }
+  }
+}
+function updateEtatDocument()
+{
+  $etatDocLivrer = getEtatDocument(5);
+  $etatDocAnnulerLivrer = getEtatDocument(8);
+  $sqlUpdateDocument = "";
+  $sql = "SELECT * FROM document 
+          where is_deleted = 0 and 
+          id_etat_document = 3 and 
+          reference_livreur IS NOT NULL and
+          reference_livreur != '' and
+          NOW() >= DATE_ADD(date_update_etat_document_livreur, INTERVAL 15 MINUTE)";
+  $listeDocument = getData($sql,false);
+  foreach($listeDocument as $document)
+  {
+    if(!empty($document["referenceLivreur"]))
+    {
+      $etatDocBest = getEtatPickup($document["referenceLivreur"]);
+      $lastEtatDocBest = "";
+      if(gettype($etatDocBest->status->Struct) == "array")
+      {
+        if(!empty($etatDocBest->status->Struct))
+        {
+          $lastEtatDocBest = $etatDocBest->status->Struct[0];
+        }
+      }
+      else
+      {
+        $lastEtatDocBest = $etatDocBest->status->Struct;
+      }
+      $sqlUpdateDocument = "update document set ";
+      if( $lastEtatDocBest->message == "Livrées payées " ||
+          $lastEtatDocBest->message == "Livrée Livree" ||
+          $lastEtatDocBest->message == "Livrée Livrée | Espéce | ")
+      {
+        $sqlUpdateDocument .= " etat ='" . $etatDocLivrer["nomLng1"] . "', ";
+        $sqlUpdateDocument .= " id_etat_document =5, ";
+      }
+      elseif( $lastEtatDocBest->message == "Retour Expéditeur Ajouté à Console Retour Expediteur" ||
+              $lastEtatDocBest->message == "Retour payé " ||
+              $lastEtatDocBest->message == "Retour Client / Agence Ajouté à Console Retour" ||
+              $lastEtatDocBest->message == "RTN dépot Retour Dépot" ||
+              $lastEtatDocBest->message == "Retour définitif Retour définitif")
+      {
+        $sqlUpdateDocument .= " etat ='" . $etatDocAnnulerLivrer["nomLng1"] . "', ";
+        $sqlUpdateDocument .= " id_etat_document =8, ";
+      }
+      $sqlUpdateDocument .= " etat_document_livreur ='" . $lastEtatDocBest->message . "', ";
+      $sqlUpdateDocument .= " date_update_etat_document_livreur = NOW() ".
+                            "where id =" . $document['id'] . " ; ";
+      getData($sqlUpdateDocument,false);
+      
+    }
+  }
+}
 function getListeDocument($data, $setLimit = true)
 {
+  updateEtatDocument();
   $response = array('listDocumentResponse' => array());
   $data->pager->count = 0;
   $response['pager'] = $data->pager;
@@ -1043,7 +1179,9 @@ function saveDocument($data)
   $detailDocumentResponseError=$resultCheckData2;
   if($documentResponseError->haveError === false )
   {
-    if(empty($data["referenceLivreur"]) && checkRequiredDataForBestDelivery($data))
+    if( empty($data["referenceLivreur"]) &&
+        $data["idEtatDocument"] == 3 &&
+        checkRequiredDataForBestDelivery($data))
     {
       //$data = createPickup($data);
     }
@@ -1311,12 +1449,7 @@ function getSignin($data)
       $user["jwt"] = generateRandomAlphanumeric(60);
       if(!empty($user["idPersonne"]))
       {
-        $sql = "SELECT * FROM `personne`  WHERE id=" . $user["idPersonne"] . " AND is_deleted=0" ;
-        $rows = executeSql($sql,false);
-        if (!empty($rows))
-        {
-          $user["personne"] =$rows[0];
-        }
+        $user["personne"] = getPersonne($user["idPersonne"]);
       }
       if(!empty($user["idTypeUser"]))
       {
@@ -1343,14 +1476,14 @@ function savePersonne($data)
   // mode update
   if(isset($data["id"]) && $data["id"]>0)
   {
-    $sql = "update personne set " . getUpdateSql($data);
+    $sql = "update personne set " . getUpdateSql(convertInstance($data,"PersonneFilter"));
     getData($sql,false);
-    return getPersonne($data["id"]);
+    return $data;
   }
   // mode add
   else
   {
-    $sql = "insert into personne " . getInsertSql($data);
+    $sql = "insert into personne " . getInsertSql(convertInstance($data,"PersonneFilter"));
     $data = getData($sql,true);
     return getPersonne($data["id"]);
   }
@@ -1365,6 +1498,10 @@ function getPersonne($id)
   }
   else
   {
+    if(!empty($data[0]["idImage"]))
+    {
+      $data[0]["image"] = getImage($data[0]["idImage"]);
+    }
     return $data[0] ;
   }
 }

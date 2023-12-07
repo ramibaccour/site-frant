@@ -15,97 +15,102 @@ if ($path !== false)
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET')
 {
-  if (preg_match('/\/resolution\/get-by-type-content\/(.*)/', $path, $matches))
+  if (preg_match('/\/etatDocument\/findById\/(\d+)/', $path, $matches))
+  {
+    $id = intval($matches[1]);
+    echo json_encode(getEtatDocument($id));
+  }
+  elseif (preg_match('/\/resolution\/get-by-type-content\/(.*)/', $path, $matches))
   {
     $type_content = $matches[1];
     echo json_encode(getListeResolutionByTypeContent($type_content));
   }
-  if (preg_match('/\/resolution\/get-by-id-contenuWeb-type\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/resolution\/get-by-id-contenuWeb-type\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getResolutionByIdContenuWebType($id));
   }
-  if (preg_match('/\/contenuWeb\/findById\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/contenuWeb\/findById\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getContenuWeb($id));
   }
-  if (preg_match('/\/articleRelation\/findById\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/articleRelation\/findById\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getArticleRelation($id));
   }
-  if (preg_match('/\/contenuWeb\/get-liste-by-categorie\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/contenuWeb\/get-liste-by-categorie\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getListeContenuWebByCategorie($id));
   }
-  if (preg_match('/\/detailContenuWeb\/findById\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/detailContenuWeb\/findById\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getLigneContenuWeb($id));
   }
-  if (preg_match('/\/user\/findById\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/user\/findById\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getUser($id));
   }
-  if($path === '/head-ContenuWeb')
+  elseif($path === '/head-ContenuWeb')
   {
     echo json_encode(getHeadContenuWeb());
   }
-  if($path === '/head-ligne-ContenuWeb')
+  elseif($path === '/head-ligne-ContenuWeb')
   {
     echo json_encode(getHeadLigneContenuWeb());
   }
-  if($path === '/contenuWebType/liste-type')
+  elseif($path === '/contenuWebType/liste-type')
   {
     echo json_encode(getListeContenuWebType());
   }
-  if (preg_match('/\/article\/findById\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/article\/findById\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getArticle($id));
   }
-  if (preg_match('/\/image\/liste\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/image\/liste\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getListeImageArticle($id));
   }
-  if (preg_match('/\/liste-image-categorie\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/liste-image-categorie\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getListeImageCategorie($id));
   }
-  if($path === '/head-article')
+  elseif($path === '/head-article')
   {
     echo json_encode(getHeadArticle());
   }
-  if (preg_match('/\/document\/findById\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/document\/findById\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getDocument($id));
   }
-  if($path === '/parametre/liste-type')
+  elseif($path === '/parametre/liste-type')
   {
     echo json_encode(getListeParametreType());
   }
-  if (preg_match('/\/parametre\/findById\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/parametre\/findById\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getParametre($id));
   }
-  if (preg_match('/\/categorie\/findById\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/categorie\/findById\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getCategorie($id));
   }
-  if (preg_match('/\/categorie\/liste-categorie-article\/(\d+)/', $path, $matches))
+  elseif (preg_match('/\/categorie\/liste-categorie-article\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getListeCategorieArticle($id));
   }
-  if ($path ==='/modelAffichage/liste/')
+  elseif ($path ==='/modelAffichage/liste/')
   {
     echo json_encode(getListeModelAffichage());
   }
@@ -126,7 +131,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
       echo json_encode(getListeArticle($data));
     }
-    if($path === '/articleRelation/findByFilter')
+    elseif($path === '/articleRelation/findByFilter')
     {
       echo json_encode(getListeArticleRelation($data));
     }
@@ -138,9 +143,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
       echo json_encode(getListDetailContenuWeb($data));
     }
-    elseif($path === '/parametre/findByFilter')
+    elseif($path === '/etatDocument/findByFilter')
     {
-      echo json_encode(getListeParametre($data));
+      echo json_encode(getListeEtatDocument($data));
     }
     elseif($path === '/region/findByFilter')
     {
@@ -150,9 +155,17 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
       echo json_encode(getListeCommissionCommercialle($data));
     }
+    elseif($path === '/commissionCommercialle/deleteByFilter')
+    {
+      echo json_encode(commissionCommercialleDeleteByFilter($data));
+    }
     elseif($path === '/commissionCommercialle/saveAllCommission')
     {
       echo json_encode(saveAllCommission($data));
+    }
+    elseif($path === '/parametre/findByFilter')
+    {
+      echo json_encode(getListeParametre($data));
     }
     elseif($path === '/parametre/findByListId')
     {

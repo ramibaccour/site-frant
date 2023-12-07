@@ -948,8 +948,83 @@
                             <!--Our Service Area End-->
                 <?php
                     }
+                    if( $ContenuWeb["idContenuWebType"] == 16)
+                    {
                 ?>
-            <?php
+                        <!-- contact form area -->
+                        <div class="contact-form-area">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="contact-form-inner">
+                                            <h2><?php echo $ContenuWeb["nomLng1"] ; ?></h2>
+                                            <form action="mail.php" method="get">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <input type="text" class="form-control" placeholder="First name*" required>
+                                                    </div>
+                                                    <div class="col">
+                                                        <input type="text" class="form-control" placeholder="Last name*" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <input type="text" class="form-control" placeholder="Email*" required>
+                                                    </div>
+                                                    <div class="col">
+                                                        <input type="text" class="form-control" placeholder="Subject*" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <textarea name="your-message" cols="40" rows="10" class="wpcf7-form-control wpcf7-textarea wpcf7-validates-as-required" aria-required="true"
+                                                            aria-invalid="false" placeholder="Message *" required></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="contact-submit">
+                                                    <input type="submit" value="Send Email" class="wpcf7-form-control wpcf7-submit button">
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="contact-address-area">
+                                            <h2><?php echo $ContenuWeb["nom2Lng1"] ; ?></h2>
+                                            <p><?php echo $ContenuWeb["textLng1"] ; ?></p>
+                                            <ul>
+                                                <li>
+                                                    <i class="fa fa-fax">&nbsp;</i> Adresse : <?php echo $societeAdresse["value"] ; ?></li>
+                                                <li>
+                                                    <i class="fa fa-phone">&nbsp;</i> <?php echo $societeMail["value"] ; ?></li>
+                                                <li>
+                                                    <i class="fa fa-envelope-o"></i>&nbsp;</i> <?php echo $societePhone["value"] ; ?></li>
+                                            </ul>
+                                            <h3>
+                                                <strong>Heures d'ouverture</strong>
+                                            </h3>
+                                            <p><?php echo $societeHoraire["value"] ; ?></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- contact form area end -->
+                <?php
+                    }
+                    if( $ContenuWeb["idContenuWebType"] == 17)
+                    {
+                ?>
+                        <!-- contact page map -->
+                        <div class="contact-page-map">
+                            <!-- Google Map Start -->
+                            <div class="container">
+                                <iframe src = "https://maps.google.com/maps?q=<?php echo($longitude)?>,<?php echo($latitude)?>&hl=es;z=14&amp;output=embed"  style="border:0; width: 100%; height: 384px;" allowfullscreen></iframe>
+                            </div>
+                            <!-- Google Map End -->
+                        </div>
+                        <!-- contact page map -->
+        <?php
+                    }
             }
         ?>
         

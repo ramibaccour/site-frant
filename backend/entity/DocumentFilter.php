@@ -1,5 +1,5 @@
 <?php
-class DocumentFilter 
+class DocumentFilter
 {
 public $id;
 public $numero;
@@ -28,4 +28,5 @@ public $totalTtc;
 public $idCollaborateur;
 public $idUser;
 public $idUserCommerciale;
+public $idEtatDocument;
 }

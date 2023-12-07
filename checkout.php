@@ -12,6 +12,7 @@
         {
             $idArticle = $_GET["id_article"];
             $article = getArticle($idArticle);
+            $article["qte"] = 1;
             array_push($myCart, $article);
         }
         elseif(isset($_SESSION["cart"]))
@@ -28,13 +29,16 @@
             {
                 if(!empty($myCart))
                 {
+                    $param = getParametre(51);
+                    $etatDoc = getEtatDocument($param["value"]);
                     $totalHt = 0;
                     $date = date('Y-m-d H:i:s');
                     $commande = array();
                     $commande["nomLng1"] = $_POST["nomLng1"] ;
                     $commande["adresseLng1"] = $_POST["adresseLng1"] ;
                     $commande["date"] = $date ;
-                    $commande["etat"] = "en_attente" ;
+                    $commande["etat"] = $etatDoc["nomLng1"] ;
+                    $commande["idEtatDocument"] = $etatDoc["id"] ;
                     $commande["villeLng1"] = $_POST["villeLng1"] ;
                     $commande["regionLng1"] = $_POST["regionLng1"] ;
                     $commande["mobile1"] = $_POST["mobile1"] ;

@@ -4,4 +4,4 @@ Disallow: /nogooglebot/
 User-agent: *
 Allow: /
 
-Sitemap: https://horizontopo.com/sitemap.xml
+Sitemap: https://mirna.bio/sitemap.xml
