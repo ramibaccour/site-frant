@@ -402,7 +402,9 @@
     function convertInstance($sourceInstance, $targetClass)
     {
         if(!empty($sourceInstance))
+        {
             $sourceInstance = (object) $sourceInstance;
+        }
         $myClass =  !class_exists($targetClass);
         $myObject = !is_object($sourceInstance);
         if ( $myClass  || $myObject)
@@ -413,10 +415,10 @@
         // Récupérer les propriétés publiques de l'instance source
         $sourceProperties = get_object_vars($sourceInstance);
         // Parcourir les propriétés de l'instance cible
-        foreach ($sourceProperties as $propertyName => $propertyValue) 
+        foreach ($sourceProperties as $propertyName => $propertyValue)
         {
             // Vérifier si la propriété existe dans l'instance cible
-            if (property_exists($targetInstance, $propertyName)) 
+            if (property_exists($targetInstance, $propertyName))
             {
                 // Affecter la valeur de la propriété de l'instance source à l'instance cible
                 $targetInstance->{$propertyName} = $propertyValue;
@@ -780,7 +782,7 @@
     function estDateValide($chaineDate)
     {
         $timestamp = strtotime($chaineDate);
-        if ($timestamp === false) 
+        if ($timestamp === false)
         {
             return false;
         }

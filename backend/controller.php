@@ -15,7 +15,12 @@ if ($path !== false)
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET')
 {
-  if (preg_match('/\/etatDocument\/findById\/(\d+)/', $path, $matches))
+  if (preg_match('/\/codePromo\/findById\/(\d+)/', $path, $matches))
+  {
+    $id = intval($matches[1]);
+    echo json_encode(getCodePromo($id));
+  }
+  elseif (preg_match('/\/etatDocument\/findById\/(\d+)/', $path, $matches))
   {
     $id = intval($matches[1]);
     echo json_encode(getEtatDocument($id));
@@ -127,7 +132,11 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
   else
   {
     $data = json_decode(file_get_contents('php://input'));
-    if($path === '/article/findByFilter')
+    if($path === '/codePromo/findByFilter')
+    {
+      echo json_encode(getListeCodePromo($data));
+    }
+    elseif($path === '/article/findByFilter')
     {
       echo json_encode(getListeArticle($data));
     }
@@ -244,6 +253,11 @@ elseif ($_SERVER['REQUEST_METHOD'] === "DELETE")
     $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
     echo json_encode(deleteUser($id));
   }
+  elseif (preg_match('/\/codePromo\/delete\/(\d+)/', $path, $matches))
+  {
+    $id = intval($matches[1]); // Récupérez l'ID du produit depuis les paramètres de l'URL
+    echo json_encode(deleteCodePromo($id));
+  }
 }
 elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
 {
@@ -300,5 +314,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === "PUT")
   elseif($path === '/categorieContenuWeb/save-liste')
   {
     echo json_encode(saveListeCategorieContenuWeb($data));
+  }
+  elseif($path === '/codePromo/save')
+  {
+    echo json_encode(saveCodePromo($data));
   }
 }

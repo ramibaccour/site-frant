@@ -22,9 +22,7 @@ include_once "entity/ContenuWebFilter.php";
 include_once "entity/ArticleRelationFilter.php";
 include_once "entity/EtatDocumentFilter.php";
 include_once "entity/PersonneFilter.php";
-
-
-
+include_once "entity/CodePromoFilter.php";
 
 $rows = array();
 function executeSql($sql,$getAutoIncrement)
@@ -1183,7 +1181,7 @@ function saveDocument($data)
         $data["idEtatDocument"] == 3 &&
         checkRequiredDataForBestDelivery($data))
     {
-      //$data = createPickup($data);
+      $data = createPickup($data);
     }
     // mode update
     if( isset($data["id"]) && $data["id"]>0)
@@ -1631,4 +1629,39 @@ function deleteListeCategorieContenuWeb($data)
     $sql = "delete from categorie_contenu_web " . getWhere($catContenWeb);
     getData($sql,true);
   }
+}
+function getListeCodePromo($data)
+{
+  $filter = convertInstance($data,"CodePromoFilter");
+  $sql = "select * from code_promo " . getWhere($filter);
+  return array("listCodePromoResponse"=> getData($sql,false));
+}
+function getCodePromo($id)
+{
+  $sql = "SELECT * FROM code_promo where id = $id";
+  return getData($sql,false)[0];
+}
+function saveCodePromo($data)
+{
+  // mode update
+  if(isset($data["id"]) && $data["id"]>0)
+  {
+    $sql = "update code_promo set " . getUpdateSql(convertInstance($data,"CodePromoFilter"));
+    getData($sql,false);
+  }
+  // mode add
+  else
+  {
+    $sql = "insert into code_promo " . getInsertSql(convertInstance($data,"CodePromoFilter"));
+    $data["id"] = getData($sql,true)["id"];
+  }
+  return array("codePromoResponse"=>$data, "codePromoResponseError"=> null);
+}
+function deleteCodePromo($id)
+{
+  $sql = "SELECT * FROM code_promo where id = $id";
+  $value = getData($sql,false)[0]["isDeleted"];
+  $value = ($value == 1? 0 : 1);
+  $sql = "UPDATE code_promo SET is_deleted = $value where id = $id";
+  return getData($sql,false);
 }
