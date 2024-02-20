@@ -42,6 +42,7 @@
                     $commande["villeLng1"] = $_POST["villeLng1"] ;
                     $commande["regionLng1"] = $_POST["regionLng1"] ;
                     $commande["mobile1"] = $_POST["mobile1"] ;
+                    $commande["codePromo"] = $_POST["codePromo"] ;
                     $commande["isDeleted"] = 0 ;
                     $commande["typeDocument"] = "commande_client" ;
                     $commande["idParametre"] = 24 ;
@@ -72,7 +73,7 @@
                     $saved = "";
                 }
                 else
-                {                    
+                {
                     $noProduct = "";
                 }
             }
@@ -219,11 +220,19 @@
                                                     <?php
                                                         }
                                                     ?>
+                                                    <tr class="cart_item">
+                                                        <td class="product-name">
+                                                            <input type="number" data-total="<?php echo $somme; ?>" id="code-promo" name="codePromo" placeholder="Code promo"/>
+                                                        </td>
+                                                        <td class="product-total">
+                                                            <input type="button" onclick="verifierCodePromo()" value="Verifier"/>
+                                                        </td>
+                                                    </tr>
                                                 </tbody>
                                                 <tfoot>
                                                     <tr class="order-total">
                                                         <th>Total</th>
-                                            <td><strong><span class="amount"><?php echo $somme ?> DT</span></strong>
+                                            <td><strong><span id="total-cmd" class="amount"><?php echo $somme ?> DT</span></strong>
                                                         </td>
                                                     </tr>
                                                 </tfoot>
@@ -232,8 +241,8 @@
                                         <div class="payment-method">
                                             <div class="payment-accordion">
                                                 <div class="order-button-payment">
-                                                    <input type="submit" name="submit" value="Place order">
-                                                </div>                                                
+                                                    <input type="submit" name="submit" value="Acheter">
+                                                </div>
                                                 <p class="<?php echo $saved; ?> mt-1 alert alert-success">Enregistrer</p>
                                                 <p class="<?php echo $verifData; ?> mt-1 alert alert-danger">Veuillez saisir vos coordonnées</p>
                                                 <p class="<?php echo $noProduct; ?> mt-1 alert alert-danger">Aucun produit dans le panier</p>

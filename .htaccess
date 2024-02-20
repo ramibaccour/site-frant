@@ -10,3 +10,16 @@ RewriteRule ^service/([0-9]+)/([A-Za-z0-9_-]+) service.php?id_article=$1&name=$2
 RewriteRule ^blog/([0-9]+)/([A-Za-z0-9_-]+) blog.php?id_article=$1&name=$2 [NC,L]
 RewriteRule ^liste/article/([0-9]+)/([A-Za-z0-9_-]+) listeArticle.php?id_categorie=$1&name=$2 [NC,L]
 RewriteRule ^liste/categorie/([0-9]+)/([A-Za-z0-9_-]+) listeCategorie.php?id_categorie=$1&name=$2 [NC,L]
+<IfModule mod_headers.c>
+    # Autoriser l'accès depuis n'importe quelle origine
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "*"
+    Header set Access-Control-Allow-Headers "*"
+
+    # Gérer les requêtes OPTIONS
+    <Limit OPTIONS>
+        Header set Access-Control-Allow-Methods "*"
+        Header set Access-Control-Allow-Headers "*"
+    </Limit>
+</IfModule>
+

@@ -1221,6 +1221,25 @@ function updateDocument($data)
 }
 function addDocument($data)
 {
+  if(!empty($data["codePromo"]) && verifierCodePromo($data["codePromo"],$data["totalTtc"]) < $data["totalTtc"]  )
+  {
+    $promo = getCodePromoByCode($data["codePromo"]);
+    if(!empty($promo))
+    {
+      $promo = $promo[0];
+      $data["totalTtc"] = calculerPromo($promo, $data["totalTtc"]);
+      $data["reductionValue"] = $promo["reductionValue"];
+      $data["reductionPercent"] = $promo["reductionPercent"];
+      $data["totalHt"] = $data["totalTtc"];
+    }
+    
+  }
+  else
+  {
+    $data["codePromo"] = "";
+    $data["reductionValue"] = "";
+    $data["reductionPercent"] = "";
+  }
   $sql = "insert into document " . getInsertSql(convertInstance($data,"DocumentFilter"));
   $data["id"] = getData($sql,true)["id"];
 
@@ -1641,6 +1660,11 @@ function getCodePromo($id)
   $sql = "SELECT * FROM code_promo where id = $id";
   return getData($sql,false)[0];
 }
+function getCodePromoByCode($code)
+{
+  $sql = "SELECT * FROM code_promo where  is_deleted=0 AND code = ".$code;
+  return getData($sql,false);
+}
 function saveCodePromo($data)
 {
   // mode update
@@ -1664,4 +1688,70 @@ function deleteCodePromo($id)
   $value = ($value == 1? 0 : 1);
   $sql = "UPDATE code_promo SET is_deleted = $value where id = $id";
   return getData($sql,false);
+}
+function verifierCodePromo($code, $prix)
+{
+  if(!empty($prix))
+  {
+    $prix = floatval($prix);
+  }
+  $data = getCodePromoByCode($code);
+  if( !empty($data))
+  {
+    $data = $data[0];
+    $newPrix = calculerPromo($data, $prix);
+    if(!empty($data["utilisationUnique"] === 1))
+    {
+      if($data["etat"] === 0 && verifierDatePromo($data) === true)
+      {
+        return $newPrix;
+      }
+      return $prix;
+    }
+    else
+    {
+      if(verifierDatePromo($data) === true)
+      {
+        return $newPrix;
+      }
+      return $prix;
+    }
+  }
+  return $prix;
+}
+function verifierDatePromo($data)
+{
+  $debutPromo = $data["debutPromo"];
+  $finPromo = $data["finPromo"];
+  // Vérifier si les chaînes sont des dates valides
+  $dateDebut = DateTime::createFromFormat('Y-m-d', $debutPromo);
+  $dateFin = DateTime::createFromFormat('Y-m-d', $finPromo);
+  $dateActuelle = new DateTime();
+
+  if ($dateDebut !== false && $dateFin !== false)
+  {
+      // Vérifier si nous sommes dans l'intervalle de la promotion
+      if ($dateActuelle >= $dateDebut && $dateActuelle <= $dateFin)
+      {
+        return true;
+      } 
+      return false;
+  }
+  return true;
+}
+function calculerPromo($data, $prix)
+{
+  $newPrix  = 0;
+  if(!empty($data["reductionValue"]) && abs($data["reductionValue"]) > 0)
+  {
+    if($prix > abs($data["reductionValue"]))
+    {
+      $newPrix = $prix - abs($data["reductionValue"]);
+    }
+  }
+  elseif(!empty($data["reductionPercent"]) && abs($data["reductionPercent"]) > 0)
+  {
+    $newPrix = $prix * (1- ((abs($data["reductionPercent"]))/100));
+  }
+  return $newPrix ;
 }

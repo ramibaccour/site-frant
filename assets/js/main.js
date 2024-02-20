@@ -560,15 +560,7 @@
             qte = 1;
         $("#qteToAdd").val(qte);
         $("#form-cart").submit();
-        // myHoste declarer dans head.php
-        // $.ajax(
-        // {
-        //     url: myHoste +"/addProductToCart.php",
-        //     data  : {idArticle : idArticle, image: image, qte : qte},
-        //     success: function(result)
-        //     {
-        //     }
-        // });
+
     });
     var forms = document.getElementsByClassName('needs-validation');
     // Loop over them and prevent submission
@@ -585,3 +577,24 @@
       }, false);
     });
 })(jQuery);
+
+function verifierCodePromo()
+{
+    var code = $("#code-promo").val();
+    var prix=  $("#code-promo").data('total');
+    // myHoste declarer dans head.php
+    $.ajax(
+    {
+        url: myHoste +"/backend/controller.php/codePromo/verifierCodePromo",
+        data  : {code , prix},
+        type : "POST",
+        success: function(result)
+        {
+            $("#total-cmd").text(result + " DT");
+        },
+        error : function(result)
+        {
+            console.log(result)
+        }
+    });
+}

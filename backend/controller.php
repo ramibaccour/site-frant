@@ -1,10 +1,14 @@
 
 <?php
 include_once "getData.php";
-header ("Access-Control-Allow-Origin: *");
-header ("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
-header ("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: *");
 header('Content-Type: application/json');
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
+{
+    exit;
+}
 
 $path = $_SERVER['REQUEST_URI'];
 $path = strstr($path, "controller.php");
@@ -135,6 +139,12 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
     if($path === '/codePromo/findByFilter')
     {
       echo json_encode(getListeCodePromo($data));
+    }
+    elseif($path === '/codePromo/verifierCodePromo')
+    {
+      $code = $_POST['code'];
+      $prix = $_POST['prix'];
+      echo json_encode(verifierCodePromo($code,$prix));
     }
     elseif($path === '/article/findByFilter')
     {

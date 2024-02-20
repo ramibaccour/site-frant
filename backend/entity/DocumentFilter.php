@@ -29,4 +29,8 @@ public $idCollaborateur;
 public $idUser;
 public $idUserCommerciale;
 public $idEtatDocument;
+public $idCodePromo;
+public $codePromo;
+public $reductionValue;
+public $reductionPercent;
 }
