@@ -265,7 +265,7 @@
                                                                                 <i class="fa fa-search"></i>
                                                                             </a>
                                                                         </div>
-                                                                        <div class="hook-reviews">
+                                                                        <!-- <div class="hook-reviews">
                                                                             <div class="comments_note">
                                                                                 <i class="fa fa-star"></i>
                                                                                 <i class="fa fa-star"></i>
@@ -273,7 +273,7 @@
                                                                                 <i class="fa fa-star"></i>
                                                                                 <i class="fa fa-star"></i>
                                                                             </div>
-                                                                        </div>
+                                                                        </div> -->
                                                                     </div>
                                                                     <div class="product_desc">
                                                                         <div class="manufacturer">
@@ -289,7 +289,7 @@
                                                                     </a>
                                                                         </h1>
                                                                         <div class="product-price-and-shipping">
-                                                                            <span class="regular-price">
+                                                                            <span class="<?php echo $detailContenuWeb["havePromo"] ? 'regular-price' : 'price price-sale';?> ">
                                                                             <?php echo $detailContenuWeb["price"] ;?>
                                                                             </span>
                                                                             <?php
@@ -475,7 +475,7 @@
                                                                     <i class="fa fa-search"></i>
                                                                 </a>
                                                                             </div>
-                                                                            <div class="hook-reviews">
+                                                                            <!-- <div class="hook-reviews">
                                                                                 <div class="comments_note">
                                                                                     <i class="fa fa-star"></i>
                                                                                     <i class="fa fa-star"></i>
@@ -483,7 +483,7 @@
                                                                                     <i class="fa fa-star"></i>
                                                                                     <i class="fa fa-star"></i>
                                                                                 </div>
-                                                                            </div>
+                                                                            </div> -->
                                                                         </div>
                                                                         <div class="product_desc">
                                                                             <div class="manufacturer">
@@ -631,7 +631,7 @@
                                                                     data-original-title="Voir"
                                                                     class="quick_view"><i class="fa fa-search"></i></a>
                                                             </div>
-                                                            <div class="hook-reviews">
+                                                            <!-- <div class="hook-reviews">
                                                                 <div class="comments_note">
                                                                     <i class="fa fa-star"></i>
                                                                     <i class="fa fa-star"></i>
@@ -639,7 +639,7 @@
                                                                     <i class="fa fa-star"></i>
                                                                     <i class="fa fa-star"></i>
                                                                 </div>
-                                                            </div>
+                                                            </div> -->
                                                         </div>
                                                         <div class="product_desc">
                                                             <h1>

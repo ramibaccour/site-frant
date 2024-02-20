@@ -23,7 +23,7 @@
                 data-original-title="Voire" class="quick_view">
                 <i class="fa fa-search"></i></a>
             </div>
-            <div class="hook-reviews">
+            <!-- <div class="hook-reviews">
                 <div class="comments_note">
                     <i class="fa fa-star"></i>
                     <i class="fa fa-star"></i>
@@ -31,7 +31,7 @@
                     <i class="fa fa-star"></i>
                     <i class="fa fa-star"></i>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="product_desc">
             <div class="manufacturer">

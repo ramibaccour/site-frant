@@ -1,4 +1,4 @@
-
+<?php  session_start(); ?>
 <!doctype html>
 <html class="no-js" lang="en">
     <?php
@@ -21,7 +21,7 @@
     <!-- Body main wrapper start -->
     <div class="wrapper home-one">
         <?php
-            include("header.php");
+            include "header.php" ;
         ?>
 
         <!-- single product area -->
@@ -84,7 +84,7 @@
                     <div class="col-lg-6">
                         <h1 class="h1 namne_details"><?php echo $article["nomLng1"] ;?></h1>
                         <p class="reference"><?php echo $article["nom2Lng1"] ;?></p>
-                        <div id="product_comments_block_extra" class="no-print">
+                        <!-- <div id="product_comments_block_extra" class="no-print">
                             <div class="hook-reviews">
                                 <div class="comments_note">
                                     <i class="fa fa-star"></i>
@@ -95,7 +95,7 @@
                                 </div>
                             </div>
                            
-                        </div>
+                        </div> -->
                         <div class="product-prices">
                             <div class="product-discount">
                                 <span class="regular-price"><?php echo $article["price"] ;?></span>
